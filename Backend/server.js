@@ -1,13 +1,24 @@
 const express = require('express');
-const app = express();
-const dbConfig = require('./src/config/configDataBase');
-const router = require('./src/routes');
+const cors = require('./src/middleware/cors');
+const dbConfig = require('./src/config/db');
 
-const PORT = process.env.PORT || 3000;
+const auth = require('./src/middleware/authMiddleware');
+
+const PORT = 3000;
 
 dbConfig();
+start()
 
-app.use(router)
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+async function start() {
+
+    const app = express();
+    app.use(express.json());
+    app.use(cors());
+    app.use(auth());
+    app.use(express.static('public'));
+
+    app.get(`/`, (req, res) => res.json({ messsage: 'REST Services operational' }))
+
+    app.listen(PORT, () => console.log('Server work right'));
+
+}

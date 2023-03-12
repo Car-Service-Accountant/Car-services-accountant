@@ -1,28 +1,15 @@
-exports.authMiddleware = async (req, res, next) => {
+const { tokenVerify } = require("../services/authServices");
 
-    const token = req.cookies['auth'];
+module.exports = () => (req, res, next) => {
+    const token = req.headers['x-autorization'];
 
-    if (token) {
-        try {
-            const decodedToken = await tokenVerify(token);
-            req.user = decodedToken;
-            res.locals.isAuthenticated = true;
-            res.locals.user = decodedToken;
-        } catch (err) {
-            res.crearCookie('auth');
-
-            return res.status(403).render('404');
-
+    try {
+        if (token) {
+            const userData = tokenVerify(token);
+            req.user = userData
         }
+        next();
+    } catch (err) {
+        res.status(498).json({ message: 'Invalid access token. Please sign in'})
     }
-
-    next();
-}
-
-exports.isAuth = async (req, res, next) => {
-    if (!req.user) {
-        return req.redirect('/auth/login');
-    }
-
-    next();
 }
