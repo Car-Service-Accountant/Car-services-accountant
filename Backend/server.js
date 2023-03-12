@@ -1,19 +1,24 @@
 const express = require('express');
-const app = express();
-const dbConfig = require('./src/config/configDataBase');
-const router = require('./src/routes');
-const cookeiParser = require('cookie-parser');
-const authMiddleware = require('./src/middleware/authMiddleware');
-const PORT = process.env.PORT || 3000;
+const cors = require('./src/middleware/cors');
+const dbConfig = require('./src/config/db');
 
-dbConfig();
+const auth = require('./src/middleware/authMiddleware');
 
-app.use('/static', express.static('public'));
-app.use(express.urlencoded({extended: false}))
-app.use(cookeiParser());
-app.use(authMiddleware);
-app.use(router)
+const PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
-});
+start()
+
+async function start() {
+    dbConfig();
+
+    const app = express();
+    app.use(express.json());
+    app.use(cors());
+    app.use(auth());
+    app.use(express.static('public'));
+
+    app.get(`/`, (req, res) => res.json({ messsage: 'REST Services operational' }))
+
+    app.listen(PORT, () => console.log('Server work right'));
+
+}

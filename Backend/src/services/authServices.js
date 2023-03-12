@@ -43,7 +43,11 @@ exports.login = async (username, password) => {
 };
 
 exports.tokenVerify = async (token) => {
-    const decodedToken = await jwt.verify(token, SECRET);
-
-    return decodedToken;
+    try{
+        const decodedToken = await jwt.verify(token, SECRET);
+        return decodedToken;
+    }catch(err){
+        throw new Error(err || "Token is invalid")
+    }
+    
 }
