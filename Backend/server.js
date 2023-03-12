@@ -6,10 +6,10 @@ const auth = require('./src/middleware/authMiddleware');
 
 const PORT = 3000;
 
-dbConfig();
 start()
 
 async function start() {
+    dbConfig();
 
     const app = express();
     app.use(express.json());
