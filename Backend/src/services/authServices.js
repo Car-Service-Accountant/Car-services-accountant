@@ -4,7 +4,8 @@ const jwt = require('../lib/jwt');
 
 const SECRET = "superdupersecetlysecretsecret";
 
-exports.register = async (username, email, password, rePassword) => {
+exports.register = async (email, username,  password, rePassword) => {
+    console.log(email, username,  password, rePassword);
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
@@ -14,7 +15,7 @@ exports.register = async (username, email, password, rePassword) => {
     const hashedPassword = await bcrypt.hash(password, 4);
 
     if (exist) {
-        throw new Error('Ussername is allready taken')
+        throw new Error(username + 'Ussername is allready taken')
     }
     await User.create({ username, email, password: hashedPassword });
     return this.login(username, password);
@@ -37,9 +38,10 @@ exports.login = async (username, password) => {
         email: user.email,
         username,
     };
+
     const token = await jwt.sing(payload, SECRET);
 
-    return token;
+    return token 
 };
 
 exports.tokenVerify = async (token) => {
@@ -48,6 +50,6 @@ exports.tokenVerify = async (token) => {
         return decodedToken;
     }catch(err){
         throw new Error(err || "Token is invalid")
-    }
+    }s
     
 }

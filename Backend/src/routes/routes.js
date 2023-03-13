@@ -1,5 +1,11 @@
-const userController = require('../controllers/user');
+const router = require('express').Router();
+const authControler = require('../controllers/user');
 
-module.exports = (app) => {
-  app.use('/auth', userController);
-};
+
+router.use("/auth" , authControler);
+router.all('*', (req, res) => {
+    res.send("cusstom there")
+})
+
+
+module.exports = router

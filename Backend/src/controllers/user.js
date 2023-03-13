@@ -1,19 +1,19 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
-const { register, login , createSession} = require('../services/authServices');
+const session = require('express-session');
+const { register, login } = require('../services/authServices');
 const { isGuest, isAuth } = require('../middleware/guard');
 
+
 router.post('/register', isGuest(), async (req, res) => {
-    console.log(req.body);
-    const [email , username , password , rePasword] = req.body;
+    const {email , username , password , rePassword} = req.body;
     try {
         if (email.trim() == '' || username.trim() == '' || password.trim() == '') {
             throw new Error('all the fields are required');
         }
 
-        const result = await register(email.trim().toLowerCase(), password.trim());
-        console.log(result);
-        res.status(201).json(result)
+        const token = await register(email.trim().toLowerCase(),username.trim().toLowerCase(),  password.trim() ,  rePassword.trim());
+        res.status(201).json(token)
 
     } catch (err) {
         console.error(err.message);
@@ -23,11 +23,11 @@ router.post('/register', isGuest(), async (req, res) => {
 })
 
 router.post('/login', isGuest(), async (req, res) => {
-    console.log(req.body);
-    const [email , passowrd] = req.body;
+    console.log("Login body -- " + req.body);
+    const {email , passowrd} = req.body;
     try {
         const result = await login(email.trim().toLowerCase(), username.trim().toLowerCase(), password.trim()); // TO MAKE IT SIMPLE
-        console.log(result);
+        console.log("Login result"+result);
         res.json(result)
 
     } catch (err) {
@@ -35,7 +35,6 @@ router.post('/login', isGuest(), async (req, res) => {
         const error = mapErrors(err);
         res.status(400).json({ message: error })
     }
-    return createSession(user);
 })
 
 router.get('/logout', isAuth(), (req, res) => {
