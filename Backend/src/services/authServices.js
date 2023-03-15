@@ -5,7 +5,6 @@ const jwt = require('../lib/jwt');
 const SECRET = "superdupersecetlysecretsecret";
 
 exports.register = async (email, username,  password, rePassword) => {
-    console.log(email, username,  password, rePassword);
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
