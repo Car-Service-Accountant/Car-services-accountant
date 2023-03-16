@@ -1,16 +1,10 @@
-const { MongoClient, ServerApiVersion } = require ('mongodb-legacy');
+const mongoose = require('mongoose');
 
 const dbConfig = () => {
-  const client = new MongoClient("mongodb+srv://admin:purpleechip0123456@carservicedb.ehxjt4o.mongodb.net/?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-  client.connect((err) => {
-    if (err) {
-      console.error('Error connecting to MongoDB:', err);
-    } else {
-      console.log('Connected to MongoDB successfully');
-      const collection = client.db("test").collection("devices");
-      client.close();
-    }
-  });
+  const options = { useNewUrlParser: true, useUnifiedTopology: true };
+  mongoose.set('strictQuery', false)
+  mongoose.connect("mongodb://localhost:27017/Car-sercvices-DB", options);
+  
 }
 
 module.exports = dbConfig
