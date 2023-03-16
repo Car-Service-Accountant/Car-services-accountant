@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
+// TODO: we need to think about types and errors we want to recive here
 const carSchema = new mongoose.Schema({
     Owner: {
-        type: String, 
+        type: String,
         require: true,
     },
-    CarID:{ 
+    CarNumber: {
         type: String,
         require: true,
         unique: true,
@@ -15,10 +16,17 @@ const carSchema = new mongoose.Schema({
         require: true,
         minLenght: 10,
     },
-    carModel:{
+    carModel: {
         type: String,
         require: true,
-    }
+    },
+    carMark: {
+        type: String,
+        require: true,
+    },
+    repairs: [{
+        type: mongoose.Schema.Types.ObjectId, ref: 'Repair'
+    }]
 });
 
 const Car = mongoose.model('Car', carSchema);

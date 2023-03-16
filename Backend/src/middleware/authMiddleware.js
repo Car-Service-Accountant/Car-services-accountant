@@ -1,11 +1,13 @@
 const { tokenVerify } = require("../services/authServices");
+// const User = require('../models/User');
 
-module.exports = () => (req, res, next) => {
+module.exports = () => async (req, res, next) => {
     const token = req.headers['x-autorization'];
 
     try {
         if (token) {
-            const userData = tokenVerify(token);
+            const userData = await tokenVerify(token);
+            // const user = findOne(userData._id);
             req.user = userData
         }
         next();

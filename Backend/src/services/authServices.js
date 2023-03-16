@@ -4,7 +4,7 @@ const jwt = require('../lib/jwt');
 
 const SECRET = "superdupersecetlysecretsecret";
 
-exports.register = async (email, username,  password, rePassword) => {
+exports.register = async (email, username, password, rePassword, role) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
@@ -14,18 +14,20 @@ exports.register = async (email, username,  password, rePassword) => {
     const hashedPassword = await bcrypt.hash(password, 4);
 
     if (exist) {
-        throw new Error(username + 'Ussername is allready taken')
+        throw new Error(username + ' is allready taken')
     }
-    await User.create({ username, email, password: hashedPassword });
+    await User.create({ username, email, password: hashedPassword, role });
     return this.login(username, password);
 }
 
-exports.login = async (username, password) => {
+exports.login = async (email, password) => {
     // OPTIONAL const user = await User.findOne({$or: [{email },{username}]})
-    const user = await User.findOne({ username });
+    console.log("preload");
+    const user = await User.findOne({ email });
     if (!user) {
         throw new Error('wrong email or password');
     }
+    console.log(user);
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
@@ -33,22 +35,28 @@ exports.login = async (username, password) => {
     }
 
     const payload = {
-        _id: user._id,
-        email: user.email,
-        username,
+        _id: user?._id,
+        email: user?.email,
+        username: user?.username
     };
 
     const token = await jwt.sing(payload, SECRET);
 
-    return token 
+    // TODO: if we need to send more information for user can send it like : 
+    return {
+        userId: user?._id,
+        email: user?.email,
+        username: user?.username,
+        token
+    }
 };
 
 exports.tokenVerify = async (token) => {
-    try{
+    try {
         const decodedToken = await jwt.verify(token, SECRET);
         return decodedToken;
-    }catch(err){
+    } catch (err) {
         throw new Error(err || "Token is invalid")
-    }s
-    
+    }
+
 }

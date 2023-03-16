@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema({
         minLenght: 4,
         required: true
     },
-    roles: [{
+    role: {
         type: String,
-    }]
+    }
 });
  
 const User = mongoose.model('user', userSchema);
