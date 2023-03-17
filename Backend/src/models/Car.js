@@ -4,25 +4,25 @@ const mongoose = require('mongoose');
 const carSchema = new mongoose.Schema({
     Owner: {
         type: String,
-        require: true,
+        required: true,
     },
     CarNumber: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
     },
     phoneNumber: {
         type: String,
-        require: true,
+        required: true,
         minLenght: 10,
     },
     carModel: {
         type: String,
-        require: true,
+        required: true,
     },
     carMark: {
         type: String,
-        require: true,
+        required: true,
     },
     repairs: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'Repair'

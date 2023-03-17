@@ -1,4 +1,3 @@
-const { model } = require("mongoose")
 const Car = require("../models/Car")
 
 
@@ -13,7 +12,8 @@ exports.addCar = async (Owner, CarNumber, phoneNumber, carModel, carMark) => {
 }
 
 exports.getCarByID = async (id) => {
-    const car = await Car.findById(id);
+    const car = await Car.findById(id).populate("repairs");
+
 
     if (!car) {
         throw new Error("Car was not found")
@@ -38,3 +38,7 @@ exports.getAllCars = async () => {
     }
     return data;
 }
+
+exports.updateCar = async (carID, data) => await Car.findByIdAndUpdate(carID, data)
+
+exports.deleteCar = async (id) => Car.findByIdAndDelete(id)
