@@ -1,22 +1,22 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
 const { isGuest, isAuth } = require('../middleware/guard');
-const { addCar, getCarByID, getAllCars, getCarByInfo } = require('../services/carServices');
+const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar, carRepairs } = require('../services/carServices');
 
 router.post("/", async (req, res) => {
     const { Owner, CarNumber, phoneNumber, carModel, carMark } = req.body;
-    console.log(Owner, CarNumber, phoneNumber, carModel, carMark);
+
     try {
         const data = await addCar(Owner, CarNumber, phoneNumber, carModel, carMark);
-
         res.status(200).json(data)
-
     } catch (err) {
         console.error(err.message);
         const error = mapErrors(err);
         res.status(400).json({ message: error })
     }
 })
+
+// can be replaced by frontend sort fuinc , but is better to use it if we got big DB
 router.get('/:mark/:model', async (req, res) => {
     const mark = req.params.mark;
     const model = req.params.model;
@@ -33,7 +33,6 @@ router.get('/:mark/:model', async (req, res) => {
 
 router.get("/:carID", async (req, res) => {
     const carID = req.params.carID;
-    console.log(carID);
 
     try {
         const car = await getCarByID(carID);
@@ -47,6 +46,7 @@ router.get("/:carID", async (req, res) => {
 
 
 router.get("", async (req, res) => {
+
     try {
         const data = await getAllCars();
         res.status(200).json(data);
@@ -57,6 +57,37 @@ router.get("", async (req, res) => {
     }
 })
 
-// TODO : think about how to select only model , mark or owner name (probably think what end point to be);
+router.patch('/:carID', async (req, res) => {
+
+    try {
+        const { carID } = req.params;
+        console.log(carID);
+        const { Owner, CarNumber, phoneNumber, carModel, carMark } = req.body;
+        const updatedCar = await updateCar(carID, {
+            Owner,
+            CarNumber,
+            phoneNumber,
+            carModel,
+            carMark,
+        });
+        res.status(200).json(updatedCar);
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+        res.status(404).json({ message: error })
+    }
+})
+
+router.delete("/:carID", async (req, res) => {
+
+    try {
+        await deleteCar(req.params.carID);
+        res.status(200).json({ message: "Successfully delete car" })
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+        res.status(404).json({ message: error })
+    }
+})
 
 module.exports = router;
