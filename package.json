@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon Backend/server.js"
+    "server": "nodemon Backend/server.js",
+    "client": "cd Frontend && npm start"
   },
   "keywords": [],
   "author": "",
