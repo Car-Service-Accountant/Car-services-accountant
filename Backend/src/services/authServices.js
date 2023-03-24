@@ -4,7 +4,7 @@ const jwt = require('../lib/jwt');
 
 const SECRET = "superdupersecetlysecretsecret";
 
-exports.register = async (email, username, password, rePassword, role) => {
+exports.register = async (email, username, password, rePassword, phoneNumber, role) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
@@ -16,17 +16,19 @@ exports.register = async (email, username, password, rePassword, role) => {
     if (exist) {
         throw new Error(username + ' is allready taken')
     }
-    await User.create({ username, email, password: hashedPassword, role });
-    return this.login(username, password);
+    await User.create({ username, email, password: hashedPassword, phoneNumber, role });
+    return this.login(email, password);
 }
 
 exports.login = async (email, password) => {
     // OPTIONAL const user = await User.findOne({$or: [{email },{username}]})
-    console.log("preload");
+    console.log(email, password);
+
     const user = await User.findOne({ email });
     if (!user) {
         throw new Error('wrong email or password');
     }
+    console.log();
     console.log(user);
 
     const isValid = await bcrypt.compare(password, user.password);

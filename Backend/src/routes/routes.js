@@ -1,14 +1,15 @@
 const router = require('express').Router();
-const authControler = require('../controllers/userController');
+const authController = require('../controllers/authController');
 const carController = require('../controllers/carController');
 const repairController = require('../controllers/repairController');
+const userController = require('../controllers/userController')
 
 router.use("/car", carController);
-router.use("/auth", authControler);
+router.use('/user', userController)
+router.use("/auth", authController);
 router.use('/repair', repairController);
-// router.use("/car" , )
 router.all('*', (req, res) => {
-    res.status(404).send("404 page")
+    res.status(404)
 })
 
 
