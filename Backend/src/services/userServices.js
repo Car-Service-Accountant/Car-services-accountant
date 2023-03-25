@@ -8,3 +8,5 @@ exports.getAllUsers = async () => {
     }
     return data;
 }
+
+exports.deleteUser = async (id) => User.findByIdAndDelete(id);

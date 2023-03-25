@@ -13,6 +13,7 @@ router.post('/register', isGuest(), async (req, res) => {
         }
 
         const token = await register(email.toLowerCase(), username.toLowerCase(), password, rePassword, phoneNumber, role);
+        console.log(token);
         res.status(201).json(token)
 
     } catch (err) {

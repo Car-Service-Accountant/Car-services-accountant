@@ -7,7 +7,7 @@ import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import Header from "../Header/Header";
+import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 
 const EMPLOYERS_URL = "http://localhost:3005/user/employers"
@@ -34,8 +34,15 @@ const Employers = () => {
     handleMenuClose();
   };
 
-  const handleDeleteClick = () => {
-    console.log(`Deleting employer with id ${selectedId}`);
+  const handleDeleteClick = async () => {
+
+     fetch(`${EMPLOYERS_URL}/${selectedId}`, {
+      method:"DELETE",
+    })
+
+    const updatedEmployers = employers.filter((employer) => employer._id !== selectedId);
+
+    setEmployers(updatedEmployers);
     handleMenuClose();
   };
 
