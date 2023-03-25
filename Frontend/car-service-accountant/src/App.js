@@ -1,10 +1,11 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Employers from "./components/Employers/Employers";
+import Employers from "./pages/Employers/Employers";
 import Sidebar from "./components/sideBar/Sidebar";
 import Topbar from "./components/topBar/Topbar";
 import { ColorModeContext, useMode } from "./theme"
+import Register from "./pages/Register";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/" element={<h1>Home</h1>} />
+              <Route path="/form" element={<Register />} />
               <Route path="/employers" element={<Employers />} />
             </Routes>
           </main>
