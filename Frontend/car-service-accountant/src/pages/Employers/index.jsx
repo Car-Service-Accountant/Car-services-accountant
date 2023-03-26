@@ -1,21 +1,29 @@
-import { Box, CircularProgress, IconButton, Menu, Typography, useTheme , MenuItem} from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Menu,
+  Typography,
+  useTheme,
+  MenuItem,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
+import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 
-const EMPLOYERS_URL = "http://localhost:3005/user/employers"
+const EMPLOYERS_URL = "http://localhost:3005/user/employers";
 
 const Employers = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [employers , setEmployers] = useState([]);
+  const [employers, setEmployers] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
@@ -35,37 +43,40 @@ const Employers = () => {
   };
 
   const handleDeleteClick = async () => {
+    fetch(`${EMPLOYERS_URL}/${selectedId}`, {
+      method: "DELETE",
+    }).then((response) => {
+      if (response.status === 200) {
+        const updatedEmployers = employers.filter(
+          (employer) => employer._id !== selectedId
+        );
 
-     fetch(`${EMPLOYERS_URL}/${selectedId}`, {
-      method:"DELETE",
-    })
-
-    const updatedEmployers = employers.filter((employer) => employer._id !== selectedId);
-
-    setEmployers(updatedEmployers);
+        setEmployers(updatedEmployers);
+      }
+    });
     handleMenuClose();
   };
 
-  useEffect (() => { 
+  useEffect(() => {
     fetch(EMPLOYERS_URL, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
-      }
+        "Content-Type": "application/json",
+      },
     })
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         setEmployers(data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  },[])
+  }, []);
 
   const columns = [
     {
@@ -74,27 +85,27 @@ const Employers = () => {
       flex: 0,
       hide: true,
     },
-  {
-    field: "username",
-    headerName: "Username",
-    flex: 1,
-    cellClassName: "name-column--cell",
-  },
-  {
-    field: "phoneNumber",
-    headerName: "Phone Number",
-    flex: 1,
-  },
-  {
-    field: "email",
-    headerName: "Email",
-    flex: 1,
-  },
+    {
+      field: "username",
+      headerName: "Username",
+      flex: 1,
+      cellClassName: "name-column--cell",
+    },
+    {
+      field: "phoneNumber",
+      headerName: "Phone Number",
+      flex: 1,
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      flex: 1,
+    },
     {
       field: "accessLevel",
       headerName: "Access Level",
       flex: 1,
-      renderCell: ({ row: {  role } }) => {
+      renderCell: ({ row: { role } }) => {
         return (
           <Box
             width="65%"
@@ -138,10 +149,19 @@ const Employers = () => {
     },
   ];
 
-  if(employers.length === 0) {
+  if (employers.length === 0) {
     return (
-      <CircularProgress style={{color:"#6870fa" , display: "flex" , alignItems:"center" , justifyContent: "center", margin: "0 auto" , height:"80vh"  }}/>
-      )
+      <CircularProgress
+        style={{
+          color: "#6870fa",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 auto",
+          height: "80vh",
+        }}
+      />
+    );
   }
   return (
     <Box m="20px">
@@ -172,25 +192,32 @@ const Employers = () => {
           },
         }}
       >
-        <DataGrid  rows={employers} getRowId={(user) => user._id} columns={columns} disableSelectionOnClick disableSelection style={{ outline: 'none', boxShadow: 'none' }} />
+        <DataGrid
+          rows={employers}
+          getRowId={(user) => user._id}
+          columns={columns}
+          disableSelectionOnClick
+          disableSelection
+          style={{ outline: "none", boxShadow: "none" }}
+        />
         <Menu
-        anchorEl={menuAnchorEl}
-        open={Boolean(menuAnchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem onClick={handleEditClick}>
-          <ModeEditOutlineOutlinedIcon fontSize="small" />
-          <Typography variant="body1" ml={1}>
-            Edit
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleDeleteClick}>
-          <DeleteForeverOutlinedIcon fontSize="small" />
-          <Typography variant="body1" ml={1}>
-            Delete
-          </Typography>
-        </MenuItem>
-      </Menu>
+          anchorEl={menuAnchorEl}
+          open={Boolean(menuAnchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleEditClick}>
+            <ModeEditOutlineOutlinedIcon fontSize="small" />
+            <Typography variant="body1" ml={1}>
+              Edit
+            </Typography>
+          </MenuItem>
+          <MenuItem onClick={handleDeleteClick}>
+            <DeleteForeverOutlinedIcon fontSize="small" />
+            <Typography variant="body1" ml={1}>
+              Delete
+            </Typography>
+          </MenuItem>
+        </Menu>
       </Box>
     </Box>
   );

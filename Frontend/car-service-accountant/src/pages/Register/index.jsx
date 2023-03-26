@@ -18,7 +18,6 @@ const Register = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
-    console.log(values);
     fetch(`${baseURL}/register`, {
       method: "POST",
       headers: {
