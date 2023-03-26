@@ -1,6 +1,5 @@
 const Car = require("../models/Car")
 
-
 exports.addCar = async (Owner, CarNumber, phoneNumber, carModel, carMark) => {
 
     const exist = await Car.findOne({ CarNumber })
@@ -12,11 +11,10 @@ exports.addCar = async (Owner, CarNumber, phoneNumber, carModel, carMark) => {
 }
 
 exports.getCarByID = async (id) => {
-    const car = await Car.findById(id).populate("repairs");
+    let car = await Car.find({ CarNumber: id }).populate("repairs");
 
-
-    if (!car) {
-        throw new Error("Car was not found")
+    if (car.length === 0) {
+        car = await Car.findById(id).populate("repairs");
     }
     return car;
 }
@@ -31,6 +29,16 @@ exports.getCarByInfo = async (type, model) => {
 }
 
 exports.getAllCars = async () => {
+    const data = await Car.find();
+
+    if (!data) {
+        throw new Error("No car found here");
+    }
+    return data;
+}
+
+exports.getCarByNumber = async () => {
+
     const data = await Car.find();
 
     if (!data) {

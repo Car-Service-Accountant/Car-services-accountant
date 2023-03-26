@@ -1,10 +1,12 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
 const { isGuest, isAuth } = require('../middleware/guard');
-const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar, carRepairs } = require('../services/carServices');
+const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar, getCarByNumber } = require('../services/carServices');
 
 router.post("/", async (req, res) => {
     const { Owner, CarNumber, phoneNumber, carModel, carMark } = req.body;
+    console.log(req.body);
+    console.log(Owner, CarNumber, phoneNumber, carModel, carMark);
 
     try {
         const data = await addCar(Owner, CarNumber, phoneNumber, carModel, carMark);
