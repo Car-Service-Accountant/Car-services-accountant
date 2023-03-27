@@ -3,6 +3,7 @@ const Companny = require('../models/Companny');
 const bcrypt = require('bcrypt');
 const jwt = require('../lib/jwt');
 const CashBox = require('../models/Cashbox');
+const { getCompany } = require('../services/companyService')
 
 const SECRET = "superdupersecetlysecretsecret";
 
@@ -18,14 +19,14 @@ exports.register = async (email, username, password, rePassword, phoneNumber, ro
     if (exist) {
         throw new Error(username + ' is allready taken')
     }
-    const employer = await Employers.create({ username, email, password: hashedPassword, phoneNumber, role, companyID });
     const company = await Companny.findById(companyID)
     if (!company) {
         throw new Error("Company not found")
     }
+    const employer = await Employers.create({ username, email, password: hashedPassword, phoneNumber, role, companyID });
     company.employers.push(employer._id);
     await Companny.findByIdAndUpdate(companyID, company);
-    return this.loginCompany(email, password);
+    return this.login(email, password);
 }
 
 exports.registerCompany = async (email, username, password, rePassword) => {
@@ -54,8 +55,6 @@ exports.registerCompany = async (email, username, password, rePassword) => {
 
 
 exports.login = async (email, password) => {
-    // OPTIONAL const employer = await Employers.findOne({$or: [{email },{username}]})
-    console.log(email, password);
 
     const employer = await Employers.findOne({ email });
     if (!employer) {
@@ -66,7 +65,7 @@ exports.login = async (email, password) => {
     if (!isValid) {
         throw new Error('wrong email or password');
     }
-
+    const company = await getCompany(employer?.companyID?.toString())
     const payload = {
         _id: employer?._id,
         email: employer?.email,
@@ -79,6 +78,7 @@ exports.login = async (email, password) => {
         employerId: employer?._id,
         email: employer?.email,
         username: employer?.username,
+        cashBoxID: company?.cashBox,
         token
     }
 };
@@ -86,11 +86,11 @@ exports.login = async (email, password) => {
 exports.loginCompany = async (email, password) => {
     console.log(email, password);
 
-    const company = await Companny.findOne({ email }).collation('employers');
+    const company = await Companny.findOne({ email }).populate('employers');
+    console.log(company);
     if (!company) {
         throw new Error('wrong email or password');
     }
-    console.log(company);
 
     const isValid = await bcrypt.compare(password, company.password);
     if (!isValid) {
@@ -98,9 +98,9 @@ exports.loginCompany = async (email, password) => {
     }
 
     const payload = {
-        _id: employer?._id,
-        email: employer?.email,
-        username: employer?.username
+        _id: company?._id,
+        email: company?.email,
+        username: company?.username
     };
 
     const token = await jwt.sing(payload, SECRET);

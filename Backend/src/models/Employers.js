@@ -26,7 +26,7 @@ const employersSchema = new mongoose.Schema({
     role: {
         type: String,
     },
-    company: {
+    companyID: {
         type: mongoose.Schema.Types.ObjectId, ref: 'company'
     }
 });

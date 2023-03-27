@@ -1,30 +1,23 @@
+import { useContext } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
-import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { useAuth } from "../../hooks/useAuth";
+import { AuthContext } from "../../middleware/authProvider";
 import Header from "../../components/Header/Header";
-
-const baseURL = "http://localhost:3005/auth";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import * as yup from "yup";
 
 const Login = () => {
+  const { login } = useAuth();
+  const { user } = useContext(AuthContext);
+  if (user) {
+    console.log(user);
+  }
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    fetch(`${baseURL}/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      console.log(response);
-      if (response.status !== 200) {
-        throw new Error("Something gone wrong");
-      }
-      response.json().then((result) => console.log(result.token));
-      //TODO: set cokie or just global state for can check for can start making auth system tomorow
-    });
+    login(values.email, values.password);
   };
 
   return (

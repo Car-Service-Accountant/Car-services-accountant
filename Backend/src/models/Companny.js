@@ -17,7 +17,7 @@ const companySchema = new mongoose.Schema({
         required: true
     },
     employers: [{
-        type: mongoose.Schema.Types.ObjectId, ref: 'Employers'
+        type: mongoose.Schema.Types.ObjectId, ref: 'employers'
     }],
     cashBox: {
         type: mongoose.Schema.Types.ObjectId, ref: 'cashBox'
