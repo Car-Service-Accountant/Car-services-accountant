@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
-const { getAllUsers, deleteUser } = require('../services/userServices');
+const { getAllEmployers, deleteEmployer } = require('../services/employerServices');
 
 router.get('/employers', async (req, res) => {
     try {
-        const data = await getAllUsers();
+        const data = await getAllEmployers();
         res.status(200).json(data)
     } catch (err) {
         console.error(err.message);
@@ -13,10 +13,10 @@ router.get('/employers', async (req, res) => {
     }
 })
 
-router.delete('/employers/:userID', async (req, res) => {
+router.delete('/employers/:employerID', async (req, res) => {
     try {
-        await deleteUser(req.params.userID);
-        res.status(200).json({ message: "Successfuly remove user" })
+        await deleteEmployer(req.params.employerID);
+        res.status(200).json({ message: "Successfuly remove employer" })
     } catch (err) {
         console.error(err.message);
         const error = mapErrors(err);

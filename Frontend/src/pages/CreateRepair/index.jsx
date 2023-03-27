@@ -7,6 +7,7 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
+import { Navigate } from "react-router-dom";
 import { useState } from "react";
 
 const baseURL = "http://localhost:3005";
@@ -16,19 +17,7 @@ const CreateRepair = () => {
   const [car, setCar] = useState(null);
   const [parts, setParts] = useState([]);
   const [repairsServices, setRepairsServices] = useState([]);
-
-  let partsTypeTitleOpen = false;
-  if (parts.length > 0) {
-    partsTypeTitleOpen = true;
-  } else {
-    partsTypeTitleOpen = false;
-  }
-  let serviceTypeTitleOpen = false;
-  if (repairsServices.length > 0) {
-    serviceTypeTitleOpen = true;
-  } else {
-    serviceTypeTitleOpen = false;
-  }
+  const [sendData, setSendData] = useState(false);
 
   const carHandleFormSubmit = async (values) => {
     const currentCar = await getCar(values.carNumber);
@@ -85,79 +74,99 @@ const CreateRepair = () => {
       if (response.status !== 200) {
         throw new Error("Something gone wrong");
       }
+      setSendData(true);
     });
   };
+
+  if (sendData) {
+    return <Navigate to="/" />;
+  }
 
   const deleteRepairServicesHandler = (id) => {
     setRepairsServices((prevRepairs) =>
       prevRepairs.filter((repair) => repair.id !== id)
     );
   };
-  console.log(parts);
-  console.log(repairsServices);
+  console.log(car);
   return (
     <Box m="20px">
       {car ? (
-        <Header
-          title={`Вие обслужвате кола с номер ${car.CarNumber}`}
-          subtitle="Попълтене отворените полета за да завършите ремонта"
-        />
+        <Header title={`Добавяне на ремонт ${car.carNumber}`} />
       ) : (
-        <Header
-          title="Добавете кола за ремонт"
-          subtitle="Добавете номера на колата за ремонт"
-        />
+        <Header title="Добавете кола за ремонт" />
       )}
 
       {!car && (
-        <Formik
-          onSubmit={carHandleFormSubmit}
-          initialValues={carInitialValues}
-          validationSchema={carCheckoutSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <Box
-                display="grid"
-                gap="30px"
-                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-                sx={{
-                  "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-                }}
-              >
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Име на служителя"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.carNumber}
-                  name="carNumber"
-                  error={!!touched.carNumber && !!errors.carNumber}
-                  helperText={touched.carNumber && errors.carNumber}
-                  sx={{ gridColumn: "span 2" }}
-                />
-              </Box>
-              <Box display="flex" justifyContent="center" mt="20px">
-                <Button type="submit" color="secondary" variant="contained">
-                  Добави
-                </Button>
-              </Box>
-            </form>
-          )}
-        </Formik>
+        <>
+          <Box
+            display="grid"
+            gap="30px"
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            sx={{
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+            }}
+          >
+            <Typography>Номер на колата</Typography>
+          </Box>
+          <Formik
+            onSubmit={carHandleFormSubmit}
+            initialValues={carInitialValues}
+            validationSchema={carCheckoutSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleBlur,
+              handleChange,
+              handleSubmit,
+            }) => (
+              <form onFocus={handleSubmit}>
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type="text"
+                    label="Име на служителя"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.carNumber}
+                    name="carNumber"
+                    error={!!touched.carNumber && !!errors.carNumber}
+                    helperText={touched.carNumber && errors.carNumber}
+                    sx={{ gridColumn: "span 2" }}
+                  />
+                </Box>
+              </form>
+            )}
+          </Formik>
+        </>
       )}
       {car && (
         <>
           <Box display="grid" gap="30px">
+            <Box
+              display="grid"
+              gap="10px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              }}
+            >
+              <Typography fontSize={20} sx={{ gridColumn: "span 2" }}>
+                Информация на колата
+              </Typography>
+              <Divider sx={{ gridColumn: "span 4" }}></Divider>
+            </Box>
             <Box
               display="grid"
               gap="30px"
@@ -168,7 +177,7 @@ const CreateRepair = () => {
             >
               <TextField
                 fullWidth
-                value={car.CarNumber}
+                value={car.carNumber}
                 variant="outlined"
                 label="Номер"
                 sx={{ gridColumn: "span 2" }}
@@ -176,7 +185,7 @@ const CreateRepair = () => {
               />
               <TextField
                 fullWidth
-                value={car.Owner}
+                value={car.owner}
                 variant="outlined"
                 label="Собственик"
                 sx={{ gridColumn: "span 2" }}
@@ -206,22 +215,22 @@ const CreateRepair = () => {
                 sx={{ gridColumn: "span 4" }}
                 disabled
               />
-              <Divider sx={{ gridColumn: "span 4" }}></Divider>
-            </Box>
-
-            <Box display="flex" justifyContent="center" mt="20px">
-              <Button
-                type="submit"
-                color="secondary"
-                variant="contained"
-                onClick={() => finalizeRepair()}
-              >
-                <NoteAddOutlinedIcon />
-                Завършете записа
-              </Button>
             </Box>
 
             <Box>
+              <Box
+                display="grid"
+                gap="20px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                sx={{
+                  "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                }}
+              >
+                <Typography fontSize={20} sx={{ gridColumn: "span 2" }}>
+                  Информация на ремонта
+                </Typography>
+                <Divider sx={{ gridColumn: "span 4", mb: 4 }}></Divider>
+              </Box>
               <Formik
                 key="repairKey"
                 onSubmit={partsHandleFormSubmit}
@@ -302,13 +311,62 @@ const CreateRepair = () => {
                         variant="contained"
                       >
                         <AddCircleOutlineOutlinedIcon />
-                        Доабви резервна част
                       </Button>
                     </Box>
                   </form>
                 )}
               </Formik>
             </Box>
+
+            {parts.length > 0 &&
+              parts.map((value) => (
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    value={value.part}
+                    variant="outlined"
+                    label="Резервна част"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <TextField
+                    fullWidth
+                    value={value.priceForService}
+                    variant="outlined"
+                    label="Цена за сервиза"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <TextField
+                    fullWidth
+                    value={value.priceForClient}
+                    variant="outlined"
+                    label="Цена за клиента"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <Box display="flex" justifyContent="top">
+                    <Button
+                      type="button"
+                      color="secondary"
+                      variant="contained"
+                      sx={{ gridColumn: "span 0" }}
+                      onClick={() => deleteRepairHandler(value.id)}
+                    >
+                      <HighlightOffOutlinedIcon />
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
 
             <Box>
               <Formik
@@ -370,111 +428,12 @@ const CreateRepair = () => {
                         variant="contained"
                       >
                         <AddCircleOutlineOutlinedIcon />
-                        Добави детайли за ремонта
                       </Button>
                     </Box>
                   </form>
                 )}
               </Formik>
             </Box>
-
-            {partsTypeTitleOpen && (
-              <Box
-                display="grid"
-                gap="30px"
-                gridTemplateColumns="repeat(10, minmax(0, 1fr))"
-                sx={{
-                  "& > div": {
-                    gridColumn: isNonMobile ? undefined : "span 4",
-                  },
-                }}
-              >
-                <Divider sx={{ gridColumn: "span 10" }}></Divider>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  mt="20px"
-                  color="#70d8bd"
-                  sx={{ gridColumn: "span 10" }}
-                >
-                  <Typography fontSize={30}>Части</Typography>
-                </Box>
-              </Box>
-            )}
-
-            {parts.length > 0 &&
-              parts.map((value) => (
-                <Box
-                  display="grid"
-                  gap="30px"
-                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
-                  sx={{
-                    "& > div": {
-                      gridColumn: isNonMobile ? undefined : "span 4",
-                    },
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    value={value.part}
-                    variant="outlined"
-                    label="Резервна част"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <TextField
-                    fullWidth
-                    value={value.priceForService}
-                    variant="outlined"
-                    label="Цена за сервиза"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <TextField
-                    fullWidth
-                    value={value.priceForClient}
-                    variant="outlined"
-                    label="Цена за клиента"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <Box display="flex" justifyContent="top">
-                    <Button
-                      type="button"
-                      color="secondary"
-                      variant="contained"
-                      sx={{ gridColumn: "span 0" }}
-                      onClick={() => deleteRepairHandler(value.id)}
-                    >
-                      <HighlightOffOutlinedIcon />
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-
-            {serviceTypeTitleOpen && (
-              <Box
-                display="grid"
-                gap="30px"
-                gridTemplateColumns="repeat(10, minmax(0, 1fr))"
-                sx={{
-                  "& > div": {
-                    gridColumn: isNonMobile ? undefined : "span 4",
-                  },
-                }}
-              >
-                <Divider sx={{ gridColumn: "span 10" }}></Divider>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  mt="20px"
-                  color="#70d8bd"
-                  sx={{ gridColumn: "span 10" }}
-                >
-                  <Typography fontSize={30}>Труд</Typography>
-                </Box>
-              </Box>
-            )}
 
             {repairsServices.length > 0 && <></> &&
               repairsServices.map((value) => (
@@ -517,6 +476,17 @@ const CreateRepair = () => {
                   </Box>
                 </Box>
               ))}
+          </Box>
+
+          <Box display="flex" justifyContent="center" mt="20px">
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              onClick={() => finalizeRepair()}
+            >
+              Добави
+            </Button>
           </Box>
         </>
       )}

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const employersSchema = new mongoose.Schema({
     username: {
         type: String,
         minLenght: 2,
@@ -16,18 +16,21 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         minLenght: 4,
-        required: true
+        required: true,
     },
     phoneNumber: {
         type: String,
         minLenght: 10,
-        required: true
+        required: true,
     },
     role: {
         type: String,
+    },
+    company: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'company'
     }
 });
 
-const User = mongoose.model('user', userSchema);
+const Employers = mongoose.model('employers', employersSchema);
 
-module.exports = User;
+module.exports = Employers;

@@ -10,20 +10,17 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 
-const EMPLOYERS_URL = "http://localhost:3005/user/employers";
+const URL = "http://localhost:3005/car";
 
-const Employers = () => {
+const Cars = (props) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [employers, setEmployers] = useState([]);
+  const [cars, setCars] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
@@ -43,22 +40,22 @@ const Employers = () => {
   };
 
   const handleDeleteClick = async () => {
-    fetch(`${EMPLOYERS_URL}/${selectedId}`, {
+    fetch(`${URL}/${selectedId}`, {
       method: "DELETE",
     }).then((response) => {
       if (response.status === 200) {
-        const updatedEmployers = employers.filter(
+        const updatedEmployers = cars.filter(
           (employer) => employer._id !== selectedId
         );
 
-        setEmployers(updatedEmployers);
+        setCars(updatedEmployers);
       }
     });
     handleMenuClose();
   };
 
   useEffect(() => {
-    fetch(EMPLOYERS_URL, {
+    fetch(URL, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -71,7 +68,13 @@ const Employers = () => {
         return response.json();
       })
       .then((data) => {
-        setEmployers(data);
+        const formatedData = data.map((car) => {
+          return {
+            ...car,
+            buildDate: props.formatDate(car.buildDate),
+          };
+        });
+        setCars(formatedData);
       })
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
@@ -86,52 +89,32 @@ const Employers = () => {
       hide: true,
     },
     {
-      field: "username",
-      headerName: "Username",
+      field: "owner",
+      headerName: "Собственик",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
-      field: "phoneNumber",
-      headerName: "Phone Number",
+      field: "buildDate",
+      headerName: "Дата на производство",
       flex: 1,
     },
     {
-      field: "email",
-      headerName: "Email",
+      field: "carMark",
+      headerName: "Марка на колата ",
       flex: 1,
     },
     {
-      field: "accessLevel",
-      headerName: "Access Level",
+      field: "carModel",
+      headerName: "Модел на колата",
       flex: 1,
-      renderCell: ({ row: { role } }) => {
-        return (
-          <Box
-            width="65%"
-            m="0 auto"
-            p="7px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              role === "admin"
-                ? colors.greenAccent[600]
-                : role === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-          >
-            {role === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {role === "manager" && <SecurityOutlinedIcon />}
-            {role === "staff" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {role}
-            </Typography>
-          </Box>
-        );
-      },
     },
+    {
+      field: "carNumber",
+      headerName: "Номер на колата",
+      flex: 1,
+    },
+
     {
       field: "actions",
       headerName: "",
@@ -149,7 +132,7 @@ const Employers = () => {
     },
   ];
 
-  if (employers.length === 0) {
+  if (cars.length === 0) {
     return (
       <CircularProgress
         style={{
@@ -193,8 +176,8 @@ const Employers = () => {
         }}
       >
         <DataGrid
-          rows={employers}
-          getRowId={(user) => user._id}
+          rows={cars}
+          getRowId={(employer) => employer._id}
           columns={columns}
           disableSelectionOnClick
           disableSelection
@@ -208,13 +191,13 @@ const Employers = () => {
           <MenuItem onClick={handleEditClick}>
             <ModeEditOutlineOutlinedIcon fontSize="small" />
             <Typography variant="body1" ml={1}>
-              Edit
+              Промяна
             </Typography>
           </MenuItem>
           <MenuItem onClick={handleDeleteClick}>
             <DeleteForeverOutlinedIcon fontSize="small" />
             <Typography variant="body1" ml={1}>
-              Delete
+              Премахване
             </Typography>
           </MenuItem>
         </Menu>
@@ -223,4 +206,4 @@ const Employers = () => {
   );
 };
 
-export default Employers;
+export default Cars;

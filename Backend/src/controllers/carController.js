@@ -1,15 +1,14 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
 const { isGuest, isAuth } = require('../middleware/guard');
-const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar, getCarByNumber } = require('../services/carServices');
+const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar } = require('../services/carServices');
 
 router.post("/", async (req, res) => {
-    const { Owner, CarNumber, phoneNumber, carModel, carMark } = req.body;
+    const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;
     console.log(req.body);
-    console.log(Owner, CarNumber, phoneNumber, carModel, carMark);
-
     try {
-        const data = await addCar(Owner, CarNumber, phoneNumber, carModel, carMark);
+        const data = await addCar(buildDate, owner, carNumber, phoneNumber, carModel, carMark);
+        console.log(data);
         res.status(200).json(data)
     } catch (err) {
         console.error(err.message);
@@ -48,7 +47,6 @@ router.get("/:carID", async (req, res) => {
 
 
 router.get("", async (req, res) => {
-
     try {
         const data = await getAllCars();
         res.status(200).json(data);
@@ -59,15 +57,17 @@ router.get("", async (req, res) => {
     }
 })
 
+
 router.patch('/:carID', async (req, res) => {
 
     try {
         const { carID } = req.params;
         console.log(carID);
-        const { Owner, CarNumber, phoneNumber, carModel, carMark } = req.body;
+        const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;
         const updatedCar = await updateCar(carID, {
-            Owner,
-            CarNumber,
+            buildDate,
+            owner,
+            carNumber,
             phoneNumber,
             carModel,
             carMark,

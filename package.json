@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon Backend/server.js",
-    "client": "cd Frontend && npm start"
+    "server": "cd Backend && nodemon server.js",
+    "client": "cd Frontend/src && npm start",
+    "buildServer": "cd Backend && npm i",
+    "buildClient": "cd Backend && npm i"
   },
   "keywords": [],
   "author": "",

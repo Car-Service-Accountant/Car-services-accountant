@@ -1,13 +1,16 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Divider, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { Navigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
+import { useState } from "react";
 
 const baseURL = "http://localhost:3005/car";
 
 const CreateCar = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleFormSubmit = (values) => {
     console.log(values);
@@ -18,21 +21,21 @@ const CreateCar = () => {
       },
       body: JSON.stringify(values),
     }).then((response) => {
-      console.log(response);
       if (response.status !== 200) {
         throw new Error("Something gone wrong");
       }
-      //TODO : Redirect probably
+      setIsSubmitted(true);
     });
   };
 
+  if (isSubmitted) {
+    return <Navigate to="/" />;
+  }
+
   return (
     <Box m="20px">
-      <Header
-        title="Добавяне на кола"
-        subtitle="Създайте профил на автомобила"
-      />
-
+      <Header title="Добавяне на кола" />
+      <Divider sx={{ mb: 4 }}></Divider>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -62,10 +65,10 @@ const CreateCar = () => {
                 label="Собственик на колата"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.Owner}
-                name="Owner"
-                error={!!touched.Owner && !!errors.Owner}
-                helperText={touched.Owner && errors.Owner}
+                value={values.owner}
+                name="owner"
+                error={!!touched.owner && !!errors.owner}
+                helperText={touched.owner && errors.owner}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
@@ -114,15 +117,28 @@ const CreateCar = () => {
                 label="Номер на колата"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.CarNumber}
-                name="CarNumber"
-                error={!!touched.CarNumber && !!errors.CarNumber}
-                helperText={touched.CarNumber && errors.CarNumber}
+                value={values.carNumber}
+                name="carNumber"
+                error={!!touched.carNumber && !!errors.carNumber}
+                helperText={touched.carNumber && errors.carNumber}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="filled"
+                type="date"
+                label="Година на производство"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.buildDate}
+                name="buildDate"
+                error={!!touched.buildDate && !!errors.BuildDate}
+                helperText={touched.buildDate && errors.buildDate}
                 sx={{ gridColumn: "span 2" }}
               />
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
+              <Button type="submit" color="secondary" variant="outlined">
                 Добави
               </Button>
             </Box>
@@ -134,13 +150,13 @@ const CreateCar = () => {
 };
 
 const checkoutSchema = yup.object().shape({
-  Owner: yup
+  owner: yup
     .string()
     .required("Полето е задължително")
     .min(3, "Полето трябва да е между 3 и 20 символа")
     .max(20, "Полето трябва да е между 3 и 20 символа"),
 
-  CarNumber: yup
+  carNumber: yup
     .string()
     .min(
       8,
@@ -160,13 +176,15 @@ const checkoutSchema = yup.object().shape({
     .required("Полето е задължително")
     .min(10, "Полето не може да съдържа 10 символа")
     .max(10, "Полето не може да съдържа 10 символа"),
+  buildDate: yup.date().required("Полето е задължително"),
 });
 const initialValues = {
-  Owner: "",
-  CarNumber: "",
+  owner: "",
+  carNumber: "",
   carModel: "",
   carMark: "",
   phoneNumber: "",
+  buildDate: "",
 };
 
 export default CreateCar;

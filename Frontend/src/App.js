@@ -9,7 +9,17 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import CreateCar from "./pages/CreateCar";
 import CreateRepair from "./pages/CreateRepair";
+import Cars from "./pages/AllCars";
+import Repairs from "./pages/CarsInService";
+import PendingPayments from "./pages/PendingPayments";
 
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // month is zero-indexed
+  const year = date.getFullYear().toString();
+  return `${day}/${month}/${year}`;
+}
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -25,9 +35,12 @@ function App() {
             <Routes>
               <Route path="/" element={<h1>Home</h1>} />
               <Route path="/login" element={<Login />} />
+              <Route path="/employers" element={<Employers />} />
+              <Route path="/repairs" element={<Repairs formatDate={formatDate} />} />
+              <Route path="/cars" element={<Cars formatDate={formatDate} />} />
+              <Route path="/pendingPayments" element={<PendingPayments formatDate={formatDate} />} />
               <Route path="/addEmployer" element={<Register />} />
               <Route path="/addCar" element={<CreateCar />} />
-              <Route path="/employers" element={<Employers />} />
               <Route path="/addRepair" element={<CreateRepair />} />
             </Routes>
           </main>
