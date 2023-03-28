@@ -3,7 +3,8 @@ const Companny = require('../models/Companny');
 const bcrypt = require('bcrypt');
 const jwt = require('../lib/jwt');
 const CashBox = require('../models/Cashbox');
-const { getCompany } = require('../services/companyService')
+const { getCompany } = require('../services/companyService');
+const { getCurrentEmployer } = require('./employerServices');
 
 const SECRET = "superdupersecetlysecretsecret";
 
@@ -67,20 +68,20 @@ exports.login = async (email, password) => {
     }
     const company = await getCompany(employer?.companyID?.toString())
     const payload = {
-        _id: employer?._id,
+        _id: employer?._id.toString(),
         email: employer?.email,
         username: employer?.username
     };
-
     const token = await jwt.sing(payload, SECRET);
-
-    return {
-        employerId: employer?._id,
+    const data = {
+        employerID: employer?._id.toString(),
         email: employer?.email,
         username: employer?.username,
         cashBoxID: company?.cashBox,
-        token
+        role: employer?.role,
+        token: token
     }
+    return data
 };
 
 exports.loginCompany = async (email, password) => {
@@ -122,5 +123,25 @@ exports.tokenVerify = async (token) => {
     } catch (err) {
         throw new Error(err || "Token is invalid")
     }
+}
 
+exports.renewedToken = async (data) => {
+    const employer = await getCurrentEmployer(data._id);
+    const company = await getCompany(employer?.companyID?.toString())
+
+    const payload = {
+        _id: employer?._id.toString(),
+        email: employer?.email,
+        username: employer?.username
+    };
+    const reNewedToken = await jwt.sing(payload, SECRET);
+    const returnedData = {
+        employerID: employer?._id.toString(),
+        email: employer?.email,
+        username: employer?.username,
+        cashBoxID: company?.cashBox,
+        role: employer?.role,
+        token: reNewedToken
+    }
+    return returnedData;
 }

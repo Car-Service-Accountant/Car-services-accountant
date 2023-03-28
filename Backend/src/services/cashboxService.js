@@ -1,3 +1,5 @@
 const CashBox = require("../models/Cashbox");
 
-exports.addMonney = async (data) => await CashBox.create({ ...data });
+exports.getCashbox = async (id) => await CashBox.findById(id);
+
+exports.updateCashBox = async (id, data) => await CashBox.findByIdAndUpdate(id);

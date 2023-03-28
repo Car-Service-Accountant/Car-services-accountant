@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 const URL = "http://localhost:3005/car";
 
-const Repairs = (props) => {
+const Repairs = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
@@ -31,7 +31,7 @@ const Repairs = (props) => {
         const formatedData = unfinishedCars.map((car) => {
           return {
             ...car,
-            buildDate: props.formatDate(car.buildDate),
+            buildDate: formatDate(car.buildDate),
           };
         });
         setCars(formatedData);
@@ -39,9 +39,8 @@ const Repairs = (props) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [formatDate]);
 
-  console.log(cars);
   const columns = [
     { field: "_id", headerName: "ID", hide: true },
     {

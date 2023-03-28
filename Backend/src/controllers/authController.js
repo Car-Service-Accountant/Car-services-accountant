@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const mapErrors = require('../utils/errorMapper');
-const { register, login, registerCompany, loginCompany } = require('../services/authServices');
+const { register, login, registerCompany, loginCompany, renewedToken } = require('../services/authServices');
 const { isGuest, isAuth } = require('../middleware/guard');
 
 
@@ -44,8 +44,8 @@ router.post('/register/company', isGuest(), async (req, res) => {
 router.post('/login', isGuest(), async (req, res) => {
     const { email, password } = req.body;
     try {
-        const result = await login(email.toLowerCase(), password); // TO MAKE IT SIMPLE
-        res.json(result)
+        const token = await login(email.toLowerCase(), password); // TO MAKE IT SIMPLE
+        res.status(200).json(token)
 
     } catch (err) {
         console.error(err.message);
@@ -77,4 +77,11 @@ router.post('/logout', isAuth(), (req, res) => {
     // TODO: ways to secure that old token was to use is to set it in blacklist soo that we check every new token is it in blacklist , if have time we would want to do it
     res.status(200).json({ message: 'Signout successful' });
 })
+
+router.get('/protection', async (req, res) => {
+    const token = await renewedToken(req.user)
+    console.log(token);
+    res.status(200).json(token)
+})
+
 module.exports = router;

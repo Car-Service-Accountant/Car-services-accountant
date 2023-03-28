@@ -1,13 +1,16 @@
 import { useContext } from 'react';
-import { AuthContext } from '../middleware/authProvider';
+import { AuthContext } from '../providers/authProvider';
 
 export const useAuth = () => {
-    const { isAuthenticated, user, login, logout } = useContext(AuthContext);
-
+    const { isAuthenticated, user, isLoading, handleTokenCheck,
+        handleLogin,
+        handleLogout, } = useContext(AuthContext);
     return {
         isAuthenticated,
+        isLoading,
         user,
-        login,
-        logout,
+        handleTokenCheck,
+        handleLogin,
+        handleLogout,
     };
 };

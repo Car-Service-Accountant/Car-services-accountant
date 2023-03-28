@@ -4,7 +4,6 @@ import * as yup from "yup";
 import { v4 } from "uuid";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
-import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { Navigate } from "react-router-dom";
@@ -87,7 +86,7 @@ const CreateRepair = () => {
       prevRepairs.filter((repair) => repair.id !== id)
     );
   };
-  console.log(car);
+
   return (
     <Box m="20px">
       {car ? (

@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 
 const URL = "http://localhost:3005/car";
 
-const Cars = (props) => {
+const Cars = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
@@ -35,7 +35,7 @@ const Cars = (props) => {
   };
 
   const handleEditClick = () => {
-    console.log(`Editing employer with id ${selectedId}`);
+    console.log(`Editing car with id ${selectedId}`);
     handleMenuClose();
   };
 
@@ -44,11 +44,9 @@ const Cars = (props) => {
       method: "DELETE",
     }).then((response) => {
       if (response.status === 200) {
-        const updatedEmployers = cars.filter(
-          (employer) => employer._id !== selectedId
-        );
+        const updatedCars = cars.filter((car) => car._id !== selectedId);
 
-        setCars(updatedEmployers);
+        setCars(updatedCars);
       }
     });
     handleMenuClose();
@@ -71,7 +69,7 @@ const Cars = (props) => {
         const formatedData = data.map((car) => {
           return {
             ...car,
-            buildDate: props.formatDate(car.buildDate),
+            buildDate: formatDate(car.buildDate),
           };
         });
         setCars(formatedData);
@@ -79,7 +77,7 @@ const Cars = (props) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [formatDate]);
 
   const columns = [
     {

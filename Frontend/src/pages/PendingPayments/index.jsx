@@ -1,13 +1,16 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
-import { reach } from "yup";
+import { useAddTotalMonney } from "../../hooks/usePayment";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = "http://localhost:3005/car";
 
-const PendingPayments = (props) => {
+const PendingPayments = ({ formatDate }) => {
+  const { user } = useAuth();
+  const { addTotalAmount } = useAddTotalMonney();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
@@ -41,7 +44,7 @@ const PendingPayments = (props) => {
           const totalCost = priceForLabor + priceForParts;
           return {
             ...car,
-            buildDate: props.formatDate(car.buildDate),
+            buildDate: formatDate(car.buildDate),
             totalCost: totalCost,
           };
         });
@@ -50,11 +53,10 @@ const PendingPayments = (props) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [formatDate]);
 
   const handlePayment = (car) => {
-    console.log(car);
-    //TODO : Added to backend Payment method , where we can save all the selarys , left to implement endpoints and to use it here...
+    addTotalAmount(user.cashBoxID, car.totalCost);
   };
 
   const columns = [

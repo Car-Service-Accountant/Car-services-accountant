@@ -14,7 +14,7 @@ import Header from "../../components/Header/Header";
 
 const baseURL = "http://localhost:3005/auth";
 
-const Register = () => {
+const AddEmployers = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
@@ -199,4 +199,4 @@ const initialValues = {
   role: "",
 };
 
-export default Register;
+export default AddEmployers;

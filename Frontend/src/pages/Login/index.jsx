@@ -2,13 +2,13 @@ import { useContext } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import { useAuth } from "../../hooks/useAuth";
-import { AuthContext } from "../../middleware/authProvider";
+import { AuthContext } from "../../providers/authProvider";
 import Header from "../../components/Header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as yup from "yup";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { handleLogin } = useAuth();
   const { user } = useContext(AuthContext);
   if (user) {
     console.log(user);
@@ -17,7 +17,7 @@ const Login = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const handleFormSubmit = (values) => {
-    login(values.email, values.password);
+    handleLogin(values.email, values.password);
   };
 
   return (
