@@ -1,54 +1,118 @@
-const User = require('../models/User');
+const Employers = require('../models/Employers');
+const Companny = require('../models/Companny');
 const bcrypt = require('bcrypt');
 const jwt = require('../lib/jwt');
+const CashBox = require('../models/Cashbox');
+const { getCompany } = require('../services/companyService');
+const { getCurrentEmployer } = require('./employerServices');
 
 const SECRET = "superdupersecetlysecretsecret";
 
-exports.register = async (email, username, password, rePassword, phoneNumber, role) => {
+exports.register = async (email, username, password, rePassword, phoneNumber, role, companyID) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
 
-    const exist = await User.findOne({ username })
+    const exist = await Employers.findOne({ username })
 
     const hashedPassword = await bcrypt.hash(password, 4);
 
     if (exist) {
         throw new Error(username + ' is allready taken')
     }
-    await User.create({ username, email, password: hashedPassword, phoneNumber, role });
+    const company = await Companny.findById(companyID)
+    if (!company) {
+        throw new Error("Company not found")
+    }
+    const employer = await Employers.create({ username, email, password: hashedPassword, phoneNumber, role, companyID });
+    company.employers.push(employer._id);
+    await Companny.findByIdAndUpdate(companyID, company);
     return this.login(email, password);
 }
 
-exports.login = async (email, password) => {
-    // OPTIONAL const user = await User.findOne({$or: [{email },{username}]})
-    console.log(email, password);
+exports.registerCompany = async (email, username, password, rePassword, phoneNumber) => {
+    if (password !== rePassword) {
+        throw new Error('Wrong confirm password');
+    }
 
-    const user = await User.findOne({ email });
-    if (!user) {
+    const exist = await Companny.findOne({ email })
+
+    const hashedPassword = await bcrypt.hash(password, 4);
+
+    if (exist) {
+        throw new Error(email + ' is allready taken')
+    }
+    const createBancAccount = await CashBox.create({
+        totalAmount: 0,
+        totalForMonth: 0,
+        additionalCosts: 0,
+        employersSellary: 0,
+        profit: 0,
+        cost: 0
+    })
+    let company = await Companny.create({ username, email, phoneNumber, password: hashedPassword, cashBox: createBancAccount._id, role: "admin" });
+    return this.loginCompany(email, password);
+}
+
+
+exports.login = async (email, password) => {
+
+    const employer = await Employers.findOne({ email });
+    if (!employer) {
         throw new Error('wrong email or password');
     }
-    console.log();
-    console.log(user);
 
-    const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, employer.password);
+    if (!isValid) {
+        throw new Error('wrong email or password');
+    }
+    const company = await getCompany(employer?.companyID?.toString())
+    const payload = {
+        _id: employer?._id.toString(),
+        email: employer?.email,
+        username: employer?.username
+    };
+    const token = await jwt.sing(payload, SECRET);
+    const data = {
+        _id: employer?._id.toString(),
+        email: employer?.email,
+        phoneNumber: employer?.phoneNumber,
+        username: employer?.username,
+        cashBoxID: company?.cashBox,
+        role: employer?.role,
+        token: token
+    }
+    return data
+};
+
+exports.loginCompany = async (email, password) => {
+
+    const company = await Companny.findOne({ email }).populate('employers');
+    if (!company) {
+        throw new Error('wrong email or password');
+    }
+
+    const isValid = await bcrypt.compare(password, company.password);
     if (!isValid) {
         throw new Error('wrong email or password');
     }
 
     const payload = {
-        _id: user?._id,
-        email: user?.email,
-        username: user?.username
+        _id: company?._id,
+        email: company?.email,
+        username: company?.username
     };
 
     const token = await jwt.sing(payload, SECRET);
 
-    // TODO: if we need to send more information for user can send it like : 
+    // TODO: if we need to send more information for company can send it like : 
     return {
-        userId: user?._id,
-        email: user?.email,
-        username: user?.username,
+        companyId: company?._id,
+        email: company?.email,
+        username: company?.username,
+        phoneNumber: company?.phoneNumber,
+        cashBoxId: company?.cashBox,
+        role: company?.role,
         token
     }
 };
@@ -60,5 +124,49 @@ exports.tokenVerify = async (token) => {
     } catch (err) {
         throw new Error(err || "Token is invalid")
     }
+}
 
+exports.renewedToken = async (data) => {
+    const employer = await getCurrentEmployer(data._id);
+    try {
+        if (!employer) {
+            const company = await getCompany(data._id);
+            const payload = {
+                _id: company?._id.toString(),
+                email: company?.email,
+                username: company?.username
+            };
+            const reNewedToken = await jwt.sing(payload, SECRET);
+            const returnedData = {
+                _Id: company?._id.toString(),
+                email: company?.email,
+                phoneNumber: company?.phoneNumber,
+                username: company?.username,
+                cashBoxID: company?.cashBox,
+                role: company?.role,
+                token: reNewedToken
+            }
+            return returnedData;
+        }
+        const company = await getCompany(employer?.companyID?.toString())
+
+        const payload = {
+            _id: employer?._id.toString(),
+            email: employer?.email,
+            username: employer?.username
+        };
+        const reNewedToken = await jwt.sing(payload, SECRET);
+        const returnedData = {
+            _Id: employer?._id.toString(),
+            email: employer?.email,
+            phoneNumber: employer?.phoneNumber,
+            username: employer?.username,
+            cashBoxID: company?.cashBox,
+            role: employer?.role,
+            token: reNewedToken
+        }
+        return returnedData;
+    } catch (err) {
+        throw new Error("Something gones wrong")
+    }
 }

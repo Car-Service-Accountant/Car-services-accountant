@@ -2,12 +2,14 @@ const router = require('express').Router();
 const authController = require('../controllers/authController');
 const carController = require('../controllers/carController');
 const repairController = require('../controllers/repairController');
-const userController = require('../controllers/userController')
+const employerController = require('../controllers/employerController')
+const cashboxController = require('../controllers/cashbocConttoler');
 
 router.use("/car", carController);
-router.use('/user', userController)
 router.use("/auth", authController);
 router.use('/repair', repairController);
+router.use('/cashbox', cashboxController);
+router.use('/employers', employerController)
 router.all('*', (req, res) => {
     res.status(404)
 })

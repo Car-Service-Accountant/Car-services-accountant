@@ -2,16 +2,18 @@ const { tokenVerify } = require("../services/authServices");
 // const User = require('../models/User');
 
 module.exports = () => async (req, res, next) => {
-    const token = req.headers['x-autorization'];
-
-    try {
+    if (!req.headersSet) {
+        const token = req.headers['x-autorization'];
         if (token) {
             const userData = await tokenVerify(token);
-            // const user = findOne(userData._id);
-            req.user = userData
+            if (userData) {
+                req.user = userData
+            } else {
+                req.user = null
+            }
         }
-        next();
-    } catch (err) {
-        res.status(498).json({ message: 'Invalid access token. Please sign in'})
+    } else {
+        return next();
     }
+    next();
 }
