@@ -3,6 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
+import { employerAuth } from "../../utils/accesses/employerAuth";
 
 const URL = "http://localhost:3005/car";
 
@@ -123,4 +124,4 @@ const Repairs = ({ formatDate }) => {
   );
 };
 
-export default Repairs;
+export default employerAuth(Repairs);

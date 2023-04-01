@@ -16,11 +16,12 @@ export const login = async (email, password) => {
         }
         const result = await response.json();
         localStorage.setItem('token', result?.token);
+        console.log(result);
         return {
             email: result.email,
             cashBoxID: result.cashBoxID,
             username: result.username,
-            employerID: result?.employerID?.toString(),
+            _Id: result?._Id?.toString(),
             role: result?.role,
             token: result?.token,
         };
@@ -47,7 +48,8 @@ export const tokenChecker = async (token) => {
             email: result.email,
             cashBoxID: result.cashBoxID,
             username: result.username,
-            employerID: result?.employerID?.toString(),
+            phoneNumber: result.phoneNumber,
+            _Id: result?._Id?.toString(),
             role: result?.role,
             token: result?.token,
         };

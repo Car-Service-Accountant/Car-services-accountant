@@ -5,7 +5,6 @@ const { createRepair, updateRepair, deleteRepair } = require('../services/repair
 const router = require('express').Router();
 
 router.post("/:carID", async (req, res) => {
-    console.log(req.body);
     const carID = req.params.carID;
     const service = req.body.service;
     const parts = req.body.parts

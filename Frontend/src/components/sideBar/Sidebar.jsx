@@ -4,17 +4,18 @@ import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
-import WidgetsOutlinedIcon from '@mui/icons-material/WidgetsOutlined';
-import DirectionsCarFilledOutlinedIcon from '@mui/icons-material/DirectionsCarFilledOutlined';
-import HandymanOutlinedIcon from '@mui/icons-material/HandymanOutlined';
-import CarRepairOutlinedIcon from '@mui/icons-material/CarRepairOutlined'; 
-import NoCrashOutlinedIcon from '@mui/icons-material/NoCrashOutlined';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import CreditCardOffOutlinedIcon from '@mui/icons-material/CreditCardOffOutlined';
-import AddCardOutlinedIcon from '@mui/icons-material/AddCardOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import GroupAddOutlinedIcon from '@mui/icons-material/GroupAddOutlined';
+import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
+import DirectionsCarFilledOutlinedIcon from "@mui/icons-material/DirectionsCarFilledOutlined";
+import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
+import CarRepairOutlinedIcon from "@mui/icons-material/CarRepairOutlined";
+import NoCrashOutlinedIcon from "@mui/icons-material/NoCrashOutlined";
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import CreditCardOffOutlinedIcon from "@mui/icons-material/CreditCardOffOutlined";
+import AddCardOutlinedIcon from "@mui/icons-material/AddCardOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
+import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import { useAuth } from "../../hooks/useAuth";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -39,6 +40,11 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const { user } = useAuth();
+
+  if (user == null) {
+    return;
+  }
 
   return (
     <Box
@@ -77,8 +83,12 @@ const Sidebar = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 ml="15px"
-                >
-                  <img src="../../assets/logo.png" alt="Missing pic" height={20}></img>
+              >
+                <img
+                  src="../../assets/logo.png"
+                  alt="Missing pic"
+                  height={20}
+                ></img>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -104,10 +114,10 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Иван Спасов
+                  {user?.username}
                 </Typography>
                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                  Управител
+                  {user?.role}
                 </Typography>
               </Box>
             </Box>
@@ -135,13 +145,13 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-              <Item
-                title="Всички коли"
-                to="/cars"
-                icon={<NoCrashOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+            <Item
+              title="Всички коли"
+              to="/cars"
+              icon={<NoCrashOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             <Item
               title="Коли в ремонт"
               to="/repairs" //TODO: change url if needed
@@ -156,10 +166,11 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Divider sx={{my: 2}} />
+            <Divider sx={{ my: 2 }} />
             <Item
               title="Отчети"
-              to="/reports"s
+              to="/reports"
+              s
               icon={<AssessmentOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

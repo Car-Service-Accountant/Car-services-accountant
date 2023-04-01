@@ -8,6 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
+import { employerAuth } from "../../utils/accesses/employerAuth";
 
 const baseURL = "http://localhost:3005";
 
@@ -133,7 +134,7 @@ const CreateRepair = () => {
                 >
                   <TextField
                     fullWidth
-                    variant="filled"
+                    variant="outlined"
                     type="text"
                     label="Име на служителя"
                     onBlur={handleBlur}
@@ -257,7 +258,7 @@ const CreateRepair = () => {
                     >
                       <TextField
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         type="text"
                         label="Резервна част"
                         onBlur={handleBlur}
@@ -270,7 +271,7 @@ const CreateRepair = () => {
                       />
                       <TextField
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         type="text"
                         label="Цена за сервиза"
                         onBlur={handleBlur}
@@ -287,7 +288,7 @@ const CreateRepair = () => {
                       />
                       <TextField
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         type="text"
                         label="Цена за клиента"
                         onBlur={handleBlur}
@@ -395,7 +396,7 @@ const CreateRepair = () => {
                     >
                       <TextField
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         type="text"
                         label="Вид услуга"
                         onBlur={handleBlur}
@@ -408,7 +409,7 @@ const CreateRepair = () => {
                       />
                       <TextField
                         fullWidth
-                        variant="filled"
+                        variant="outlined"
                         type="text"
                         label="Цена за труд"
                         onBlur={handleBlur}
@@ -537,7 +538,7 @@ const repairServiceInitialValues = {
   laborCost: 0,
 };
 
-export default CreateRepair;
+export default employerAuth(CreateRepair);
 
 async function getCar(id) {
   try {

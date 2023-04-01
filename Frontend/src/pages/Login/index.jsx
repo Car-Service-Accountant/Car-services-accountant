@@ -6,18 +6,17 @@ import { AuthContext } from "../../providers/authProvider";
 import Header from "../../components/Header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as yup from "yup";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
   const { handleLogin } = useAuth();
-  const { user } = useContext(AuthContext);
-  if (user) {
-    console.log(user);
-  }
-
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    handleLogin(values.email, values.password);
+  console.log("in login page");
+  const handleFormSubmit = async (values) => {
+    await handleLogin(values.email, values.password);
+    console.log("right after login ");
+    return <Navigate to="/" />;
   };
 
   return (

@@ -1,39 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { login, tokenChecker } from '../utils/api';
 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const handleLogin = async (email, password) => {
         try {
             const userData = await login(email, password);
+            console.log("right after logged in ");
             setUser(userData);
-            setIsAuthenticated(true);
-            setIsLoading(false);
+            setIsLoading(true);
         } catch (err) {
             console.error(err);
-            setIsAuthenticated(false);
             setIsLoading(false);
         }
     };
 
     const handleLogout = async () => {
+        localStorage.clear('token');
         // TODO: send to backend token , soo we can set it to blacklist and just prevend ot reusing expired token , or something like that 
-        setIsAuthenticated(false);
-        setIsLoading(false);
+        setIsLoading(true);
         setUser(null);
     };
+
+    useEffect(() => {
+        handleLogin()
+        handleLogout();
+    }, [])
 
     const handleTokenCheck = async (token) => {
         try {
             const userData = await tokenChecker(token);
             setUser(userData);
-            setIsAuthenticated(true);
-            setIsLoading(false);
+            setIsLoading(true);
         } catch (err) {
             console.error(err);
             setIsLoading(false);
@@ -43,7 +45,6 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
-                isAuthenticated,
                 user,
                 isLoading,
                 handleTokenCheck,

@@ -5,6 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import { useState } from "react";
+import { employerAuth } from "../../utils/accesses/employerAuth";
 
 const baseURL = "http://localhost:3005/car";
 
@@ -60,7 +61,7 @@ const CreateCar = () => {
             >
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="text"
                 label="Собственик на колата"
                 onBlur={handleBlur}
@@ -73,7 +74,7 @@ const CreateCar = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="text"
                 label="Марка на колата"
                 onBlur={handleBlur}
@@ -86,7 +87,7 @@ const CreateCar = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="text"
                 label="Телефонен номер"
                 onBlur={handleBlur}
@@ -99,7 +100,7 @@ const CreateCar = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="text"
                 label="Модел на колата"
                 onBlur={handleBlur}
@@ -112,7 +113,7 @@ const CreateCar = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="text"
                 label="Номер на колата"
                 onBlur={handleBlur}
@@ -125,7 +126,7 @@ const CreateCar = () => {
               />
               <TextField
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 type="date"
                 label="Година на производство"
                 onBlur={handleBlur}
@@ -187,4 +188,4 @@ const initialValues = {
   buildDate: "",
 };
 
-export default CreateCar;
+export default employerAuth(CreateCar);

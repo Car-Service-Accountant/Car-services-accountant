@@ -30,7 +30,7 @@ exports.register = async (email, username, password, rePassword, phoneNumber, ro
     return this.login(email, password);
 }
 
-exports.registerCompany = async (email, username, password, rePassword) => {
+exports.registerCompany = async (email, username, password, rePassword, phoneNumber) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
@@ -50,7 +50,7 @@ exports.registerCompany = async (email, username, password, rePassword) => {
         profit: 0,
         cost: 0
     })
-    let company = await Companny.create({ username, email, password: hashedPassword, cashBox: createBancAccount._id });
+    let company = await Companny.create({ username, email, phoneNumber, password: hashedPassword, cashBox: createBancAccount._id, role: "admin" });
     return this.loginCompany(email, password);
 }
 
@@ -74,8 +74,9 @@ exports.login = async (email, password) => {
     };
     const token = await jwt.sing(payload, SECRET);
     const data = {
-        employerID: employer?._id.toString(),
+        _id: employer?._id.toString(),
         email: employer?.email,
+        phoneNumber: employer?.phoneNumber,
         username: employer?.username,
         cashBoxID: company?.cashBox,
         role: employer?.role,
@@ -85,10 +86,8 @@ exports.login = async (email, password) => {
 };
 
 exports.loginCompany = async (email, password) => {
-    console.log(email, password);
 
     const company = await Companny.findOne({ email }).populate('employers');
-    console.log(company);
     if (!company) {
         throw new Error('wrong email or password');
     }
@@ -111,7 +110,9 @@ exports.loginCompany = async (email, password) => {
         companyId: company?._id,
         email: company?.email,
         username: company?.username,
+        phoneNumber: company?.phoneNumber,
         cashBoxId: company?.cashBox,
+        role: company?.role,
         token
     }
 };
@@ -127,21 +128,45 @@ exports.tokenVerify = async (token) => {
 
 exports.renewedToken = async (data) => {
     const employer = await getCurrentEmployer(data._id);
-    const company = await getCompany(employer?.companyID?.toString())
+    try {
+        if (!employer) {
+            const company = await getCompany(data._id);
+            const payload = {
+                _id: company?._id.toString(),
+                email: company?.email,
+                username: company?.username
+            };
+            const reNewedToken = await jwt.sing(payload, SECRET);
+            const returnedData = {
+                _Id: company?._id.toString(),
+                email: company?.email,
+                phoneNumber: company?.phoneNumber,
+                username: company?.username,
+                cashBoxID: company?.cashBox,
+                role: company?.role,
+                token: reNewedToken
+            }
+            return returnedData;
+        }
+        const company = await getCompany(employer?.companyID?.toString())
 
-    const payload = {
-        _id: employer?._id.toString(),
-        email: employer?.email,
-        username: employer?.username
-    };
-    const reNewedToken = await jwt.sing(payload, SECRET);
-    const returnedData = {
-        employerID: employer?._id.toString(),
-        email: employer?.email,
-        username: employer?.username,
-        cashBoxID: company?.cashBox,
-        role: employer?.role,
-        token: reNewedToken
+        const payload = {
+            _id: employer?._id.toString(),
+            email: employer?.email,
+            username: employer?.username
+        };
+        const reNewedToken = await jwt.sing(payload, SECRET);
+        const returnedData = {
+            _Id: employer?._id.toString(),
+            email: employer?.email,
+            phoneNumber: employer?.phoneNumber,
+            username: employer?.username,
+            cashBoxID: company?.cashBox,
+            role: employer?.role,
+            token: reNewedToken
+        }
+        return returnedData;
+    } catch (err) {
+        throw new Error("Something gones wrong")
     }
-    return returnedData;
 }

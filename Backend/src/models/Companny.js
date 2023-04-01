@@ -5,6 +5,10 @@ const companySchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    role: {
+        type: String,
+        required: true,
+    },
     email: {
         type: String,
         required: true,
@@ -15,6 +19,11 @@ const companySchema = new mongoose.Schema({
         type: String,
         minLenght: 4,
         required: true
+    },
+    phoneNumber: {
+        type: String,
+        minLenght: 10,
+        required: true,
     },
     employers: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'employers'

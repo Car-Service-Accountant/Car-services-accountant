@@ -5,6 +5,7 @@ import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { useAddTotalMonney } from "../../hooks/usePayment";
 import { useAuth } from "../../hooks/useAuth";
+import { managerAuth } from "../../utils/accesses/managerAuth";
 
 const URL = "http://localhost:3005/car";
 
@@ -162,4 +163,4 @@ const PendingPayments = ({ formatDate }) => {
   );
 };
 
-export default PendingPayments;
+export default managerAuth(PendingPayments);

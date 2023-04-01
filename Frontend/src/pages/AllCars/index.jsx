@@ -14,6 +14,7 @@ import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutl
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
+import { employerAuth } from "../../utils/accesses/employerAuth";
 
 const URL = "http://localhost:3005/car";
 
@@ -204,4 +205,4 @@ const Cars = ({ formatDate }) => {
   );
 };
 
-export default Cars;
+export default employerAuth(Cars);

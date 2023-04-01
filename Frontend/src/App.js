@@ -1,9 +1,9 @@
+import { Navigate, Route, Routes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import React from "react";
-import { Route, Routes } from "react-router-dom";
-import Sidebar from "./components/sideBar/Sidebar";
-import Topbar from "./components/topBar/Topbar";
 import { ColorModeContext, useMode } from "./theme"
+
+import { useAuth } from "./hooks/useAuth";
+
 import Employers from "./pages/Employers";
 import Login from "./pages/Login";
 import CreateCar from "./pages/CreateCar";
@@ -11,9 +11,15 @@ import CreateRepair from "./pages/CreateRepair";
 import Cars from "./pages/AllCars";
 import Repairs from "./pages/CarsInService";
 import PendingPayments from "./pages/PendingPayments";
-import { useAuth } from "./hooks/useAuth";
-import withAuth from "./middleware/withAuth";
+import withAuth from "./hoc/withAuth";
 import AddEmployers from "./pages/AddEmployers";
+import Dashboard from "./pages/Home";
+import Sidebar from "./components/sideBar/Sidebar";
+import Topbar from "./components/topBar/Topbar";
+import Profile from "./pages/Profile/Profile/Profile";
+import ProfileSettings from "./pages/Profile/Settings";
+import Help from "./pages/Profile/Help";
+import Logout from "./pages/Profile/Logout/Logout";
 
 
 function formatDate(dateString) {
@@ -28,10 +34,7 @@ function App() {
   const [theme, colorMode] = useMode();
   const { user } = useAuth();
 
-  console.log(user);
-  // if (!user) {
-  //   return <Navigate to="/logi"></Navigate>
-  // }
+  console.log("user in app ==> ", user);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -41,8 +44,8 @@ function App() {
           <Sidebar />
           <main className="content">
             <Topbar />
-            <Routes>
-              <Route path="/" element={<h1>Home</h1>} />
+            {user ? <Routes>
+              <Route path="/" element={<Dashboard />} />
               <Route path="/employers" element={<Employers />} />
               <Route path="/repairs" element={<Repairs formatDate={formatDate} />} />
               <Route path="/cars" element={<Cars formatDate={formatDate} />} />
@@ -50,9 +53,18 @@ function App() {
               <Route path="/addEmployer" element={<AddEmployers />} />
               <Route path="/addCar" element={<CreateCar />} />
               <Route path="/addRepair" element={<CreateRepair />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<ProfileSettings />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<p>register</p>} />
-              <Route path="/login" element={<Login />} />
-            </Routes>
+              <Route path="/login" element={<p>Error 404</p>} />
+            </Routes> :
+              <Routes>
+                <Route path="*" element={<Login />} />
+                <Route path="/register" element={<p>register</p>} />
+                <Route path="/login" element={<Login />} />
+              </Routes>}
           </main>
         </div>
       </ThemeProvider>

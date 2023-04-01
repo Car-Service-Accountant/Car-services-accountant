@@ -17,6 +17,7 @@ import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutl
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
+import { adminAuth } from "../../utils/accesses/adminAuth";
 
 const EMPLOYERS_URL = "http://localhost:3005/employer/employers";
 
@@ -223,4 +224,4 @@ const Employers = () => {
   );
 };
 
-export default Employers;
+export default adminAuth(Employers);

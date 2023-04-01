@@ -18,4 +18,14 @@ exports.getCurrentEmployer = async (id) => {
     return data;
 }
 
+
+exports.updateEmployer = async (employerID, data) => {
+    const employer = await Employers.findByIdAndUpdate(employerID, data)
+
+    if (!employer) {
+        throw new Error("Somethins gone wrong , please try again later")
+    }
+    return employer
+}
+
 exports.deleteEmployer = async (id) => Employers.findByIdAndDelete(id);

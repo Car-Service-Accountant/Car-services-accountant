@@ -1,32 +1,26 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header/Header";
-import { managerAuth } from "../../utils/accesses/managerAuth";
-import { adminAuth } from "../../utils/accesses/adminAuth";
+import Header from "../../../components/Header/Header";
+import { useAuth } from "../../../hooks/useAuth";
 
-const baseURL = "http://localhost:3005/auth";
+const baseURL = "http://localhost:3005";
 
-const AddEmployers = () => {
+const ProfileSettings = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { user } = useAuth();
 
   const handleFormSubmit = (values) => {
-    fetch(`${baseURL}/register`, {
+    console.log("submited");
+    fetch(`${baseURL}/employers/${user._Id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(values),
     }).then((response) => {
+      console.log(response);
       if (response.status !== 201) {
         throw new Error("Something gone wrong");
       }
@@ -38,13 +32,20 @@ const AddEmployers = () => {
   return (
     <Box m="20px">
       <Header
-        title="CREATE EMPLOYER"
-        subtitle="Create a New Employers Profile"
+        title={`Здравейте ${user?.username}`}
+        subtitle="Добавете информация за себе си"
       />
 
       <Formik
         onSubmit={handleFormSubmit}
-        initialValues={initialValues}
+        initialValues={{
+          username: user?.username,
+          email: user?.email,
+          phoneNumber: user?.phoneNumber,
+          role: user?.role,
+          oldPassword: "",
+          password: "",
+        }}
         validationSchema={checkoutSchema}
       >
         {({
@@ -93,32 +94,6 @@ const AddEmployers = () => {
               <TextField
                 fullWidth
                 variant="outlined"
-                type="password"
-                label="Парола"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="outlined"
-                type="password"
-                label="Повторете паролата"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.rePassword}
-                name="rePassword"
-                error={!!touched.rePassword && !!errors.rePassword}
-                helperText={touched.rePassword && errors.rePassword}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="outlined"
                 type="text"
                 label="Телефонен номер"
                 onBlur={handleBlur}
@@ -129,26 +104,50 @@ const AddEmployers = () => {
                 helperText={touched.phoneNumber && errors.phoneNumber}
                 sx={{ gridColumn: "span 2" }}
               />
-              <FormControl sx={{ gridColumn: "span 2" }}>
-                <InputLabel>Позиция</InputLabel>
-                <Select
-                  variant="outlined"
-                  label="Позиция"
-                  name="role"
-                  value={values.role || ""}
-                  onChange={handleChange}
-                  error={!!touched.role && !!errors.role}
-                  helpertext={touched.role && errors.role}
-                >
-                  <MenuItem value="админ">Администратор</MenuItem>
-                  <MenuItem value="мениджър">Мениджър</MenuItem>
-                  <MenuItem value="служител">Служител</MenuItem>
-                </Select>
-              </FormControl>
+              <TextField
+                fullWidth
+                variant="outlined"
+                type="text"
+                disabled
+                label="Позиция"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.role}
+                name="role"
+                error={!!touched.role && !!errors.role}
+                helperText={touched.role && errors.role}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="outlined"
+                type="text"
+                label="Стара парола"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.oldPassword}
+                name="oldPassword"
+                error={!!touched.oldPassword && !!errors.oldPassword}
+                helperText={touched.oldPassword && errors.oldPassword}
+                sx={{ gridColumn: "span 2" }}
+              />
+              <TextField
+                fullWidth
+                variant="outlined"
+                type="text"
+                label="Нова парола"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{ gridColumn: "span 2" }}
+              />
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Добави
+                Запази
               </Button>
             </Box>
           </form>
@@ -172,13 +171,11 @@ const checkoutSchema = yup.object().shape({
 
   password: yup
     .string()
-    .required("Полето е задължително")
     .min(4, "Полето трябва да съдържа между 4 и 16 символа")
     .max(16, "Полето трябва да съдържа между 4 и 16 символа"),
 
-  rePassword: yup
+  oldPassword: yup
     .string()
-    .required("Полето е задължително")
     .min(4, "Полето трябва да съдържа между 4 и 16 символа")
     .max(16, "Полето трябва да съдържа между 4 и 16 символа"),
 
@@ -191,13 +188,5 @@ const checkoutSchema = yup.object().shape({
       "Полето не може да бъде по-малко от 10 символа , започващо с нула"
     ),
 });
-const initialValues = {
-  username: "",
-  email: "",
-  password: "",
-  rePassword: "",
-  phoneNumber: "",
-  role: "",
-};
 
-export default adminAuth(AddEmployers);
+export default ProfileSettings;

@@ -5,10 +5,8 @@ const { addCar, getCarByID, getAllCars, getCarByInfo, updateCar, deleteCar } = r
 
 router.post("/", async (req, res) => {
     const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;
-    console.log(req.body);
     try {
         const data = await addCar(buildDate, owner, carNumber, phoneNumber, carModel, carMark);
-        console.log(data);
         res.status(200).json(data)
     } catch (err) {
         console.error(err.message);
@@ -46,7 +44,7 @@ router.get("/:carID", async (req, res) => {
 })
 
 
-router.get("", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const data = await getAllCars();
         res.status(200).json(data);
@@ -62,7 +60,6 @@ router.patch('/:carID', async (req, res) => {
 
     try {
         const { carID } = req.params;
-        console.log(carID);
         const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;
         const updatedCar = await updateCar(carID, {
             buildDate,
