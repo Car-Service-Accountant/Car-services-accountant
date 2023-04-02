@@ -19,7 +19,7 @@ import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { adminAuth } from "../../utils/accesses/adminAuth";
 
-const EMPLOYERS_URL = "http://localhost:3005/employer/employers";
+const EMPLOYERS_URL = "http://localhost:3005/employers";
 
 const Employers = () => {
   const theme = useTheme();
@@ -78,7 +78,7 @@ const Employers = () => {
         console.error(`Error fetching employers: ${error}`);
       });
   }, []);
-
+  console.log(employers);
   const columns = [
     {
       field: "_id",
