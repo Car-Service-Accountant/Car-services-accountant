@@ -1,4 +1,3 @@
-const { timeNow } = require('../utils/times');
 const mapErrors = require('../utils/errorMapper');
 const { createRepair, updateRepair, deleteRepair } = require('../services/repairServices');
 
@@ -59,8 +58,6 @@ router.patch('/:repairID', (req, res) => {
     }
 })
 
-module.exports = router
-
 router.delete('/:repairID', async (req, res) => {
     const id = req.params.repairID;
     try {
@@ -73,3 +70,5 @@ router.delete('/:repairID', async (req, res) => {
         res.status(400).json({ message: error })
     }
 })
+
+module.exports = router

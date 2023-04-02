@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
-import { useAddTotalMonney } from "../../hooks/usePayment";
+import { useCashBox } from "../../hooks/usePayment";
 import { useAuth } from "../../hooks/useAuth";
 import { managerAuth } from "../../utils/accesses/managerAuth";
 
@@ -11,7 +11,7 @@ const URL = "http://localhost:3005/car";
 
 const PendingPayments = ({ formatDate }) => {
   const { user } = useAuth();
-  const { addTotalAmount } = useAddTotalMonney();
+  const { addTotalAmount, cashBox } = useCashBox();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
@@ -37,10 +37,12 @@ const PendingPayments = ({ formatDate }) => {
           let priceForLabor = 0;
           let priceForParts = 0;
           car.repairs.forEach((repair) => {
-            priceForLabor += repair.priceForLabor;
-            repair.parts.forEach((part) => {
-              priceForParts += part.servicePrice;
-            });
+            if (!repair.paied) {
+              priceForLabor += repair.priceForLabor;
+              repair.parts.forEach((part) => {
+                priceForParts += part.servicePrice;
+              });
+            }
           });
           const totalCost = priceForLabor + priceForParts;
           return {
@@ -50,14 +52,51 @@ const PendingPayments = ({ formatDate }) => {
           };
         });
         setCars(formatedData);
+        cashBox(user.cashBoxID);
       })
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [formatDate]);
+  }, []);
 
-  const handlePayment = (car) => {
-    addTotalAmount(user.cashBoxID, car.totalCost);
+  const handlePayment = async (car) => {
+    const paied = await addTotalAmount(user.cashBoxID, car.totalCost);
+
+    if (paied) {
+      const updatedRepairs = car.repairs.map((repair) => ({
+        ...repair,
+        paied: true,
+        finished: true,
+        endDate: Date.now(),
+      }));
+
+      delete car.totalCost;
+
+      try {
+        //send set of repairs to be updated
+        await fetch(`http://localhost:3005/repairs/updates`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedRepairs),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            response.json();
+          })
+          .then((data) => {
+            console.log("Car updated successfully:", data);
+          })
+          .catch((error) => {
+            console.error(`Error updating car: ${error}`);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   const columns = [
