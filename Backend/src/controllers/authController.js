@@ -12,7 +12,7 @@ router.post('/register', isGuest(), async (req, res) => {
             throw new Error('all the fields are required');
         }
 
-        const token = await register(email.toLowerCase(), username.toLowerCase(), password, rePassword, phoneNumber, role, companyID);
+        const token = await register(email, username, password, rePassword, phoneNumber, role, companyID);
         res.status(201).json(token)
 
     } catch (err) {
@@ -30,7 +30,7 @@ router.post('/register/company', isGuest(), async (req, res) => {
             throw new Error('all the fields are required');
         }
 
-        const token = await registerCompany(email.toLowerCase(), username.toLowerCase(), password, rePassword, phoneNumber);
+        const token = await registerCompany(email, username, password, rePassword, phoneNumber);
         res.status(201).json(token)
 
     } catch (err) {
@@ -43,7 +43,7 @@ router.post('/register/company', isGuest(), async (req, res) => {
 router.post('/login', isGuest(), async (req, res) => {
     const { email, password } = req.body;
     try {
-        const token = await login(email.toLowerCase(), password);
+        const token = await login(email, password);
         res.status(200).json(token)
 
     } catch (err) {
@@ -56,7 +56,7 @@ router.post('/login', isGuest(), async (req, res) => {
 router.post('/login/company', isGuest(), async (req, res) => {
     const { email, password } = req.body;
     try {
-        const result = await loginCompany(email.toLowerCase(), password);
+        const result = await loginCompany(email, password);
         res.json(result)
 
     } catch (err) {

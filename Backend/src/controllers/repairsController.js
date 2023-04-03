@@ -5,7 +5,6 @@ const router = require('express').Router();
 
 router.post('/updates', (req, res) => {
     const repairs = req.body;
-    console.log("List of repairs ==> ", repairs);
     for (let i = 0; i < repairs.length; i++) {
         const repairID = repairs[i]._id;
         const { service, parts, priceForLabor, note, createDate, endDate, finished, paied } = repairs[i];

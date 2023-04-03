@@ -29,10 +29,14 @@ const Topbar = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose = async () => {
+  const onLogoutClock = async () => {
     await handleLogout();
     setAnchorEl(null);
     return <Navigate to="/login" />;
+  };
+
+  const handleMenuClose = async () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -65,7 +69,7 @@ const Topbar = () => {
           <MenuItem onClick={handleMenuClose} component={Link} to="/help">
             <Typography>Помощ</Typography>
           </MenuItem>
-          <MenuItem onClick={handleMenuClose}>
+          <MenuItem onClick={onLogoutClock}>
             <Typography>Изход</Typography>
           </MenuItem>
         </Menu>
