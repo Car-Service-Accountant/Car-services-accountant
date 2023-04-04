@@ -15,20 +15,19 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { Navigate } from "react-router-dom";
 
 const URL = "http://localhost:3005/car";
 
-const Cars = ({ formatDate }) => {
+const CarDetails = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const [selecredRow, setSelectedRow] = useState(null);
 
-  const handleRowClick = (params) => {
-    setSelectedRow(params.id);
+  const handleRowClick = ({ rows, columns }) => {
+    console.log("rows =", rows);
+    console.log("columns =", columns);
   };
 
   const handleMenuOpen = (event) => {
@@ -85,10 +84,6 @@ const Cars = ({ formatDate }) => {
         console.error(`Error fetching employers: ${error}`);
       });
   }, [formatDate]);
-
-  if (selecredRow) {
-    return <Navigate to={`/cars/${selecredRow}`} />;
-  }
 
   const columns = [
     {
@@ -188,9 +183,9 @@ const Cars = ({ formatDate }) => {
           rows={cars}
           getRowId={(employer) => employer._id}
           columns={columns}
+          onRowClick={handleRowClick}
           disableSelectionOnClick
           disableSelection
-          onRowClick={handleRowClick}
           style={{ outline: "none", boxShadow: "none" }}
         />
         <Menu
@@ -216,4 +211,4 @@ const Cars = ({ formatDate }) => {
   );
 };
 
-export default employerAuth(Cars);
+export default employerAuth(CarDetails);

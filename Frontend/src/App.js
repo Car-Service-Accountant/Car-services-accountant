@@ -19,6 +19,7 @@ import Topbar from "./components/topBar/Topbar";
 import Profile from "./pages/Profile/Profile/Profile";
 import ProfileSettings from "./pages/Profile/Settings";
 import Help from "./pages/Profile/Help";
+import CarDetailPage from "./pages/CarDetailPage";
 
 
 function formatDate(dateString) {
@@ -55,6 +56,7 @@ function App() {
               <Route path="/help" element={<Help />} />
               <Route path="/register" element={<p>register</p>} />
               <Route path="/login" element={<p>Error 404</p>} />
+              <Route path="/cars/:id" element={<CarDetailPage />} />
             </Routes> :
               <Routes>
                 <Route path="*" element={<Login />} />
