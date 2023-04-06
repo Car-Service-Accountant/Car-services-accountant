@@ -20,6 +20,8 @@ import Profile from "./pages/Profile/Profile/Profile";
 import ProfileSettings from "./pages/Profile/Settings";
 import Help from "./pages/Profile/Help";
 import CarDetailPage from "./pages/CarDetailPage";
+import RepairDetailPage from "./pages/RepairDetailPage";
+import CarEditPage from "./pages/CarEditPage";
 
 
 function formatDate(dateString) {
@@ -56,7 +58,9 @@ function App() {
               <Route path="/help" element={<Help />} />
               <Route path="/register" element={<p>register</p>} />
               <Route path="/login" element={<p>Error 404</p>} />
-              <Route path="/cars/:id" element={<CarDetailPage />} />
+              <Route path="/cars/:carId" element={<CarDetailPage formatDate={formatDate} />} />
+              <Route path="/cars/edit/:carId" element={<CarEditPage formatDate={formatDate} />} />
+              <Route path="/repair/:repairId" element={<RepairDetailPage formatDate={formatDate} />} />
             </Routes> :
               <Routes>
                 <Route path="*" element={<Login />} />

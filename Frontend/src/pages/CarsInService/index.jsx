@@ -4,6 +4,7 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { Navigate } from "react-router-dom";
 
 const URL = "http://localhost:3005/car";
 
@@ -11,6 +12,13 @@ const Repairs = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
+  const [selecredRow, setSelectedRow] = useEffect(null);
+
+  const handleRowClick = (params) => {
+    if (params.field !== "Action") {
+      setSelectedRow(params.id);
+    }
+  };
 
   useEffect(() => {
     fetch(URL, {
@@ -76,6 +84,10 @@ const Repairs = ({ formatDate }) => {
     },
   ];
 
+  if (selecredRow) {
+    return <Navigate to={`/cars/${selecredRow}`} />;
+  }
+
   return (
     <Box m="20px">
       <Header
@@ -117,6 +129,7 @@ const Repairs = ({ formatDate }) => {
           columns={columns}
           disableSelectionOnClick
           disableSelection
+          onCellDoubleClick={handleRowClick}
           style={{ outline: "none", boxShadow: "none" }}
         />
       </Box>

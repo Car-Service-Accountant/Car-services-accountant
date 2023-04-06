@@ -24,11 +24,14 @@ const Cars = ({ formatDate }) => {
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [editedId, setEditedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (params) => {
-    setSelectedRow(params.id);
+    if (params.field !== "Action") {
+      setSelectedRow(params.id);
+    }
   };
 
   const handleMenuOpen = (event) => {
@@ -43,7 +46,7 @@ const Cars = ({ formatDate }) => {
 
   const handleEditClick = () => {
     console.log(`Editing car with id ${selectedId}`);
-    handleMenuClose();
+    setEditedId(selectedId);
   };
 
   const handleDeleteClick = async () => {
@@ -86,6 +89,10 @@ const Cars = ({ formatDate }) => {
       });
   }, [formatDate]);
 
+  if (editedId) {
+    return <Navigate to={`/cars/edit/${editedId}`} />;
+  }
+
   if (selecredRow) {
     return <Navigate to={`/cars/${selecredRow}`} />;
   }
@@ -101,7 +108,6 @@ const Cars = ({ formatDate }) => {
       field: "owner",
       headerName: "Собственик",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "buildDate",
@@ -125,8 +131,9 @@ const Cars = ({ formatDate }) => {
     },
 
     {
-      field: "actions",
+      field: "Action",
       headerName: "",
+      disableColumnSelector: true,
       sortable: false,
       width: 0,
       renderCell: (params) => (
@@ -190,7 +197,7 @@ const Cars = ({ formatDate }) => {
           columns={columns}
           disableSelectionOnClick
           disableSelection
-          onRowClick={handleRowClick}
+          onCellDoubleClick={handleRowClick}
           style={{ outline: "none", boxShadow: "none" }}
         />
         <Menu

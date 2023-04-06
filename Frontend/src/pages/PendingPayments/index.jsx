@@ -69,6 +69,7 @@ const PendingPayments = ({ formatDate }) => {
       phoneNumber: car.phoneNumber,
       carModel: car.carModel,
       carMark: car.carMark,
+      buildDate: formatDate(car.buildDate),
       priceForLabor: repair.priceForLabor,
       priceForParts: repair.parts.reduce(
         (sum, part) => sum + part.servicePrice,

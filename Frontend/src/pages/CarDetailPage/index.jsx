@@ -3,31 +3,38 @@ import {
   CircularProgress,
   IconButton,
   Menu,
+  MenuItem,
   Typography,
   useTheme,
-  MenuItem,
 } from "@mui/material";
+import { makeStyles } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { Navigate, useParams } from "react-router-dom";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import "./detail.style.css";
 
 const URL = "http://localhost:3005/car";
 
 const CarDetails = ({ formatDate }) => {
+  const params = useParams();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [cars, setCars] = useState([]);
+  const [car, setCar] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [selecredRow, setSelectedRow] = useState(null);
 
-  const handleRowClick = ({ rows, columns }) => {
-    console.log("rows =", rows);
-    console.log("columns =", columns);
+  const handleRowClick = (params) => {
+    console.log(params);
+    if (params.field !== "Action") {
+      setSelectedRow(params.id);
+    }
   };
 
   const handleMenuOpen = (event) => {
@@ -46,20 +53,24 @@ const CarDetails = ({ formatDate }) => {
   };
 
   const handleDeleteClick = async () => {
-    fetch(`${URL}/${selectedId}`, {
+    console.log(selectedId);
+    fetch(`http://localhost:3005/repair/${selectedId}`, {
       method: "DELETE",
+      //to fix resave state after delete
     }).then((response) => {
       if (response.status === 200) {
-        const updatedCars = cars.filter((car) => car._id !== selectedId);
+        const updatedCars = car.repairs.filter(
+          (repair) => repair._id !== selectedId
+        );
 
-        setCars(updatedCars);
+        setCar(updatedCars);
       }
     });
     handleMenuClose();
   };
 
   useEffect(() => {
-    fetch(URL, {
+    fetch(`${URL}/${params.carId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -72,19 +83,18 @@ const CarDetails = ({ formatDate }) => {
         return response.json();
       })
       .then((data) => {
-        const formatedData = data.map((car) => {
-          return {
-            ...car,
-            buildDate: formatDate(car.buildDate),
-          };
-        });
-        setCars(formatedData);
+        setCar(data);
       })
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [formatDate]);
+  }, []);
 
+  if (selecredRow) {
+    return <Navigate to={`/repair/${selecredRow}`} />;
+  }
+
+  console.log(car);
   const columns = [
     {
       field: "_id",
@@ -92,51 +102,84 @@ const CarDetails = ({ formatDate }) => {
       flex: 0,
       hide: true,
     },
+
     {
-      field: "owner",
-      headerName: "Собственик",
+      field: "createDate",
+      headerName: "Дата",
       flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "buildDate",
-      headerName: "Дата на производство",
-      flex: 1,
-    },
-    {
-      field: "carMark",
-      headerName: "Марка на колата ",
-      flex: 1,
-    },
-    {
-      field: "carModel",
-      headerName: "Модел на колата",
-      flex: 1,
-    },
-    {
-      field: "carNumber",
-      headerName: "Номер на колата",
-      flex: 1,
+      valueGetter: (params) => formatDate(params.value),
     },
 
     {
-      field: "actions",
-      headerName: "",
-      sortable: false,
-      width: 0,
+      field: "service",
+      headerName: "Ремонт",
+      flex: 1,
+    },
+    {
+      field: "parts",
+      headerName: "Части",
+      flex: 1,
+      valueGetter: (params) =>
+        params.value.map((part) => part.partName).join(", "),
+    },
+    {
+      field: "priceForLabor",
+      headerName: "Цена на ремонта",
+      flex: 1,
+    },
+    {
+      field: "totalPrice",
+      headerName: "Профит",
+      flex: 1,
+      valueGetter: (params) => {
+        let total = params.row.priceForLabor;
+        params.row.parts.forEach((part) => {
+          total += part.clientPrice - part.servicePrice;
+        });
+        return total;
+      },
+    },
+    {
+      field: "paied",
+      headerName: "Платено",
+      flex: 0,
       renderCell: (params) => (
-        <IconButton
-          size="large"
-          onClick={handleMenuOpen}
-          data-id={params.row._id}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <>
+          <div
+            style={{
+              color: params.row.paied ? "green" : "red",
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <svg width="20" height="20">
+              <rect
+                display="block"
+                width="20"
+                height="20"
+                fill="transparent"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <text x="8" y="15" fill="currentColor">
+                {params.row.paied ? "✔" : "X"}
+              </text>
+            </svg>
+          </div>
+          <IconButton
+            size="large"
+            onClick={handleMenuOpen}
+            data-id={params.row._id}
+          >
+            <MoreVertIcon />
+          </IconButton>
+        </>
       ),
     },
   ];
 
-  if (cars.length === 0) {
+  if (car.length === 0) {
     return (
       <CircularProgress
         style={{
@@ -152,9 +195,11 @@ const CarDetails = ({ formatDate }) => {
   }
   return (
     <Box m="20px">
-      <Header title="Служители" subtitle="Управление на служителите" />
+      <Header
+        title={`Всички ремонти на: ${car.carNumber} - ${car.carMark} ${car.carModel}`}
+      />
       <Box
-        m="40px 0 0 0"
+        m="5px 0 0 0"
         height="75vh"
         sx={{
           "& .MuiDataGrid-root": {
@@ -180,12 +225,15 @@ const CarDetails = ({ formatDate }) => {
         }}
       >
         <DataGrid
-          rows={cars}
+          rows={car.repairs}
           getRowId={(employer) => employer._id}
           columns={columns}
-          onRowClick={handleRowClick}
+          onCellDoubleClick={handleRowClick}
           disableSelectionOnClick
           disableSelection
+          disableRowClickSelect
+          disableHover
+          getRowClassName={(params) => (params.row.paied ? "paid" : "unpaid")}
           style={{ outline: "none", boxShadow: "none" }}
         />
         <Menu
