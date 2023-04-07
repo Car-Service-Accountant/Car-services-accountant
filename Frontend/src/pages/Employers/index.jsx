@@ -18,6 +18,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { adminAuth } from "../../utils/accesses/adminAuth";
+import { Navigate } from "react-router-dom";
 
 const EMPLOYERS_URL = "http://localhost:3005/employers";
 
@@ -27,6 +28,14 @@ const Employers = () => {
   const [employers, setEmployers] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+  const [selecredRow, setSelectedRow] = useState(null);
+  const [editId, setEditId] = useState(null);
+
+  const handleRowClick = (params) => {
+    if (params.field !== "Action") {
+      setSelectedRow(params.id);
+    }
+  };
 
   const handleMenuOpen = (event) => {
     setSelectedId(event.currentTarget.dataset.id);
@@ -39,7 +48,7 @@ const Employers = () => {
   };
 
   const handleEditClick = () => {
-    console.log(`Editing employer with id ${selectedId}`);
+    setEditId(selectedId);
     handleMenuClose();
   };
 
@@ -78,7 +87,7 @@ const Employers = () => {
         console.error(`Error fetching employers: ${error}`);
       });
   }, []);
-  console.log(employers);
+
   const columns = [
     {
       field: "_id",
@@ -134,7 +143,7 @@ const Employers = () => {
       },
     },
     {
-      field: "actions",
+      field: "Action",
       headerName: "",
       sortable: false,
       width: 0,
@@ -164,6 +173,14 @@ const Employers = () => {
       />
     );
   }
+
+  if (editId) {
+    return <Navigate to={`/employers/edit/${editId}`} />;
+  }
+  if (selecredRow) {
+    return <Navigate to={`/employers/detail/${selecredRow}`} />;
+  }
+
   return (
     <Box m="20px">
       <Header title="Служители" subtitle="Управление на служителите" />
@@ -199,6 +216,7 @@ const Employers = () => {
           columns={columns}
           disableSelectionOnClick
           disableSelection
+          onCellDoubleClick={handleRowClick}
           style={{ outline: "none", boxShadow: "none" }}
         />
         <Menu

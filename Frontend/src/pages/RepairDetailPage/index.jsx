@@ -1,8 +1,6 @@
 import {
   Box,
   CircularProgress,
-  Grid,
-  Menu,
   Paper,
   Table,
   TableBody,
@@ -10,62 +8,20 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-  useTheme,
 } from "@mui/material";
-import { tokens } from "../../theme";
 import ClearIcon from "@mui/icons-material/Clear";
 import DoneIcon from "@mui/icons-material/Done";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "./detail.style.css";
 
 const URL = "http://localhost:3005/repair";
 
 const RepairDetail = ({ formatDate }) => {
   const params = useParams();
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const [repair, setRepair] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
-  const [selecredRow, setSelectedRow] = useState(null);
-
-  const handleRowClick = ({ rows, columns }) => {
-    if (params.field !== "Action") {
-      setSelectedRow(params.id);
-    }
-  };
-
-  const handleMenuOpen = (event) => {
-    setSelectedId(event.currentTarget.dataset.id);
-    setMenuAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setSelectedId(null);
-    setMenuAnchorEl(null);
-  };
-
-  const handleEditClick = () => {
-    console.log(`Editing car with id ${selectedId}`);
-    handleMenuClose();
-  };
-
-  const handleDeleteClick = async () => {
-    fetch(`${URL}/${selectedId}`, {
-      method: "DELETE",
-    }).then((response) => {
-      if (response.status === 200) {
-        const updatedCars = repair.filter((car) => car._id !== selectedId);
-
-        setRepair(updatedCars);
-      }
-    });
-    handleMenuClose();
-  };
 
   useEffect(() => {
     fetch(`${URL}/${params.repairId}`, {
@@ -87,10 +43,6 @@ const RepairDetail = ({ formatDate }) => {
         console.error(`Error fetching employers: ${error}`);
       });
   }, []);
-
-  if (selecredRow) {
-    return <Navigate to={`/cars/repair/${selecredRow}`} />;
-  }
 
   const columns = [
     {
@@ -149,7 +101,6 @@ const RepairDetail = ({ formatDate }) => {
     return (profit = part.clientPrice - part.servicePrice);
   }, 0);
 
-  console.log(repair);
   return (
     <Box m="20px">
       <Header title={`Всички детайли за ремонта`} />

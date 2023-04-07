@@ -7,10 +7,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
@@ -31,7 +29,6 @@ const CarDetails = ({ formatDate }) => {
   const [selecredRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (params) => {
-    console.log(params);
     if (params.field !== "Action") {
       setSelectedRow(params.id);
     }
@@ -47,13 +44,7 @@ const CarDetails = ({ formatDate }) => {
     setMenuAnchorEl(null);
   };
 
-  const handleEditClick = () => {
-    console.log(`Editing car with id ${selectedId}`);
-    handleMenuClose();
-  };
-
   const handleDeleteClick = async () => {
-    console.log(selectedId);
     fetch(`http://localhost:3005/repair/${selectedId}`, {
       method: "DELETE",
       //to fix resave state after delete
@@ -94,7 +85,6 @@ const CarDetails = ({ formatDate }) => {
     return <Navigate to={`/repair/${selecredRow}`} />;
   }
 
-  console.log(car);
   const columns = [
     {
       field: "_id",
@@ -241,12 +231,6 @@ const CarDetails = ({ formatDate }) => {
           open={Boolean(menuAnchorEl)}
           onClose={handleMenuClose}
         >
-          <MenuItem onClick={handleEditClick}>
-            <ModeEditOutlineOutlinedIcon fontSize="small" />
-            <Typography variant="body1" ml={1}>
-              Промяна
-            </Typography>
-          </MenuItem>
           <MenuItem onClick={handleDeleteClick}>
             <DeleteForeverOutlinedIcon fontSize="small" />
             <Typography variant="body1" ml={1}>
