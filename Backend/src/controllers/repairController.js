@@ -1,6 +1,5 @@
-const { timeNow } = require('../utils/times');
 const mapErrors = require('../utils/errorMapper');
-const { createRepair, updateRepair, deleteRepair } = require('../services/repairServices');
+const { createRepair, updateRepair, deleteRepair, getRepairById } = require('../services/repairServices');
 
 const router = require('express').Router();
 
@@ -32,6 +31,19 @@ router.post("/:carID", async (req, res) => {
     }
 })
 
+router.get('/:repairID', async (req, res) => {
+    const id = req.params.repairID
+    try {
+        const data = await getRepairById(id);
+        console.log(data);
+        res.status(200).json(data)
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+        res.status(400).json({ message: error })
+    }
+})
+
 router.patch('/:repairID', (req, res) => {
     const repairID = req.params.repairID;
     const service = req.body.service;
@@ -59,7 +71,25 @@ router.patch('/:repairID', (req, res) => {
     }
 })
 
-module.exports = router
+router.post('/finished/:repairID', (req, res) => {
+    const repairID = req.params.repairID;
+    const { endDate, finished, paied } = req.body;
+
+    const repairData = {
+        endDate,
+        finished,
+        paied
+    }
+    try {
+        const car = updateRepair(repairID, repairData);
+        res.status(200).json(car);
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+
+        res.status(400).json({ message: error })
+    }
+})
 
 router.delete('/:repairID', async (req, res) => {
     const id = req.params.repairID;
@@ -73,3 +103,5 @@ router.delete('/:repairID', async (req, res) => {
         res.status(400).json({ message: error })
     }
 })
+
+module.exports = router

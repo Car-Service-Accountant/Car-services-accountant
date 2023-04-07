@@ -15,7 +15,7 @@ router.get("/:id", async (req, res) => {
     }
 })
 
-router.patch("/:id", async (req, res) => {
+router.post("/:id", async (req, res) => {
     const id = req.params.id
     const data = req.body
     try {

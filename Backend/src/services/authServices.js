@@ -59,12 +59,12 @@ exports.login = async (email, password) => {
 
     const employer = await Employers.findOne({ email });
     if (!employer) {
-        throw new Error('wrong email or password');
+        throw new Error('wrong email or password in employers');
     }
-
+    console.log(employer);
     const isValid = await bcrypt.compare(password, employer.password);
     if (!isValid) {
-        throw new Error('wrong email or password');
+        throw new Error('wrong email or password password is not valid');
     }
     const company = await getCompany(employer?.companyID?.toString())
     const payload = {

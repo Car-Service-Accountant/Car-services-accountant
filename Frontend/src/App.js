@@ -19,7 +19,9 @@ import Topbar from "./components/topBar/Topbar";
 import Profile from "./pages/Profile/Profile/Profile";
 import ProfileSettings from "./pages/Profile/Settings";
 import Help from "./pages/Profile/Help";
-import Logout from "./pages/Profile/Logout/Logout";
+import CarDetailPage from "./pages/CarDetailPage";
+import RepairDetailPage from "./pages/RepairDetailPage";
+import CarEditPage from "./pages/CarEditPage";
 
 
 function formatDate(dateString) {
@@ -33,8 +35,6 @@ function formatDate(dateString) {
 function App() {
   const [theme, colorMode] = useMode();
   const { user } = useAuth();
-
-  console.log("user in app ==> ", user);
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -56,9 +56,11 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<ProfileSettings />} />
               <Route path="/help" element={<Help />} />
-              <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<p>register</p>} />
               <Route path="/login" element={<p>Error 404</p>} />
+              <Route path="/cars/:carId" element={<CarDetailPage formatDate={formatDate} />} />
+              <Route path="/cars/edit/:carId" element={<CarEditPage formatDate={formatDate} />} />
+              <Route path="/repair/:repairId" element={<RepairDetailPage formatDate={formatDate} />} />
             </Routes> :
               <Routes>
                 <Route path="*" element={<Login />} />

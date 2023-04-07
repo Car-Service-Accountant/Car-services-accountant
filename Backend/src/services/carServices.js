@@ -1,9 +1,7 @@
 const Car = require("../models/Car")
 
 exports.addCar = async (buildDate, owner, carNumber, phoneNumber, carModel, carMark) => {
-    console.log(buildDate, owner, carNumber, phoneNumber, carModel, carMark);
     const exist = await Car.findOne({ carNumber })
-    console.log(exist);
     if (exist) {
         throw new Error("Car is allready registred")
     }
@@ -22,7 +20,6 @@ exports.getCarByID = async (id) => {
 
 exports.getCarByInfo = async (type, model) => {
     const data = await Car.find({ [type]: model })
-    console.log(data);
     if (data.length == 0) {
         throw new Error("Cars with this model was not found!")
     }

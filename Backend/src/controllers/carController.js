@@ -32,7 +32,6 @@ router.get('/:mark/:model', async (req, res) => {
 
 router.get("/:carID", async (req, res) => {
     const carID = req.params.carID;
-
     try {
         const car = await getCarByID(carID);
         res.status(200).json(car);
@@ -56,13 +55,16 @@ router.get("/", async (req, res) => {
 })
 
 
-router.patch('/:carID', async (req, res) => {
-
+router.post('/update/:carID', async (req, res) => {
+    console.log(`db update`);
+    console.log(req.body)
     try {
         const { carID } = req.params;
         const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;
+        let [day, month, year] = buildDate.split('/');
+        let formatedBuildDate = new Date(year, month - 1, day)
         const updatedCar = await updateCar(carID, {
-            buildDate,
+            buildDate: formatedBuildDate,
             owner,
             carNumber,
             phoneNumber,

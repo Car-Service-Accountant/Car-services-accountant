@@ -3,7 +3,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
-import { useAddTotalMonney } from "../../hooks/usePayment";
+import { useCashBox } from "../../hooks/usePayment";
 import { useAuth } from "../../hooks/useAuth";
 import { managerAuth } from "../../utils/accesses/managerAuth";
 
@@ -11,10 +11,10 @@ const URL = "http://localhost:3005/car";
 
 const PendingPayments = ({ formatDate }) => {
   const { user } = useAuth();
-  const { addTotalAmount } = useAddTotalMonney();
+  const { addTotalAmount, cashBox } = useCashBox();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [cars, setCars] = useState([]);
+  const [repairs, setRepairs] = useState([]);
 
   useEffect(() => {
     fetch(URL, {
@@ -30,38 +30,105 @@ const PendingPayments = ({ formatDate }) => {
         return response.json();
       })
       .then((data) => {
+        const allRepairs = [];
         const unfinishedCars = data.filter((car) =>
           car.repairs.some((repair) => !repair.finished)
         );
-        const formatedData = unfinishedCars.map((car) => {
-          let priceForLabor = 0;
-          let priceForParts = 0;
+        unfinishedCars.forEach((car) => {
           car.repairs.forEach((repair) => {
-            priceForLabor += repair.priceForLabor;
-            repair.parts.forEach((part) => {
-              priceForParts += part.servicePrice;
-            });
+            if (!repair.paied) {
+              let priceForLabor = 0;
+              let priceForParts = 0;
+              priceForLabor += repair.priceForLabor;
+              repair.parts.forEach((part) => {
+                priceForParts += part.servicePrice;
+              });
+              allRepairs.push({
+                car,
+                repair,
+                totalCost: priceForLabor + priceForParts,
+              });
+            }
           });
-          const totalCost = priceForLabor + priceForParts;
-          return {
-            ...car,
-            buildDate: formatDate(car.buildDate),
-            totalCost: totalCost,
-          };
         });
-        setCars(formatedData);
+        setRepairs(allRepairs);
+        cashBox(user.cashBoxID);
       })
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [formatDate]);
+  }, []);
 
-  const handlePayment = (car) => {
-    addTotalAmount(user.cashBoxID, car.totalCost);
+  const rows = repairs.map((repairObj) => {
+    const { car, repair } = repairObj;
+    return {
+      repairId: repair._id,
+      carId: car._id,
+      owner: car.owner,
+      carNumber: car.carNumber,
+      phoneNumber: car.phoneNumber,
+      carModel: car.carModel,
+      carMark: car.carMark,
+      buildDate: formatDate(car.buildDate),
+      priceForLabor: repair.priceForLabor,
+      priceForParts: repair.parts.reduce(
+        (sum, part) => sum + part.servicePrice,
+        0
+      ),
+      totalCost:
+        repair.priceForLabor +
+        repair.parts.reduce((sum, part) => sum + part.servicePrice, 0),
+    };
+  });
+
+  const handlePayment = async (repair) => {
+    const paied = await addTotalAmount(user.cashBoxID, repair.totalCost);
+
+    const updatedRepairs = {
+      paied: false,
+      finished: false,
+      endDate: Date.now(),
+    };
+
+    if (paied) {
+      updatedRepairs.paied = true;
+      updatedRepairs.finished = true;
+      updatedRepairs.endDate = Date.now();
+    }
+    console.log(repair.repairId);
+    try {
+      await fetch(`http://localhost:3005/repair/finished/${repair.repairId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedRepairs),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          response.json();
+        })
+        .then((data) => {
+          console.log("Car updated successfully:", data);
+        })
+        .catch((error) => {
+          console.error(`Error updating car: ${error}`);
+        });
+    } catch (err) {
+      console.log(err);
+    }
+    const updatedRepair = repairs.filter(
+      (currentRepair) => currentRepair.repair._id !== repair.repairId
+    );
+    setRepairs(updatedRepair);
   };
 
+  console.log(repairs);
   const columns = [
-    { field: "_id", headerName: "ID", hide: true },
+    { field: "repairId", headerName: "ID", hide: true },
+    { field: "carId", headerName: "CarID", hide: true },
     {
       field: "owner",
       headerName: "Име на клиента",
@@ -151,8 +218,8 @@ const PendingPayments = ({ formatDate }) => {
         }}
       >
         <DataGrid
-          rows={cars}
-          getRowId={(employer) => employer._id}
+          rows={rows}
+          getRowId={(row) => row.repairId}
           columns={columns}
           disableSelectionOnClick
           disableSelection
