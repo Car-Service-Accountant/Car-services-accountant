@@ -1,19 +1,48 @@
-import { Box, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../../components/Header/Header";
-import { useAuth } from "../../../hooks/useAuth";
+import Header from "../../components/Header/Header";
+import { adminAuth } from "../../utils/accesses/adminAuth";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const baseURL = "http://localhost:3005";
+const baseURL = "http://localhost:3005/employers";
 
-const ProfileSettings = () => {
+const EditEmployer = () => {
+  const params = useParams();
+  const id = params.empId;
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user } = useAuth();
+  const [emp, setEmp] = useState([]);
+
+  useEffect(() => {
+    fetch(`${baseURL}/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((res) => {
+      if (res.status !== 200) {
+        throw new Error("Something gone wrong");
+      }
+      res.json().then((result) => {
+        setEmp(result);
+      });
+    });
+  }, []);
 
   const handleFormSubmit = (values) => {
     console.log(values);
-    fetch(`${baseURL}/employers/${user._Id}`, {
+    fetch(`${baseURL}/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,22 +57,35 @@ const ProfileSettings = () => {
     });
   };
 
+  if (emp.length === 0) {
+    return (
+      <CircularProgress
+        style={{
+          color: "#6870fa",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 auto",
+          height: "80vh",
+        }}
+      />
+    );
+  }
+
   return (
     <Box m="20px">
       <Header
-        title={`Здравейте ${user?.username}`}
-        subtitle="Добавете информация за себе си"
+        title="CREATE EMPLOYER"
+        subtitle="Create a New Employers Profile"
       />
 
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={{
-          username: user?.username,
-          email: user?.email,
-          phoneNumber: user?.phoneNumber,
-          role: user?.role,
-          oldPassword: "",
-          password: "",
+          username: emp?.username,
+          email: emp?.email,
+          phoneNumber: emp?.phoneNumber,
+          role: emp?.role,
         }}
         validationSchema={checkoutSchema}
       >
@@ -103,46 +145,22 @@ const ProfileSettings = () => {
                 helperText={touched.phoneNumber && errors.phoneNumber}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="outlined"
-                type="text"
-                disabled
-                label="Позиция"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.role}
-                name="role"
-                error={!!touched.role && !!errors.role}
-                helperText={touched.role && errors.role}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="outlined"
-                type="text"
-                label="Стара парола"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.oldPassword}
-                name="oldPassword"
-                error={!!touched.oldPassword && !!errors.oldPassword}
-                helperText={touched.oldPassword && errors.oldPassword}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <TextField
-                fullWidth
-                variant="outlined"
-                type="text"
-                label="Нова парола"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                name="password"
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{ gridColumn: "span 2" }}
-              />
+              <FormControl sx={{ gridColumn: "span 2" }}>
+                <InputLabel>Позиция</InputLabel>
+                <Select
+                  variant="outlined"
+                  label="Позиция"
+                  name="role"
+                  value={values.role || ""}
+                  onChange={handleChange}
+                  error={!!touched.role && !!errors.role}
+                  helpertext={touched.role && errors.role}
+                >
+                  <MenuItem value="админ">Администратор</MenuItem>
+                  <MenuItem value="мениджър">Мениджър</MenuItem>
+                  <MenuItem value="служител">Служител</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
@@ -168,16 +186,6 @@ const checkoutSchema = yup.object().shape({
     .email("Въвели сте грешен Е-мейл")
     .required("Полето е задължително"),
 
-  password: yup
-    .string()
-    .min(4, "Полето трябва да съдържа между 4 и 16 символа")
-    .max(16, "Полето трябва да съдържа между 4 и 16 символа"),
-
-  oldPassword: yup
-    .string()
-    .min(4, "Полето трябва да съдържа между 4 и 16 символа")
-    .max(16, "Полето трябва да съдържа между 4 и 16 символа"),
-
   phoneNumber: yup
     .string()
     .required("Полето е задължително")
@@ -188,4 +196,4 @@ const checkoutSchema = yup.object().shape({
     ),
 });
 
-export default ProfileSettings;
+export default adminAuth(EditEmployer);

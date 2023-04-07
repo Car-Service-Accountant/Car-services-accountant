@@ -9,6 +9,8 @@ exports.getAllEmployers = async () => {
     return data;
 }
 
+exports.getEmployerById = async (id) => await Employers.findById(id);
+
 exports.getCurrentEmployer = async (id) => {
     const data = await Employers.findById(id);
 

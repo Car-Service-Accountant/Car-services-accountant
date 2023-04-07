@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme"
 
@@ -22,6 +22,8 @@ import Help from "./pages/Profile/Help";
 import CarDetailPage from "./pages/CarDetailPage";
 import RepairDetailPage from "./pages/RepairDetailPage";
 import CarEditPage from "./pages/CarEditPage";
+import EmployerDetailPage from "./pages/EmployerDetailPage";
+import EmployerEditPage from "./pages/EmployerEditPage";
 
 
 function formatDate(dateString) {
@@ -58,6 +60,9 @@ function App() {
               <Route path="/help" element={<Help />} />
               <Route path="/register" element={<p>register</p>} />
               <Route path="/login" element={<p>Error 404</p>} />
+              {/* Edit / Detail pages */}
+              <Route path="/employers/detail/:empId" element={<EmployerDetailPage />} />
+              <Route path="/employers/edit/:empId" element={<EmployerEditPage />} />
               <Route path="/cars/:carId" element={<CarDetailPage formatDate={formatDate} />} />
               <Route path="/cars/edit/:carId" element={<CarEditPage formatDate={formatDate} />} />
               <Route path="/repair/:repairId" element={<RepairDetailPage formatDate={formatDate} />} />
