@@ -12,7 +12,7 @@ const Repairs = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
-  const [selecredRow, setSelectedRow] = useEffect(null);
+  const [selecredRow, setSelectedRow] = useState(null);
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
