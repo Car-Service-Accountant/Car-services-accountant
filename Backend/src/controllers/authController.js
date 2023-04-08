@@ -6,7 +6,7 @@ const { isGuest, isAuth } = require('../middleware/guard');
 
 router.post('/register', isGuest(), async (req, res) => {
     const { email, username, password, rePassword, phoneNumber, role, companyID } = req.body;
-
+    console.log(req.body);
     try {
         if (email == '' || username == '' || password == '' || phoneNumber == '') {
             throw new Error('all the fields are required');
@@ -31,7 +31,7 @@ router.post('/register/company', isGuest(), async (req, res) => {
         }
 
         const token = await registerCompany(email, username, password, rePassword);
-        res.status(201).json(token)
+        res.status(200).json(token)
 
     } catch (err) {
         console.error(err.message);
@@ -82,7 +82,8 @@ router.post('/logout', isAuth(), (req, res) => {
 router.get('/protection', async (req, res) => {
     try {
         const token = await renewedToken(req.user)
-        res.status(200).json(token)
+
+        res.status(token !== null ? 200 : 400).json(token !== null ? token : null)
     } catch (err) {
         console.error(err.message);
         const error = mapErrors(err);

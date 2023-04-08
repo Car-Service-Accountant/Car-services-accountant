@@ -56,8 +56,6 @@ router.get("/", async (req, res) => {
 
 
 router.post('/update/:carID', async (req, res) => {
-    console.log(`db update`);
-    console.log(req.body)
     try {
         const { carID } = req.params;
         const { buildDate, owner, carNumber, phoneNumber, carModel, carMark } = req.body;

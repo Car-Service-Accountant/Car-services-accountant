@@ -3,14 +3,16 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
+import { useAuth } from "../../hooks/useAuth";
+import { isLogedIn } from "../../utils/accesses/isLogedIn";
 
 const baseURL = "http://localhost:3005/auth";
 
 const Register = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { handleRegister } = useAuth();
 
   const handleFormSubmit = (values) => {
-    console.log(values);
     fetch(`${baseURL}/register/company`, {
       method: "POST",
       headers: {
@@ -21,8 +23,10 @@ const Register = () => {
       if (response.status !== 200) {
         throw new Error("Something gone wrong");
       }
-      response.json().then((result) => console.log(result.token));
-      //TODO: set cokie or just global state for can check for can start making auth system tomorow
+      response.json().then((result) => {
+        handleRegister(result);
+        return;
+      });
     });
   };
 
@@ -154,4 +158,4 @@ const initialValues = {
   rePassword: "",
 };
 
-export default Register;
+export default isLogedIn(Register);

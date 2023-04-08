@@ -14,7 +14,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { adminAuth } from "../../utils/accesses/adminAuth";
 import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const baseURL = "http://localhost:3005/employers";
 
@@ -23,6 +24,7 @@ const EditEmployer = () => {
   const id = params.empId;
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [emp, setEmp] = useState([]);
+  const showSnackbar = useContext(SnackbarContext);
 
   useEffect(() => {
     fetch(`${baseURL}/${id}`, {
@@ -38,23 +40,33 @@ const EditEmployer = () => {
         setEmp(result);
       });
     });
-  }, []);
+  }, [emp]);
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    fetch(`${baseURL}/${id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.status !== 200) {
-        throw new Error("Something gone wrong");
-      }
-      response.json().then((result) => console.log(result.token));
-      //TODO: set cokie or just global state for can check for can start making auth system tomorow
-    });
+    try {
+      fetch(`${baseURL}/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((response) => {
+        if (response.status !== 200) {
+          throw new Error("Something gone wrong");
+        }
+        response
+          .json()
+          .then(
+            (result) => setEmp(result),
+            showSnackbar("Успешно променихте данните за служителя", "success")
+          );
+      });
+    } catch (err) {
+      showSnackbar(
+        "Нещо се обърка , моля проверете полетата и опитайте отново",
+        "error"
+      );
+    }
   };
 
   if (emp.length === 0) {
@@ -74,10 +86,7 @@ const EditEmployer = () => {
 
   return (
     <Box m="20px">
-      <Header
-        title="CREATE EMPLOYER"
-        subtitle="Create a New Employers Profile"
-      />
+      <Header title={`Променете информацията за ${emp?.username}`} />
 
       <Formik
         onSubmit={handleFormSubmit}

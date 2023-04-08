@@ -1,17 +1,23 @@
-import { Box, CircularProgress, TextField, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  TextField,
+  useMediaQuery,
+} from "@mui/material";
 import { adminAuth } from "../../utils/accesses/adminAuth";
 import Header from "../../components/Header/Header";
-import { useAuth } from "../../hooks/useAuth";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const EMPLOYERS_URL = "http://localhost:3005/employers";
 
 const EmployerDetails = () => {
   const params = useParams();
-  console.log(params.empId);
   const [emp, setEmp] = useState([]);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${EMPLOYERS_URL}/${params.empId}`, {
@@ -52,15 +58,12 @@ const EmployerDetails = () => {
   return (
     <>
       <Box m="20px" ml="10%" mr="10%">
-        <Header title={`Здравейте ${emp.username}`} />
+        <Header title={`Профила на служител: ${emp.username}`} />
         <Box display="flex" justifyContent="center" alignItems="center">
           <img
             src="../../assets/demo-profile.png"
             alt="Missing pic"
             height={180}
-            onClick={() =>
-              console.log("possible to change from there if left time")
-            }
           ></img>
         </Box>
 
@@ -114,7 +117,10 @@ const EmployerDetails = () => {
             sx={{ gridColumn: "span 2" }}
           />
         </Box>
-        <Box display="flex" justifyContent="center" mt="20px"></Box>
+        <Box display="flex" justifyContent="center" mt="40"></Box>
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBackIcon />
+        </IconButton>
       </Box>
     </>
   );

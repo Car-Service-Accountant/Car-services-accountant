@@ -13,9 +13,12 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./detail.style.css";
+import { useContext } from "react";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const URL = "http://localhost:3005/car";
 
@@ -27,6 +30,8 @@ const CarDetails = ({ formatDate }) => {
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
+  const showSnackbar = useContext(SnackbarContext);
+  const navigate = useNavigate();
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -45,18 +50,22 @@ const CarDetails = ({ formatDate }) => {
   };
 
   const handleDeleteClick = async () => {
-    fetch(`http://localhost:3005/repair/${selectedId}`, {
-      method: "DELETE",
-      //to fix resave state after delete
-    }).then((response) => {
-      if (response.status === 200) {
-        const updatedCars = car.repairs.filter(
-          (repair) => repair._id !== selectedId
-        );
-
-        setCar(updatedCars);
-      }
-    });
+    try {
+      fetch(`http://localhost:3005/repair/${selectedId}`, {
+        method: "DELETE",
+        //to fix resave state after delete
+      }).then((response) => {
+        if (response.status === 200) {
+          const updatedCars = car.repairs.filter(
+            (repair) => repair._id !== selectedId
+          );
+          showSnackbar("Успешно изтриване на ремпнта", "success");
+          setCar(updatedCars);
+        }
+      });
+    } catch (err) {
+      showSnackbar("Нещо се обурка", "error");
+    }
     handleMenuClose();
   };
 
@@ -79,7 +88,7 @@ const CarDetails = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [car]);
 
   if (selecredRow) {
     return <Navigate to={`/repair/${selecredRow}`} />;
@@ -238,6 +247,9 @@ const CarDetails = ({ formatDate }) => {
             </Typography>
           </MenuItem>
         </Menu>
+        <IconButton onClick={() => navigate(-1)}>
+          <ArrowBackIcon />
+        </IconButton>
       </Box>
     </Box>
   );

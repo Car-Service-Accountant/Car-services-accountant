@@ -3,6 +3,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme"
 
 import { useAuth } from "./hooks/useAuth";
+import { SnackbarProvider } from "./providers/snackbarProvider";
 
 import Employers from "./pages/Employers";
 import Login from "./pages/Login";
@@ -41,46 +42,53 @@ function App() {
   const [theme, colorMode] = useMode();
   const { user } = useAuth();
 
+  console.log("in app user ==> ", user);
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
-          <Sidebar />
-          <main className="content">
-            <Topbar />
-            {user ? <Routes>
-              <Route path="/" element={<Dashboard formatDate={formatDate} />} />
-              <Route path="/employers" element={<Employers />} />
-              <Route path="/repairs" element={<Repairs formatDate={formatDate} />} />
-              <Route path="/cars" element={<Cars formatDate={formatDate} />} />
-              <Route path="/pendingPayments" element={<PendingPayments formatDate={formatDate} />} />
-              <Route path="/addEmployer" element={<AddEmployers />} />
-              <Route path="/addCar" element={<CreateCar />} />
-              <Route path="/addRepair" element={<CreateRepair />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<ProfileSettings />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="/reports" element={<Report />} />
-              <Route path="*" element={<ErrorPage />} />
+        <SnackbarProvider>
 
-              {/* Edit / Detail pages */}
-              <Route path="/employers/detail/:empId" element={<EmployerDetailPage />} />
-              <Route path="/employers/edit/:empId" element={<EmployerEditPage />} />
-              <Route path="/cars/:carId" element={<CarDetailPage formatDate={formatDate} />} />
-              <Route path="/cars/edit/:carId" element={<CarEditPage formatDate={formatDate} />} />
-              <Route path="/repair/:repairId" element={<RepairDetailPage formatDate={formatDate} />} />
-            </Routes> :
-              <Routes>
-                <Route path="*" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login />} />
-              </Routes>}
-          </main>
-        </div>
+          <div className="app">
+            <Sidebar />
+            <main className="content">
+              <Topbar />
+              {user ? <Routes>
+                <Route path="/" element={<Dashboard formatDate={formatDate} />} />
+                <Route path="/employers" element={<Employers />} />
+                <Route path="/repairs" element={<Repairs formatDate={formatDate} />} />
+                <Route path="/cars" element={<Cars formatDate={formatDate} />} />
+                <Route path="/pendingPayments" element={<PendingPayments formatDate={formatDate} />} />
+                <Route path="/addEmployer" element={<AddEmployers />} />
+                <Route path="/addCar" element={<CreateCar />} />
+                <Route path="/addRepair" element={<CreateRepair />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<ProfileSettings />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/reports" element={<Report formatDate={formatDate} />} />
+                <Route path="*" element={<ErrorPage />} />
+
+                {/* Edit / Detail pages */}
+                <Route path="/employers/detail/:empId" element={<EmployerDetailPage />} />
+                <Route path="/employers/edit/:empId" element={<EmployerEditPage />} />
+                <Route path="/cars/:carId" element={<CarDetailPage formatDate={formatDate} />} />
+                <Route path="/cars/edit/:carId" element={<CarEditPage formatDate={formatDate} />} />
+                <Route path="/repair/:repairId" element={<RepairDetailPage formatDate={formatDate} />} />
+              </Routes> :
+                <Routes>
+                  <Route path="*" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/login" element={<Login />} />
+                </Routes>}
+            </main>
+          </div>
+        </SnackbarProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
 }
 
-export default withAuth(App);
+export default withAuth(() => (
+  <App />
+));;

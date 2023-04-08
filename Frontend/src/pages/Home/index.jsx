@@ -1,4 +1,4 @@
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import NoCrashIcon from "@mui/icons-material/NoCrash";
@@ -12,6 +12,7 @@ import finishedMonthBefore from "../../utils/repairs/finishedMonthBefore";
 import finishedThisWeek from "../../utils/repairs/finishedThisWeek";
 import finishedLastWeek from "../../utils/repairs/finishedWeekBefore";
 import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
+import { isLogedIn } from "../../utils/accesses/isLogedIn";
 
 const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
@@ -99,14 +100,11 @@ const Dashboard = ({ formatDate }) => {
     sortedRepairs = sortByDateAndCalculateProfit(repairs);
   }
 
-  console.log(sortedRepairs);
-
   const colors = tokens(theme.palette.mode);
-  console.log(repairs);
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="Тук ще намерите обобщена информация на състоянието на сервиза" />
+        <Header title="Обща информазия за сервиза" />
       </Box>
       <Box
         display="grid"
@@ -253,4 +251,4 @@ const Dashboard = ({ formatDate }) => {
   );
 };
 
-export default Dashboard;
+export default isLogedIn(Dashboard);

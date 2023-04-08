@@ -1,4 +1,4 @@
-import { Box, Button, useTheme } from "@mui/material";
+import { Box, Button, IconButton, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
@@ -6,6 +6,10 @@ import { useEffect, useState } from "react";
 import { useCashBox } from "../../hooks/usePayment";
 import { useAuth } from "../../hooks/useAuth";
 import { managerAuth } from "../../utils/accesses/managerAuth";
+import { useContext } from "react";
+import { SnackbarContext } from "../../providers/snackbarProvider";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate } from "react-router-dom";
 
 const URL = "http://localhost:3005/car";
 
@@ -15,6 +19,8 @@ const PendingPayments = ({ formatDate }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [repairs, setRepairs] = useState([]);
+  const showSnackbar = useContext(SnackbarContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(URL, {
@@ -77,7 +83,7 @@ const PendingPayments = ({ formatDate }) => {
       ),
       totalCost:
         repair.priceForLabor +
-        repair.parts.reduce((sum, part) => sum + part.servicePrice, 0),
+        repair.parts.reduce((sum, part) => sum + part.clientPrice, 0),
     };
   });
 
@@ -110,10 +116,10 @@ const PendingPayments = ({ formatDate }) => {
           response.json();
         })
         .then((data) => {
-          console.log("Car updated successfully:", data);
+          showSnackbar("Успешно направихте плащането", "success");
         })
         .catch((error) => {
-          console.error(`Error updating car: ${error}`);
+          showSnackbar("Неуспешно плащане", "error");
         });
     } catch (err) {
       console.log(err);
@@ -183,8 +189,8 @@ const PendingPayments = ({ formatDate }) => {
   return (
     <Box m="20px">
       <Header
-        title="Коли в ремонт"
-        subtitle="Коли по който се работи в момента"
+        title="Очакващи плащане."
+        subtitle="Коли който вече са приключини ,но все още не платени."
       />
       <Box
         m="40px 0 0 0"
@@ -224,6 +230,9 @@ const PendingPayments = ({ formatDate }) => {
           style={{ outline: "none", boxShadow: "none" }}
         />
       </Box>
+      <IconButton onClick={() => navigate(-1)}>
+        <ArrowBackIcon />
+      </IconButton>
     </Box>
   );
 };

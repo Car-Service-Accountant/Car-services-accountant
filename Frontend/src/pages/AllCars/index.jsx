@@ -13,9 +13,11 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { SnackbarContext } from "../../providers/snackbarProvider";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const URL = "http://localhost:3005/car";
 
@@ -27,6 +29,9 @@ const Cars = ({ formatDate }) => {
   const [editedId, setEditedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
+  const showSnackbar = useContext(SnackbarContext);
+
+  const navigate = useNavigate();
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -45,7 +50,6 @@ const Cars = ({ formatDate }) => {
   };
 
   const handleEditClick = () => {
-    console.log(`Editing car with id ${selectedId}`);
     setEditedId(selectedId);
   };
 
@@ -55,7 +59,7 @@ const Cars = ({ formatDate }) => {
     }).then((response) => {
       if (response.status === 200) {
         const updatedCars = cars.filter((car) => car._id !== selectedId);
-
+        showSnackbar(`Успешно премахнахте колата!`, "success");
         setCars(updatedCars);
       }
     });
@@ -164,7 +168,10 @@ const Cars = ({ formatDate }) => {
   }
   return (
     <Box m="20px">
-      <Header title="Служители" subtitle="Управление на служителите" />
+      <Header
+        title="Всички коли"
+        subtitle="Коли който някога са били в този сервиз"
+      />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -218,6 +225,9 @@ const Cars = ({ formatDate }) => {
             </Typography>
           </MenuItem>
         </Menu>
+        <IconButton onClick={() => navigate("/")}>
+          <ArrowBackIcon />
+        </IconButton>
       </Box>
     </Box>
   );

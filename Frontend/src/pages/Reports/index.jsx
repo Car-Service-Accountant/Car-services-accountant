@@ -2,9 +2,8 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
-import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
 
-const Report = () => {
+const Report = ({ formatDate }) => {
   const theme = useTheme();
   const [cars, setCars] = useState([]);
 
@@ -53,13 +52,11 @@ const Report = () => {
   let totalProfit = 0;
   cars.forEach((car) => {
     car.repairs.forEach((repair) => {
-      console.log(repair);
       totalProfit += repair.totalRepairCost;
     });
   });
 
   const newCars = calculateRepairCost(cars);
-  console.log(newCars.totalLabor);
   const repairsWithCars = newCars.flatMap((car) => {
     return car.repairs.map((repair) => {
       return {
@@ -79,7 +76,7 @@ const Report = () => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="Подробна информация за ремонтите" />
       </Box>
 
       <Box
@@ -97,10 +94,10 @@ const Report = () => {
           p="15px"
         >
           <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-            Общо ремонти : {repairsWithCars?.length}
+            Общ брои ремонти : {repairsWithCars?.length}
           </Typography>
           <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-            Общ профит : {totalProfit} лв.
+            Сумиран профит : {totalProfit} лв.
           </Typography>
         </Box>
         <Box
@@ -113,6 +110,9 @@ const Report = () => {
         >
           <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
             Последни плащания
+          </Typography>
+          <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
+            Чиста печалба
           </Typography>
         </Box>
         {repairsWithCars.map((repair, i) => (
@@ -142,12 +142,19 @@ const Report = () => {
                 color={colors.primary[500]}
               >{`Телефон: ${repair.car.phoneNumber}`}</Typography>
             </Box>
+            <Box>
+              <Typography variant="h5" fontWeight="600">
+                {formatDate(repair.endDate)}
+              </Typography>
+            </Box>
             <Box
-              backgroundColor={colors.greenAccent[500]}
+              backgroundColor={
+                repair.paied ? colors.greenAccent[500] : colors.redAccent[500]
+              }
               p="5px 10px"
               borderRadius="4px"
             >
-              {`${repair.totalRepairCost} лв.`}
+              {`${repair.paied ? "+" : "-"} ${repair.totalRepairCost} лв.`}
             </Box>
           </Box>
         ))}

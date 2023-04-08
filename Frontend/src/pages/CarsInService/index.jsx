@@ -1,10 +1,11 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, IconButton, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { Navigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const URL = "http://localhost:3005/car";
 
@@ -13,6 +14,7 @@ const Repairs = ({ formatDate }) => {
   const colors = tokens(theme.palette.mode);
   const [cars, setCars] = useState([]);
   const [selecredRow, setSelectedRow] = useState(null);
+  const navigate = useNavigate();
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -133,6 +135,9 @@ const Repairs = ({ formatDate }) => {
           style={{ outline: "none", boxShadow: "none" }}
         />
       </Box>
+      <IconButton onClick={() => navigate(-1)}>
+        <ArrowBackIcon />
+      </IconButton>
     </Box>
   );
 };

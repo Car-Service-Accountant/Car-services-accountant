@@ -33,7 +33,6 @@ router.post("/:carID", async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const data = await getAllRepairs();
-        console.log(data);
         res.status(200).json(data)
     } catch (err) {
         console.error(err.message);
@@ -46,7 +45,6 @@ router.get('/:repairID', async (req, res) => {
     const id = req.params.repairID
     try {
         const data = await getRepairById(id);
-        console.log(data);
         res.status(200).json(data)
     } catch (err) {
         console.error(err.message);

@@ -12,7 +12,6 @@ const Login = () => {
 
   const handleFormSubmit = async (values) => {
     await handleLogin(values.email, values.password);
-    console.log("right after login ");
     return <Navigate to="/" />;
   };
 

@@ -11,36 +11,60 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
-import { managerAuth } from "../../utils/accesses/managerAuth";
 import { adminAuth } from "../../utils/accesses/adminAuth";
+import { useAuth } from "../../hooks/useAuth";
+import { useContext, useState } from "react";
+import { SnackbarContext } from "../../providers/snackbarProvider";
+import { Navigate } from "react-router-dom";
 
 const baseURL = "http://localhost:3005/auth";
 
 const AddEmployers = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { user } = useAuth();
+  const [success, setSuccess] = useState(false);
+  const showSnackbar = useContext(SnackbarContext);
 
   const handleFormSubmit = (values) => {
-    fetch(`${baseURL}/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.status !== 201) {
-        throw new Error("Something gone wrong");
-      }
-      response.json().then((result) => console.log(result.token));
-      //TODO: set cokie or just global state for can check for can start making auth system tomorow
-    });
+    const data = {
+      email: values.email,
+      password: values.password,
+      phoneNumber: values.phoneNumber,
+      rePassword: values.rePassword,
+      role: values.role,
+      username: values.username,
+      companyID: user._Id,
+    };
+    console.log(data);
+    if (user.role === "админ") {
+      fetch(`${baseURL}/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }).then((response) => {
+        if (response.status !== 201) {
+          showSnackbar(
+            "Нещо се обърка , моля проверете полетата и опитайте отново!",
+            "error"
+          );
+          throw new Error("Something gone wrong");
+        }
+        response.json().then((result) => console.log(result.token));
+        showSnackbar("Служителя беше успешно запазен", "success");
+        setSuccess(true);
+      });
+    }
   };
+
+  if (success) {
+    return <Navigate to="/employers" />;
+  }
 
   return (
     <Box m="20px">
-      <Header
-        title="CREATE EMPLOYER"
-        subtitle="Create a New Employers Profile"
-      />
+      <Header title="Добавяне на нов служител" />
 
       <Formik
         onSubmit={handleFormSubmit}

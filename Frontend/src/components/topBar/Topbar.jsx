@@ -49,9 +49,9 @@ const Topbar = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton component={Link} to="/notification">
+        {/* <IconButton component={Link} to="/notification">
           <NotificationsOutlinedIcon />
-        </IconButton>
+        </IconButton> */}
         <IconButton onClick={handleMenuOpen}>
           <PersonOutlinedIcon />
         </IconButton>

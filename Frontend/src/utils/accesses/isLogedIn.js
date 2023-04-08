@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom"
 export const isLogedIn = (Component) => {
     const WrapperComponent = (props) => {
         const { user } = useContext(AuthContext);
-        if (!user) {
+        if (user) {
             return (
                 <Component {...props} />
             );

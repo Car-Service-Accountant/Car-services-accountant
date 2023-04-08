@@ -7,8 +7,9 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const baseURL = "http://localhost:3005";
 
@@ -18,25 +19,44 @@ const CreateRepair = () => {
   const [parts, setParts] = useState([]);
   const [repairsServices, setRepairsServices] = useState([]);
   const [sendData, setSendData] = useState(false);
+  const showSnackbar = useContext(SnackbarContext);
 
   const carHandleFormSubmit = async (values) => {
     const currentCar = await getCar(values.carNumber);
-    setCar(...currentCar);
+    if (currentCar) {
+      showSnackbar(
+        `Успешно намерен автомобил с номер :${currentCar.carNumber}`,
+        "success"
+      );
+      setCar(...currentCar);
+    } else {
+      showSnackbar(`Проверете номера и опитайте отново`, "error");
+    }
   };
 
   const partsHandleFormSubmit = (values) => {
+    showSnackbar(`Успешно добавихте част!`, "success");
     setParts((prevRepairs) => [...prevRepairs, { id: v4(), ...values }]);
   };
 
   const deleteRepairHandler = (id) => {
+    showSnackbar(`Успешно изтрихте част!`, "success");
     setParts((prevRepairs) => prevRepairs.filter((repair) => repair.id !== id));
   };
 
   const repairServiceHandleFormSubmit = (values) => {
+    showSnackbar(`Успешно добавихте вид услуга!`, "success");
     setRepairsServices((prevRepairs) => [
       ...prevRepairs,
       { id: v4(), ...values },
     ]);
+  };
+
+  const deleteRepairServicesHandler = (id) => {
+    showSnackbar(`Успешно премахнахте вид услуга!`, "success");
+    setRepairsServices((prevRepairs) =>
+      prevRepairs.filter((repair) => repair.id !== id)
+    );
   };
 
   const finalizeRepair = async () => {
@@ -74,6 +94,10 @@ const CreateRepair = () => {
       if (response.status !== 200) {
         throw new Error("Something gone wrong");
       }
+      showSnackbar(
+        `Успешно създодохте ремонт по кола с номер: ${car.carNumber}!`,
+        "success"
+      );
       setSendData(true);
     });
   };
@@ -81,12 +105,6 @@ const CreateRepair = () => {
   if (sendData) {
     return <Navigate to="/" />;
   }
-
-  const deleteRepairServicesHandler = (id) => {
-    setRepairsServices((prevRepairs) =>
-      prevRepairs.filter((repair) => repair.id !== id)
-    );
-  };
 
   return (
     <Box m="20px">

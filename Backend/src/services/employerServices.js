@@ -4,7 +4,7 @@ exports.getAllEmployers = async () => {
     const data = await Employers.find({}, { password: 0, __v: 0 });
 
     if (!data) {
-        throw new Error("No employer found here");
+        return "No employers yet"
     }
     return data;
 }
@@ -15,13 +15,14 @@ exports.getCurrentEmployer = async (id) => {
     const data = await Employers.findById(id);
 
     if (!data) {
-        throw new Error("No employer found here");
+        return null
     }
     return data;
 }
 
 
 exports.updateEmployer = async (employerID, data) => {
+    console.log(employerID);
     const employer = await Employers.findByIdAndUpdate(employerID, data)
 
     if (!employer) {

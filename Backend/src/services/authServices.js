@@ -60,7 +60,6 @@ exports.login = async (email, password) => {
     if (!employer) {
         try {
             const data = await this.loginCompany(email, password)
-            console.log(data);
             return data;
         } catch (err) {
             throw new Error("Wrong password or email")
@@ -96,7 +95,6 @@ exports.loginCompany = async (email, password) => {
     }
 
     const isValid = await bcrypt.compare(password, company.password);
-    console.log(isValid);
     if (!isValid) {
         throw new Error('wrong email or password');
     }
@@ -116,6 +114,7 @@ exports.loginCompany = async (email, password) => {
         username: company?.username,
         cashBoxId: company?.cashBox,
         role: company?.role,
+        employers: company?.employers,
         token
     }
 };
@@ -125,7 +124,7 @@ exports.tokenVerify = async (token) => {
         const decodedToken = await jwt.verify(token, SECRET);
         return decodedToken;
     } catch (err) {
-        throw new Error(err || "Token is invalid")
+        return null
     }
 }
 
@@ -134,6 +133,7 @@ exports.renewedToken = async (data) => {
     try {
         if (!employer) {
             const company = await getCompany(data._id);
+            console.log("company", company);
             const payload = {
                 _id: company?._id.toString(),
                 email: company?.email,
@@ -145,6 +145,7 @@ exports.renewedToken = async (data) => {
                 email: company?.email,
                 phoneNumber: company?.phoneNumber,
                 username: company?.username,
+                employers: company?.employers,
                 cashBoxID: company?.cashBox,
                 role: company?.role,
                 token: reNewedToken
