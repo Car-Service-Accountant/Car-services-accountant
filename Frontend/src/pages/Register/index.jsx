@@ -1,70 +1,38 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Link, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
-import { adminAuth } from "../../utils/accesses/adminAuth";
 import { useAuth } from "../../hooks/useAuth";
-import { useContext, useState } from "react";
-import { SnackbarContext } from "../../providers/snackbarProvider";
-import { Navigate } from "react-router-dom";
+import { isLogedIn } from "../../utils/accesses/isLogedIn";
 
 const baseURL = "http://localhost:3005/auth";
 
-const AddEmployers = () => {
+const Register = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user } = useAuth();
-  const [success, setSuccess] = useState(false);
-  const showSnackbar = useContext(SnackbarContext);
+  const { handleRegister } = useAuth();
 
   const handleFormSubmit = (values) => {
-    const data = {
-      email: values.email,
-      password: values.password,
-      phoneNumber: values.phoneNumber,
-      rePassword: values.rePassword,
-      role: values.role,
-      username: values.username,
-      companyID: user._Id,
-    };
-    console.log(data);
-    if (user.role === "админ") {
-      fetch(`${baseURL}/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }).then((response) => {
-        if (response.status !== 201) {
-          showSnackbar(
-            "Нещо се обърка , моля проверете полетата и опитайте отново!",
-            "error"
-          );
-          throw new Error("Something gone wrong");
-        }
-        response.json().then((result) => console.log(result.token));
-        showSnackbar("Служителя беше успешно запазен", "success");
-        setSuccess(true);
+    fetch(`${baseURL}/register/company`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    }).then((response) => {
+      if (response.status !== 200) {
+        throw new Error("Something gone wrong");
+      }
+      response.json().then((result) => {
+        handleRegister(result);
+        return;
       });
-    }
+    });
   };
-
-  if (success) {
-    return <Navigate to="/employers" />;
-  }
 
   return (
     <Box m="20px">
-      <Header title="Добавяне на нов служител" />
+      <Header title="Регистриране на фирма" />
 
       <Formik
         onSubmit={handleFormSubmit}
@@ -92,7 +60,7 @@ const AddEmployers = () => {
                 fullWidth
                 variant="outlined"
                 type="text"
-                label="Име на служителя"
+                label="Име на фирмата"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.username}
@@ -140,41 +108,18 @@ const AddEmployers = () => {
                 helperText={touched.rePassword && errors.rePassword}
                 sx={{ gridColumn: "span 2" }}
               />
-              <TextField
-                fullWidth
-                variant="outlined"
-                type="text"
-                label="Телефонен номер"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.phoneNumber}
-                name="phoneNumber"
-                error={!!touched.phoneNumber && !!errors.phoneNumber}
-                helperText={touched.phoneNumber && errors.phoneNumber}
-                sx={{ gridColumn: "span 2" }}
-              />
-              <FormControl sx={{ gridColumn: "span 2" }}>
-                <InputLabel>Позиция</InputLabel>
-                <Select
-                  variant="outlined"
-                  label="Позиция"
-                  name="role"
-                  value={values.role || ""}
-                  onChange={handleChange}
-                  error={!!touched.role && !!errors.role}
-                  helpertext={touched.role && errors.role}
-                >
-                  <MenuItem value="админ">Администратор</MenuItem>
-                  <MenuItem value="мениджър">Мениджър</MenuItem>
-                  <MenuItem value="служител">Служител</MenuItem>
-                </Select>
-              </FormControl>
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Добави
+                Регистриране
               </Button>
             </Box>
+            <Typography display="flex" justifyContent="center" mt="20px">
+              Ако вече имате фирма или сте служител в някоя , моля влезте от
+              <Box ml={1}>
+                <Link to="/login">Тук</Link>
+              </Box>
+            </Typography>
           </form>
         )}
       </Formik>
@@ -205,23 +150,12 @@ const checkoutSchema = yup.object().shape({
     .required("Полето е задължително")
     .min(4, "Полето трябва да съдържа между 4 и 16 символа")
     .max(16, "Полето трябва да съдържа между 4 и 16 символа"),
-
-  phoneNumber: yup
-    .string()
-    .required("Полето е задължително")
-    .min(10, "Полето не може да бъде по-малко от 10 символа , започващо с нула")
-    .max(
-      10,
-      "Полето не може да бъде по-малко от 10 символа , започващо с нула"
-    ),
 });
 const initialValues = {
   username: "",
   email: "",
   password: "",
   rePassword: "",
-  phoneNumber: "",
-  role: "",
 };
 
-export default adminAuth(AddEmployers);
+export default isLogedIn(Register);

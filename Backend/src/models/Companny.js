@@ -20,11 +20,6 @@ const companySchema = new mongoose.Schema({
         minLenght: 4,
         required: true
     },
-    phoneNumber: {
-        type: String,
-        minLenght: 10,
-        required: true,
-    },
     employers: [{
         type: mongoose.Schema.Types.ObjectId, ref: 'employers'
     }],

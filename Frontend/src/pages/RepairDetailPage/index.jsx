@@ -1,6 +1,7 @@
 import {
   Box,
   CircularProgress,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -14,7 +15,8 @@ import DoneIcon from "@mui/icons-material/Done";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./detail.style.css";
 
 const URL = "http://localhost:3005/repair";
@@ -22,6 +24,7 @@ const URL = "http://localhost:3005/repair";
 const RepairDetail = ({ formatDate }) => {
   const params = useParams();
   const [repair, setRepair] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${URL}/${params.repairId}`, {
@@ -157,6 +160,9 @@ const RepairDetail = ({ formatDate }) => {
           </TableBody>
         </Table>
       </TableContainer>
+      <IconButton onClick={() => navigate(-1)}>
+        <ArrowBackIcon />
+      </IconButton>
     </Box>
   );
 };

@@ -5,6 +5,7 @@ const URL = "http://localhost:3005/cashbox";
 export const useCashBox = (id, monney) => {
     const [currentCashBox, setCurrentCashBox] = useState([]);
     const addTotalAmount = (id, monney) => {
+        console.log(id);
         cashBox(id);
 
         const updatedCashBox = {
@@ -29,7 +30,6 @@ export const useCashBox = (id, monney) => {
     };
 
     const updateCashBox = async (id, data) => {
-        console.log(id, data);
         try {
             const response = await fetch(`${URL}/${id}`, {
                 method: "POST",

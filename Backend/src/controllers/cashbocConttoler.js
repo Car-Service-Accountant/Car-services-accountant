@@ -5,8 +5,10 @@ const { getCashbox, updateCashBox } = require("../services/cashboxService")
 
 router.get("/:id", async (req, res) => {
     const id = req.params.id
+    console.log(id);
     try {
         const cashBox = await getCashbox(id);
+        console.log(cashBox);
         res.status(200).json(cashBox)
     } catch (err) {
         console.error(err.message);

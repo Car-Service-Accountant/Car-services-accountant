@@ -30,7 +30,7 @@ exports.register = async (email, username, password, rePassword, phoneNumber, ro
     return this.login(email, password);
 }
 
-exports.registerCompany = async (email, username, password, rePassword, phoneNumber) => {
+exports.registerCompany = async (email, username, password, rePassword) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
@@ -50,18 +50,21 @@ exports.registerCompany = async (email, username, password, rePassword, phoneNum
         profit: 0,
         cost: 0
     })
-    let company = await Companny.create({ username, email, phoneNumber, password: hashedPassword, cashBox: createBancAccount._id, role: "admin" });
+    let company = await Companny.create({ username, email, password: hashedPassword, cashBox: createBancAccount._id, role: "админ" });
     return this.loginCompany(email, password);
 }
 
 
 exports.login = async (email, password) => {
-
     const employer = await Employers.findOne({ email });
     if (!employer) {
-        throw new Error('wrong email or password in employers');
+        try {
+            const data = await this.loginCompany(email, password)
+            return data;
+        } catch (err) {
+            throw new Error("Wrong password or email")
+        }
     }
-    console.log(employer);
     const isValid = await bcrypt.compare(password, employer.password);
     if (!isValid) {
         throw new Error('wrong email or password password is not valid');
@@ -86,7 +89,6 @@ exports.login = async (email, password) => {
 };
 
 exports.loginCompany = async (email, password) => {
-
     const company = await Companny.findOne({ email }).populate('employers');
     if (!company) {
         throw new Error('wrong email or password');
@@ -110,9 +112,9 @@ exports.loginCompany = async (email, password) => {
         companyId: company?._id,
         email: company?.email,
         username: company?.username,
-        phoneNumber: company?.phoneNumber,
         cashBoxId: company?.cashBox,
         role: company?.role,
+        employers: company?.employers,
         token
     }
 };
@@ -122,7 +124,7 @@ exports.tokenVerify = async (token) => {
         const decodedToken = await jwt.verify(token, SECRET);
         return decodedToken;
     } catch (err) {
-        throw new Error(err || "Token is invalid")
+        return null
     }
 }
 
@@ -131,6 +133,7 @@ exports.renewedToken = async (data) => {
     try {
         if (!employer) {
             const company = await getCompany(data._id);
+            console.log("company", company);
             const payload = {
                 _id: company?._id.toString(),
                 email: company?.email,
@@ -142,6 +145,7 @@ exports.renewedToken = async (data) => {
                 email: company?.email,
                 phoneNumber: company?.phoneNumber,
                 username: company?.username,
+                employers: company?.employers,
                 cashBoxID: company?.cashBox,
                 role: company?.role,
                 token: reNewedToken

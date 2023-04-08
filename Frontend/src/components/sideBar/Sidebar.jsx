@@ -46,6 +46,8 @@ const Sidebar = () => {
     return;
   }
 
+  console.log("in side bar user ==>", user.role);
+
   return (
     <Box
       sx={{
@@ -159,43 +161,55 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Чакащи плащания"
-              to="/pendingPayments"
-              icon={<CreditCardOffOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Divider sx={{ my: 2 }} />
-            <Item
-              title="Отчети"
-              to="/reports"
-              s
-              icon={<AssessmentOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Допълнителни разходи"
-              to="/additionalCosts"
-              icon={<AddCardOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Всички служители"
-              to="/employers"
-              icon={<GroupOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Добави служител"
-              to="/addEmployer"
-              icon={<GroupAddOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {user.role !== "служител" ? (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <Item
+                  title="Чакащи плащания"
+                  to="/pendingPayments"
+                  icon={<CreditCardOffOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Отчети"
+                  to="/reports"
+                  s
+                  icon={<AssessmentOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                {/* <Item
+                  title="Допълнителни разходи"
+                  to="/additionalCosts"
+                  icon={<AddCardOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                /> */}
+                {user.role === "админ" ? (
+                  <>
+                    <Item
+                      title="Всички служители"
+                      to="/employers"
+                      icon={<GroupOutlinedIcon />}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                    <Item
+                      title="Добави служител"
+                      to="/addEmployer"
+                      icon={<GroupAddOutlinedIcon />}
+                      selected={selected}
+                      setSelected={setSelected}
+                    />
+                  </>
+                ) : (
+                  ""
+                )}
+              </>
+            ) : (
+              ""
+            )}
           </Box>
         </Menu>
       </ProSidebar>

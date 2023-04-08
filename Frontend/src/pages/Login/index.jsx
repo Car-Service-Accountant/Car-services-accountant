@@ -1,21 +1,17 @@
-import { useContext } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import { useAuth } from "../../hooks/useAuth";
-import { AuthContext } from "../../providers/authProvider";
 import Header from "../../components/Header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as yup from "yup";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const Login = () => {
   const { handleLogin } = useAuth();
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  console.log("in login page");
   const handleFormSubmit = async (values) => {
     await handleLogin(values.email, values.password);
-    console.log("right after login ");
     return <Navigate to="/" />;
   };
 
@@ -77,6 +73,13 @@ const Login = () => {
                 Вход
               </Button>
             </Box>
+            <Typography display="flex" justifyContent="center" mt="20px">
+              Ако все още нямате фирма , може да отворите такава като я
+              регистрирате
+              <Box ml={1}>
+                <Link to="/register">Тук</Link>
+              </Box>
+            </Typography>
           </form>
         )}
       </Formik>

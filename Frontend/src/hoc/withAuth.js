@@ -1,29 +1,39 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../providers/authProvider";
+import { CircularProgress } from "@mui/material";
 
 const withAuth = (Component) => (props) => {
     const { handleTokenCheck } = useContext(AuthContext);
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(undefined)
 
+    let data = undefined
     useEffect(() => {
         const authorizationFn = async () => {
             const token = localStorage.getItem("token");
-            if (token) {
-                await handleTokenCheck(token);
-            } else {
-                console.error("Missing auth token , please login");
+            try {
+                data = await handleTokenCheck(token);
+                setUser(data)
+            } catch (err) {
+                console.error(err);
             }
-            setLoading(false);
         };
         authorizationFn();
     }, []);
 
-    if (loading) {
-        return <p>Loading...</p>;
+    if (user === undefined) {
+        return <CircularProgress
+            style={{
+                color: "#6870fa",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto",
+                height: "80vh",
+            }}
+        />
     }
 
-    return <Component {...props} />;
-
+    return <Component {...props} data={user} />;
 };
 
 export default withAuth;

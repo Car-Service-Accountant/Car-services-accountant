@@ -1,12 +1,14 @@
-import { Box, Button, Divider, TextField } from "@mui/material";
+import { Box, Button, Divider, IconButton, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header/Header";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import ProgressCircle from "../../components/ProgressCircle";
+import { SnackbarContext } from "../../providers/snackbarProvider";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const baseURL = "http://localhost:3005/car";
 
@@ -15,6 +17,8 @@ const EditCar = ({ formatDate }) => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [car, setCar] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const showSnackbar = useContext(SnackbarContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${baseURL}/${params.carId}`, {
@@ -35,21 +39,29 @@ const EditCar = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [isSubmitted]);
 
   const handleFormSubmit = (values) => {
-    fetch(`${baseURL}/update/${params.carId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.status !== 200) {
-        throw new Error("Something gone wrong");
-      }
-      setIsSubmitted(true);
-    });
+    try {
+      fetch(`${baseURL}/update/${params.carId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((response) => {
+        if (response.status !== 200) {
+          throw new Error("Something gone wrong");
+        }
+        showSnackbar(
+          `Успешно променихте автомобил с номер ${car.carNumber}`,
+          "success"
+        );
+        setIsSubmitted(true);
+      });
+    } catch (err) {
+      showSnackbar(err, "error");
+    }
   };
 
   if (isSubmitted) {
@@ -62,7 +74,9 @@ const EditCar = ({ formatDate }) => {
 
   return (
     <Box m="20px">
-      <Header title="Добавяне на кола" />
+      <Header
+        title={`Променете детайлите на автомобил с номер ${car.carNumber}`}
+      />
       <Divider sx={{ mb: 4 }}></Divider>
       <Formik
         onSubmit={handleFormSubmit}
@@ -173,8 +187,22 @@ const EditCar = ({ formatDate }) => {
               />
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
-              <Button type="submit" color="secondary" variant="outlined">
+              <Button
+                type="submit"
+                color="secondary"
+                variant="outlined"
+                style={{ marginLeft: "20px" }}
+              >
                 Запази
+              </Button>
+              <Button
+                style={{ marginLeft: "20px" }}
+                type="submit"
+                color="secondary"
+                variant="outlined"
+                onClick={() => navigate(-1)}
+              >
+                Назад
               </Button>
             </Box>
           </form>

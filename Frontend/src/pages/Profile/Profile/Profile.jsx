@@ -26,7 +26,6 @@ const Profile = () => {
                         src="../../assets/demo-profile.png"
                         alt="Missing pic"
                         height={180}
-                        onClick={() => console.log("possible to change from there if left time")}
                     ></img>
                 </Box>
 

@@ -4,29 +4,38 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Navigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const baseURL = "http://localhost:3005/car";
 
 const CreateCar = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const showSnackbar = useContext(SnackbarContext);
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    fetch(`${baseURL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.status !== 200) {
-        throw new Error("Something gone wrong");
-      }
-      setIsSubmitted(true);
-    });
+    try {
+      fetch(`${baseURL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((response) => {
+        if (response.status !== 200) {
+          throw new Error(
+            "Нещо се обърка моля проверете полетата и опитайте отново.",
+            "error"
+          );
+        }
+        showSnackbar("Успешно добавена кола.", "success");
+        setIsSubmitted(true);
+      });
+    } catch (err) {
+      showSnackbar(err, "error");
+    }
   };
 
   if (isSubmitted) {

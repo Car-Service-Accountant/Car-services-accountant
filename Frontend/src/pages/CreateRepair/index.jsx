@@ -7,8 +7,9 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const baseURL = "http://localhost:3005";
 
@@ -18,25 +19,44 @@ const CreateRepair = () => {
   const [parts, setParts] = useState([]);
   const [repairsServices, setRepairsServices] = useState([]);
   const [sendData, setSendData] = useState(false);
+  const showSnackbar = useContext(SnackbarContext);
 
   const carHandleFormSubmit = async (values) => {
     const currentCar = await getCar(values.carNumber);
-    setCar(...currentCar);
+    if (currentCar) {
+      showSnackbar(
+        `Успешно намерен автомобил с номер :${currentCar.carNumber}`,
+        "success"
+      );
+      setCar(...currentCar);
+    } else {
+      showSnackbar(`Проверете номера и опитайте отново`, "error");
+    }
   };
 
   const partsHandleFormSubmit = (values) => {
+    showSnackbar(`Успешно добавихте част!`, "success");
     setParts((prevRepairs) => [...prevRepairs, { id: v4(), ...values }]);
   };
 
   const deleteRepairHandler = (id) => {
+    showSnackbar(`Успешно изтрихте част!`, "success");
     setParts((prevRepairs) => prevRepairs.filter((repair) => repair.id !== id));
   };
 
   const repairServiceHandleFormSubmit = (values) => {
+    showSnackbar(`Успешно добавихте вид услуга!`, "success");
     setRepairsServices((prevRepairs) => [
       ...prevRepairs,
       { id: v4(), ...values },
     ]);
+  };
+
+  const deleteRepairServicesHandler = (id) => {
+    showSnackbar(`Успешно премахнахте вид услуга!`, "success");
+    setRepairsServices((prevRepairs) =>
+      prevRepairs.filter((repair) => repair.id !== id)
+    );
   };
 
   const finalizeRepair = async () => {
@@ -74,6 +94,10 @@ const CreateRepair = () => {
       if (response.status !== 200) {
         throw new Error("Something gone wrong");
       }
+      showSnackbar(
+        `Успешно създодохте ремонт по кола с номер: ${car.carNumber}!`,
+        "success"
+      );
       setSendData(true);
     });
   };
@@ -81,12 +105,6 @@ const CreateRepair = () => {
   if (sendData) {
     return <Navigate to="/" />;
   }
-
-  const deleteRepairServicesHandler = (id) => {
-    setRepairsServices((prevRepairs) =>
-      prevRepairs.filter((repair) => repair.id !== id)
-    );
-  };
 
   return (
     <Box m="20px">
@@ -340,7 +358,7 @@ const CreateRepair = () => {
                   />
                   <TextField
                     fullWidth
-                    value={value.priceForService}
+                    value={`${value.priceForService} лв.`}
                     variant="outlined"
                     label="Цена за сервиза"
                     sx={{ gridColumn: "span 3" }}
@@ -348,7 +366,7 @@ const CreateRepair = () => {
                   />
                   <TextField
                     fullWidth
-                    value={value.priceForClient}
+                    value={`${value.priceForClient} лв.`}
                     variant="outlined"
                     label="Цена за клиента"
                     sx={{ gridColumn: "span 3" }}
@@ -516,8 +534,8 @@ const repairServicesCheckoutSchema = yup.object().shape({
   serviceType: yup
     .string("Полето трябва да съдържа само цифри")
     .required("Полето е задължително")
-    .min(3, "Полето трябва да е между 3 и 20 символа")
-    .max(20, "Полето трябва да е между 3 и 20 символа"),
+    .min(3, "Полето трябва да е между 3 и 50 символа")
+    .max(50, "Полето трябва да е между 3 и 50 символа"),
   laborCost: yup
     .number("Полето трябва да съдържа само цифри")
     .required("Полето е задължително"),

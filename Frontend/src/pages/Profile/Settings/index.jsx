@@ -4,28 +4,40 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../../components/Header/Header";
 import { useAuth } from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { SnackbarContext } from "../../../providers/snackbarProvider";
 
 const baseURL = "http://localhost:3005";
 
 const ProfileSettings = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const showSnackbar = useContext(SnackbarContext);
 
   const handleFormSubmit = (values) => {
+    console.log(user._Id);
     console.log(values);
-    fetch(`${baseURL}/employers/${user._Id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    }).then((response) => {
-      if (response.status !== 200) {
-        throw new Error("Something gone wrong");
-      }
-      response.json().then((result) => console.log(result.token));
-      //TODO: set cokie or just global state for can check for can start making auth system tomorow
-    });
+    try {
+      fetch(`${baseURL}/employers/${user._Id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      }).then((response) => {
+        if (response.status !== 200) {
+          throw new Error("Something gone wrong");
+        }
+        response.json().then((result) => {
+          showSnackbar("Успешно променихте данните на профила си!", "success");
+          navigate("/");
+        });
+      });
+    } catch (err) {
+      showSnackbar("Нещо се обърка моля опитайте отново!", "error");
+    }
   };
 
   return (
@@ -147,6 +159,15 @@ const ProfileSettings = () => {
             <Box display="flex" justifyContent="center" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
                 Запази
+              </Button>
+              <Button
+                style={{ marginLeft: 20 }}
+                type="submit"
+                color="secondary"
+                variant="contained"
+                onClick={() => navigate("/")}
+              >
+                Назад
               </Button>
             </Box>
           </form>

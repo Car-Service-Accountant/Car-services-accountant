@@ -16,9 +16,10 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Header from "../../components/Header/Header";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { adminAuth } from "../../utils/accesses/adminAuth";
 import { Navigate } from "react-router-dom";
+import { SnackbarContext } from "../../providers/snackbarProvider";
 
 const EMPLOYERS_URL = "http://localhost:3005/employers";
 
@@ -30,6 +31,7 @@ const Employers = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
   const [editId, setEditId] = useState(null);
+  const showSnackbar = useContext(SnackbarContext);
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -60,8 +62,8 @@ const Employers = () => {
         const updatedEmployers = employers.filter(
           (employer) => employer._id !== selectedId
         );
-
         setEmployers(updatedEmployers);
+        showSnackbar("Успешно премахнахте служителя");
       }
     });
     handleMenuClose();
@@ -97,13 +99,13 @@ const Employers = () => {
     },
     {
       field: "username",
-      headerName: "Username",
+      headerName: "Име на служителя",
       flex: 1,
       cellClassName: "name-column--cell",
     },
     {
       field: "phoneNumber",
-      headerName: "Phone Number",
+      headerName: "Телефонен номер",
       flex: 1,
     },
     {
@@ -113,7 +115,7 @@ const Employers = () => {
     },
     {
       field: "accessLevel",
-      headerName: "Access Level",
+      headerName: "Ниво на достъп",
       flex: 1,
       renderCell: ({ row: { role } }) => {
         return (
