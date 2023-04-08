@@ -24,6 +24,8 @@ import RepairDetailPage from "./pages/RepairDetailPage";
 import CarEditPage from "./pages/CarEditPage";
 import EmployerDetailPage from "./pages/EmployerDetailPage";
 import EmployerEditPage from "./pages/EmployerEditPage";
+import ErrorPage from "./components/ErrorPage";
+import Register from "./pages/Register";
 
 
 function formatDate(dateString) {
@@ -58,8 +60,8 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<ProfileSettings />} />
               <Route path="/help" element={<Help />} />
-              <Route path="/register" element={<p>register</p>} />
-              <Route path="/login" element={<p>Error 404</p>} />
+              <Route path="*" element={<ErrorPage />} />
+
               {/* Edit / Detail pages */}
               <Route path="/employers/detail/:empId" element={<EmployerDetailPage />} />
               <Route path="/employers/edit/:empId" element={<EmployerEditPage />} />
@@ -69,7 +71,7 @@ function App() {
             </Routes> :
               <Routes>
                 <Route path="*" element={<Login />} />
-                <Route path="/register" element={<p>register</p>} />
+                <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
               </Routes>}
           </main>

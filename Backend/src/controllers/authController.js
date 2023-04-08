@@ -23,14 +23,14 @@ router.post('/register', isGuest(), async (req, res) => {
 })
 
 router.post('/register/company', isGuest(), async (req, res) => {
-    const { email, username, password, rePassword, phoneNumber } = req.body;
+    const { email, username, password, rePassword } = req.body;
 
     try {
-        if (email == '' || username == '' || password == '' || phoneNumber == "") {
+        if (email == '' || username == '' || password == '') {
             throw new Error('all the fields are required');
         }
 
-        const token = await registerCompany(email, username, password, rePassword, phoneNumber);
+        const token = await registerCompany(email, username, password, rePassword);
         res.status(201).json(token)
 
     } catch (err) {
@@ -80,8 +80,14 @@ router.post('/logout', isAuth(), (req, res) => {
 })
 
 router.get('/protection', async (req, res) => {
-    const token = await renewedToken(req.user)
-    res.status(200).json(token)
+    try {
+        const token = await renewedToken(req.user)
+        res.status(200).json(token)
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+        res.status(400).json({ message: error })
+    }
 })
 
 module.exports = router;

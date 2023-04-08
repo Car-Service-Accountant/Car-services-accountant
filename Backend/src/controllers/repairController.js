@@ -1,5 +1,5 @@
 const mapErrors = require('../utils/errorMapper');
-const { createRepair, updateRepair, deleteRepair, getRepairById } = require('../services/repairServices');
+const { createRepair, updateRepair, deleteRepair, getRepairById, getAllRepairs } = require('../services/repairServices');
 
 const router = require('express').Router();
 
@@ -30,6 +30,17 @@ router.post("/:carID", async (req, res) => {
         res.status(400).json({ message: error })
     }
 })
+router.get('/', async (req, res) => {
+    try {
+        const data = await getAllRepairs();
+        console.log(data);
+        res.status(200).json(data)
+    } catch (err) {
+        console.error(err.message);
+        const error = mapErrors(err);
+        res.status(400).json({ message: error })
+    }
+})
 
 router.get('/:repairID', async (req, res) => {
     const id = req.params.repairID
@@ -43,6 +54,7 @@ router.get('/:repairID', async (req, res) => {
         res.status(400).json({ message: error })
     }
 })
+
 
 router.patch('/:repairID', (req, res) => {
     const repairID = req.params.repairID;

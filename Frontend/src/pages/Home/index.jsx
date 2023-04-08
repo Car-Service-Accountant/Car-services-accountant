@@ -10,10 +10,34 @@ import LineChart from "../../components/LineChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import { useEffect, useState } from "react";
 
 const Dashboard = () => {
   const theme = useTheme();
+  const [repairs, setRepairs] = useState();
 
+  useEffect(() => {
+    fetch(`http://localhost:3005/repair`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setRepairs(data);
+      })
+      .catch((error) => {
+        console.error(`Error fetching employers: ${error}`);
+      });
+  }, []);
+
+  console.log(repairs);
   const mockTransactions = [
     {
       txId: "01e4dsa",

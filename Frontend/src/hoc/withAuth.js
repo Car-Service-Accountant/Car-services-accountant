@@ -9,11 +9,16 @@ const withAuth = (Component) => (props) => {
         const authorizationFn = async () => {
             const token = localStorage.getItem("token");
             if (token) {
-                await handleTokenCheck(token);
+                try {
+                    await handleTokenCheck(token);
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setLoading(false);
+                }
             } else {
-                console.error("Missing auth token , please login");
+                setLoading(false);
             }
-            setLoading(false);
         };
         authorizationFn();
     }, []);
@@ -21,7 +26,6 @@ const withAuth = (Component) => (props) => {
     if (loading) {
         return <p>Loading...</p>;
     }
-
     return <Component {...props} />;
 
 };
