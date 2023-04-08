@@ -1,10 +1,10 @@
-const useFinishedThisMonth = (repairs) => {
+const finishedThisMonth = (repairs) => {
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
     const repairsThisMonth = repairs.filter(repair => {
-        const createDate = new Date(repair.createDate);
-        return createDate.getMonth() === currentMonth && createDate.getFullYear() === currentYear;
+        const endDate = new Date(repair.endDate);
+        return repair.paied === true && endDate.getMonth() === currentMonth && endDate.getFullYear() === currentYear;
     });
 
     const totalLabor = repairsThisMonth.reduce((total, repair) => total + repair.priceForLabor, 0);
@@ -15,10 +15,11 @@ const useFinishedThisMonth = (repairs) => {
     }, 0);
 
     return {
-        repairsThisMonth,
+        totalProfitForThisMonth: totalLabor + totalPartsDifference,
+        repairsThisMonth: repairsThisMonth.length,
         totalLabor,
         totalPartsDifference
     }
 }
 
-export default useFinishedThisMonth;
+export default finishedThisMonth;

@@ -26,6 +26,7 @@ import EmployerDetailPage from "./pages/EmployerDetailPage";
 import EmployerEditPage from "./pages/EmployerEditPage";
 import ErrorPage from "./components/ErrorPage";
 import Register from "./pages/Register";
+import Report from "./pages/Reports";
 
 
 function formatDate(dateString) {
@@ -49,7 +50,7 @@ function App() {
           <main className="content">
             <Topbar />
             {user ? <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/" element={<Dashboard formatDate={formatDate} />} />
               <Route path="/employers" element={<Employers />} />
               <Route path="/repairs" element={<Repairs formatDate={formatDate} />} />
               <Route path="/cars" element={<Cars formatDate={formatDate} />} />
@@ -60,6 +61,7 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/settings" element={<ProfileSettings />} />
               <Route path="/help" element={<Help />} />
+              <Route path="/reports" element={<Report />} />
               <Route path="*" element={<ErrorPage />} />
 
               {/* Edit / Detail pages */}

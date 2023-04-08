@@ -340,7 +340,7 @@ const CreateRepair = () => {
                   />
                   <TextField
                     fullWidth
-                    value={value.priceForService}
+                    value={`${value.priceForService} лв.`}
                     variant="outlined"
                     label="Цена за сервиза"
                     sx={{ gridColumn: "span 3" }}
@@ -348,7 +348,7 @@ const CreateRepair = () => {
                   />
                   <TextField
                     fullWidth
-                    value={value.priceForClient}
+                    value={`${value.priceForClient} лв.`}
                     variant="outlined"
                     label="Цена за клиента"
                     sx={{ gridColumn: "span 3" }}
@@ -516,8 +516,8 @@ const repairServicesCheckoutSchema = yup.object().shape({
   serviceType: yup
     .string("Полето трябва да съдържа само цифри")
     .required("Полето е задължително")
-    .min(3, "Полето трябва да е между 3 и 20 символа")
-    .max(20, "Полето трябва да е между 3 и 20 символа"),
+    .min(3, "Полето трябва да е между 3 и 50 символа")
+    .max(50, "Полето трябва да е между 3 и 50 символа"),
   laborCost: yup
     .number("Полето трябва да съдържа само цифри")
     .required("Полето е задължително"),

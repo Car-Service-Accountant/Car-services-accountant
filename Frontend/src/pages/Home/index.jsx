@@ -1,20 +1,21 @@
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import NoCrashIcon from "@mui/icons-material/NoCrash";
 import Header from "../../components/Header/Header";
-import LineChart from "../../components/LineChart";
-import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
 import { useEffect, useState } from "react";
+import finishedToday from "../../utils/repairs/finishedToday";
+import finishedDayBefore from "../../utils/repairs/finishedDayBefore";
+import finishedThisMonth from "../../utils/repairs/finishedThisMonth";
+import finishedMonthBefore from "../../utils/repairs/finishedMonthBefore";
+import finishedThisWeek from "../../utils/repairs/finishedThisWeek";
+import finishedLastWeek from "../../utils/repairs/finishedWeekBefore";
+import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
 
-const Dashboard = () => {
+const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
-  const [repairs, setRepairs] = useState();
+  const [repairs, setRepairs] = useState([]);
 
   useEffect(() => {
     fetch(`http://localhost:3005/repair`, {
@@ -37,74 +38,82 @@ const Dashboard = () => {
       });
   }, []);
 
-  console.log(repairs);
-  const mockTransactions = [
-    {
-      txId: "01e4dsa",
-      user: "johndoe",
-      date: "2021-09-01",
-      cost: "43.95",
-    },
-    {
-      txId: "0315dsaa",
-      user: "jackdower",
-      date: "2022-04-01",
-      cost: "133.45",
-    },
-    {
-      txId: "01e4dsa",
-      user: "aberdohnny",
-      date: "2021-09-01",
-      cost: "43.95",
-    },
-    {
-      txId: "51034szv",
-      user: "goodmanave",
-      date: "2022-11-05",
-      cost: "200.95",
-    },
-    {
-      txId: "0a123sb",
-      user: "stevebower",
-      date: "2022-11-02",
-      cost: "13.55",
-    },
-    {
-      txId: "01e4dsa",
-      user: "aberdohnny",
-      date: "2021-09-01",
-      cost: "43.95",
-    },
-    {
-      txId: "120s51a",
-      user: "wootzifer",
-      date: "2019-04-15",
-      cost: "24.20",
-    },
-    {
-      txId: "0315dsaa",
-      user: "jackdower",
-      date: "2022-04-01",
-      cost: "133.45",
-    },
-  ];
+  //Today's profit
+  let paiedTodayData = {};
+  if (repairs.length > 0) {
+    paiedTodayData = finishedToday(repairs);
+  }
+  //Profit for prevous day
+  let paiedYestardayData = {};
+  if (repairs.length > 0) {
+    paiedYestardayData = finishedDayBefore(repairs);
+  }
+
+  const proggressBarForToday =
+    paiedTodayData.totalProfitToday - paiedYestardayData.totalYestardayProfit;
+  //Profit for this month
+  let paiedThisMonthData = {};
+  if (repairs.length > 0) {
+    paiedThisMonthData = finishedThisMonth(repairs);
+  }
+
+  //Profit for  month before
+  let paiedMonthBeofreData = {};
+  if (repairs.length > 0) {
+    paiedMonthBeofreData = finishedMonthBefore(repairs);
+  }
+
+  const proggressBarForThisMonth =
+    paiedThisMonthData.totalProfitForThisMonth -
+    paiedMonthBeofreData.totalProfitForMotnthBefore;
+
+  //this Week profit
+  let paiedThisWeekData = {};
+  if (repairs.length > 0) {
+    paiedThisWeekData = finishedThisWeek(repairs);
+  }
+
+  //Week before
+  let paiedWeekBeofreData = {};
+  if (repairs.length > 0) {
+    paiedWeekBeofreData = finishedLastWeek(repairs);
+  }
+
+  const proggressBarForThisWeek =
+    paiedThisWeekData.totalProfitForThisWeek -
+    paiedWeekBeofreData.totalProfitForMotnthBefore;
+
+  let carProggressThisMonth = 0;
+  if (
+    paiedThisMonthData.repairsThisMonth &&
+    paiedMonthBeofreData.repairsInMonthBefore
+  ) {
+    carProggressThisMonth =
+      (paiedThisMonthData?.repairsThisMonth -
+        paiedMonthBeofreData?.repairsInMonthBefore) *
+      100;
+  }
+
+  let sortedRepairs = [];
+  if (repairs.length > 0) {
+    sortedRepairs = sortByDateAndCalculateProfit(repairs);
+  }
+
+  console.log(sortedRepairs);
 
   const colors = tokens(theme.palette.mode);
-
+  console.log(repairs);
   return (
     <Box m="20px">
-      {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="Тук ще намерите обобщена информация на състоянието на сервиза" />
       </Box>
-      {/* GRID & CHARTS */}
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
         gridAutoRows="140px"
         gap="13px"
       >
-        {/* ROW 1 */}
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -113,12 +122,14 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
+            title={`+ ${paiedTodayData.totalProfitToday} лв.`}
             subtitle="Дневен доход"
-            progress="0.75"
-            increase="+14%"
+            progress={proggressBarForToday / 10000}
+            increase={`${proggressBarForToday / 100 > 0 ? "+" : ""} ${
+              proggressBarForToday / 100 || ""
+            } %`}
             icon={
-              <EmailIcon
+              <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -132,18 +143,19 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Месечен профит"
-            progress="0.50"
-            increase="+21%"
+            title={`+ ${paiedThisWeekData.totalProfitForThisWeek} лв.`}
+            subtitle="Седмичен профит"
+            progress={proggressBarForThisWeek / 10000}
+            increase={`${proggressBarForThisWeek / 100 > 0 ? "+" : ""} ${
+              proggressBarForThisWeek / 100 || ""
+            } %`}
             icon={
-              <PointOfSaleIcon
+              <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
           />
         </Box>
-
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -152,12 +164,14 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
+            title={`+ ${paiedThisMonthData.totalProfitForThisMonth}`}
             subtitle="Месечен разход"
-            progress="0.30"
-            increase="+5%"
+            progress={proggressBarForThisMonth / 10000}
+            increase={`${proggressBarForThisMonth / 100 > 0 ? "+" : ""} ${
+              proggressBarForThisMonth / 100 || ""
+            } %`}
             icon={
-              <PersonAddIcon
+              <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
@@ -171,62 +185,22 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
-            subtitle="Ремонтирани коли за последния месец"
-            progress="0.80"
-            increase="+43%"
+            title={paiedThisMonthData.repairsThisMonth}
+            subtitle="Ремонтирани коли за този месец"
+            progress={carProggressThisMonth / 100}
+            increase={`${carProggressThisMonth > 0 ? "+" : ""} ${
+              carProggressThisMonth || "0"
+            } %`}
             icon={
-              <TrafficIcon
+              <NoCrashIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
               />
             }
           />
         </Box>
 
-        {/* ROW 2 */}
-        {/* Diagrama  */}
         <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Горно - приходи който трябва да бъдат взети , Долно - взети пари
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
+          gridColumn="span 12"
           gridRow="span 4"
           backgroundColor={colors.primary[400]}
           overflow="auto"
@@ -240,12 +214,12 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Последни плащания
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {sortedRepairs?.calculatedRepairs?.map((repair, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${repair._id}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -258,66 +232,21 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {repair.service[0]}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>{formatDate(repair.endDate)}</Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                {`${repair.partsDifference + repair.priceForLabor ? "+" : ""} ${
+                  repair.partsDifference + repair.priceForLabor
+                } лв.`}
               </Box>
             </Box>
           ))}
-        </Box>
-
-        {/* ROW 3 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Месечно сравнение
-          </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
-          >
-            Sales Quantity
-          </Typography>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
         </Box>
       </Box>
     </Box>

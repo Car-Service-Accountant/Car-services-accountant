@@ -2,120 +2,37 @@ import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 
-const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
+const LineChart = ({ isDashboard = false, repairs }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const data = repairs.reduce((acc, repair) => {
+    // Convert end date to a Unix timestamp in seconds
+    const timestamp = new Date(repair.endDate).getTime() / 1000;
+    // Add a data point for each day between create date and end date
+    for (
+      let day = 0;
+      day <= (timestamp - repair.endDate) / (2 * 24 * 3600);
+      day++
+    ) {
+      const date = new Date((repair.endDate + day * 2 * 24 * 3600) * 1000);
+      const dateString = date.toISOString().substr(0, 10);
+      // Find existing data point for this date or create a new one
+      const pointIndex = acc.findIndex((d) => d.x === dateString);
+      if (pointIndex === -1) {
+        acc.push({ x: dateString, y: 0 });
+      }
+      // Increment the count of repairs for this date
+      acc[pointIndex].y++;
+    }
+    return acc;
+  }, []);
   return (
     <ResponsiveLine
       data={[
         {
-          id: "japan",
+          id: "repairs",
           color: tokens("dark").greenAccent[500],
-          data: [
-            {
-              x: "plane",
-              y: 101,
-            },
-            {
-              x: "helicopter",
-              y: 75,
-            },
-            {
-              x: "boat",
-              y: 36,
-            },
-            {
-              x: "train",
-              y: 216,
-            },
-            {
-              x: "subway",
-              y: 35,
-            },
-            {
-              x: "bus",
-              y: 236,
-            },
-            {
-              x: "car",
-              y: 88,
-            },
-            {
-              x: "moto",
-              y: 232,
-            },
-            {
-              x: "bicycle",
-              y: 281,
-            },
-            {
-              x: "horse",
-              y: 1,
-            },
-            {
-              x: "skateboard",
-              y: 35,
-            },
-            {
-              x: "others",
-              y: 14,
-            },
-          ],
-        },
-        {
-          id: "france",
-          color: tokens("dark").blueAccent[300],
-          data: [
-            {
-              x: "plane",
-              y: 212,
-            },
-            {
-              x: "helicopter",
-              y: 190,
-            },
-            {
-              x: "boat",
-              y: 270,
-            },
-            {
-              x: "train",
-              y: 9,
-            },
-            {
-              x: "subway",
-              y: 75,
-            },
-            {
-              x: "bus",
-              y: 175,
-            },
-            {
-              x: "car",
-              y: 33,
-            },
-            {
-              x: "moto",
-              y: 189,
-            },
-            {
-              x: "bicycle",
-              y: 97,
-            },
-            {
-              x: "horse",
-              y: 87,
-            },
-            {
-              x: "skateboard",
-              y: 299,
-            },
-            {
-              x: "others",
-              y: 251,
-            },
-          ],
+          data,
         },
       ]}
       theme={{
@@ -192,32 +109,6 @@ const LineChart = ({ isCustomLineColors = false, isDashboard = false }) => {
       pointBorderColor={{ from: "serieColor" }}
       pointLabelYOffset={-12}
       useMesh={true}
-      legends={[
-        {
-          anchor: "bottom-right",
-          direction: "column",
-          justify: false,
-          translateX: 100,
-          translateY: 0,
-          itemsSpacing: 0,
-          itemDirection: "left-to-right",
-          itemWidth: 80,
-          itemHeight: 20,
-          itemOpacity: 0.75,
-          symbolSize: 12,
-          symbolShape: "circle",
-          symbolBorderColor: "rgba(0, 0, 0, .5)",
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemBackground: "rgba(0, 0, 0, .03)",
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
     />
   );
 };

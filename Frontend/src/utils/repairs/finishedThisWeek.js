@@ -5,7 +5,7 @@ const finishedThisWeek = (repairs) => {
 
     const repairsThisWeek = repairs.filter(rep => {
         const endDate = new Date(rep.endDate);
-        return endDate >= weekStart && endDate <= weekEnd;
+        return rep.paied === true && endDate >= weekStart && endDate <= weekEnd;
     });
 
     const laborPriceThisWeek = repairsThisWeek.reduce((acc, rep) => acc + rep.priceForLabor, 0);
@@ -15,6 +15,7 @@ const finishedThisWeek = (repairs) => {
     }, 0);
 
     return {
+        totalProfitForThisWeek: laborPriceThisWeek + partsPriceThisWeek,
         repairsThisWeek,
         laborPriceThisWeek,
         partsPriceThisWeek,

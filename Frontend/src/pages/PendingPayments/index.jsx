@@ -95,7 +95,6 @@ const PendingPayments = ({ formatDate }) => {
       updatedRepairs.finished = true;
       updatedRepairs.endDate = Date.now();
     }
-    console.log(repair.repairId);
     try {
       await fetch(`http://localhost:3005/repair/finished/${repair.repairId}`, {
         method: "POST",
@@ -125,7 +124,6 @@ const PendingPayments = ({ formatDate }) => {
     setRepairs(updatedRepair);
   };
 
-  console.log(repairs);
   const columns = [
     { field: "repairId", headerName: "ID", hide: true },
     { field: "carId", headerName: "CarID", hide: true },
