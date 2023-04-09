@@ -2,6 +2,7 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
+import { managerAuth } from "../../utils/accesses/managerAuth";
 
 const Report = ({ formatDate }) => {
   const theme = useTheme();
@@ -163,4 +164,4 @@ const Report = ({ formatDate }) => {
   );
 };
 
-export default Report;
+export default managerAuth(Report);

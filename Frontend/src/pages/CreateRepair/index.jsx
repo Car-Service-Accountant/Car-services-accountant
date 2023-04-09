@@ -154,7 +154,7 @@ const CreateRepair = () => {
                     fullWidth
                     variant="outlined"
                     type="text"
-                    label="Име на служителя"
+                    label="Номер на колата"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.carNumber}
