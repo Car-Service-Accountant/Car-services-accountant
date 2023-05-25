@@ -24,12 +24,11 @@ router.post('/register', isGuest(), async (req, res) => {
 
 router.post('/register/company', isGuest(), async (req, res) => {
     const { email, username, password, rePassword } = req.body;
-
     try {
         if (email == '' || username == '' || password == '') {
             throw new Error('all the fields are required');
         }
-
+        console.log(email, username, password, rePassword);
         const token = await registerCompany(email, username, password, rePassword);
         res.status(200).json(token)
 

@@ -14,7 +14,7 @@ async function start() {
     try {
         dbConfig();
         console.log("Database started successfully")
-    }catch(err){
+    } catch (err) {
         throw new Error("DB not worked currectly")
     }
 

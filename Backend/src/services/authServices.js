@@ -34,7 +34,6 @@ exports.registerCompany = async (email, username, password, rePassword) => {
     if (password !== rePassword) {
         throw new Error('Wrong confirm password');
     }
-
     const exist = await Companny.findOne({ email })
 
     const hashedPassword = await bcrypt.hash(password, 4);
