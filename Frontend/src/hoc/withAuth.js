@@ -12,6 +12,7 @@ const withAuth = (Component) => (props) => {
             const token = localStorage.getItem("token");
             try {
                 data = await handleTokenCheck(token);
+                console.log(data);
                 setUser(data)
             } catch (err) {
                 console.error(err);

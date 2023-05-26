@@ -7,6 +7,7 @@ import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { SnackbarContext } from "../../../providers/snackbarProvider";
+import { employerAuth } from "../../../utils/accesses/employerAuth";
 
 const baseURL = "http://localhost:3005";
 
@@ -209,4 +210,4 @@ const checkoutSchema = yup.object().shape({
     ),
 });
 
-export default ProfileSettings;
+export default employerAuth(ProfileSettings);

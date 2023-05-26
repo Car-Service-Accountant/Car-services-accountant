@@ -7,14 +7,14 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const handleRegister = async (userInfo) => {
+    const collectProffileData = (userInfo) => {
         if (userInfo.role === "админ") {
             localStorage.setItem('token', userInfo?.token);
             setUser({
                 email: userInfo.email,
-                cashBoxID: userInfo.cashBoxId,
+                cashBoxID: userInfo.cashBoxID,
                 username: userInfo.username,
-                _Id: userInfo?.companyId?.toString(),
+                _Id: userInfo?._Id,
                 role: userInfo?.role,
                 employers: userInfo?.employers,
                 userInfo: userInfo?.userInfo,
@@ -32,10 +32,14 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const handleRegister = async (userInfo) => {
+        collectProffileData(userInfo)
+    }
+
     const handleLogin = async (email, password) => {
         try {
             const userData = await login(email, password);
-            setUser(userData);
+            collectProffileData(userData);
             setIsLoading(true);
         } catch (err) {
             console.error(err);
@@ -58,7 +62,7 @@ export const AuthProvider = ({ children }) => {
     const handleTokenCheck = async (token) => {
         try {
             const userData = await tokenChecker(token);
-            setUser(userData);
+            collectProffileData(userData);
             setIsLoading(true);
             return userData
         } catch (err) {

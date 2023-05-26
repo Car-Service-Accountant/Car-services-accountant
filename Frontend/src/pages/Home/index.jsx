@@ -12,7 +12,7 @@ import finishedMonthBefore from "../../utils/repairs/finishedMonthBefore";
 import finishedThisWeek from "../../utils/repairs/finishedThisWeek";
 import finishedLastWeek from "../../utils/repairs/finishedWeekBefore";
 import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
-import { isLogedIn } from "../../utils/accesses/isLogedIn";
+import { employerAuth } from "../../utils/accesses/employerAuth";
 
 const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
@@ -251,4 +251,4 @@ const Dashboard = ({ formatDate }) => {
   );
 };
 
-export default isLogedIn(Dashboard);
+export default employerAuth(Dashboard);

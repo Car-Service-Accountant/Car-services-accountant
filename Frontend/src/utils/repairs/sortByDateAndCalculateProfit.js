@@ -1,6 +1,7 @@
 const sortByDateAndCalculateProfit = (repairs) => {
 
-    const sortedRepairs = repairs.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+    const filteredRepairs = repairs.filter((repair) => repair.paied === true)
+    const sortedRepairs = filteredRepairs.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
 
     const totalLabor = sortedRepairs.reduce((total, repair) => total + repair.priceForLabor, 0);
 

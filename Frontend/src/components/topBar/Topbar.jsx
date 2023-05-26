@@ -31,6 +31,7 @@ const Topbar = () => {
 
   const onLogoutClock = async () => {
     await handleLogout();
+    console.log("logout ");
     setAnchorEl(null);
     return <Navigate to="/login" />;
   };
@@ -69,7 +70,7 @@ const Topbar = () => {
           <MenuItem onClick={handleMenuClose} component={Link} to="/help">
             <Typography>Помощ</Typography>
           </MenuItem>
-          <MenuItem onClick={onLogoutClock}>
+          <MenuItem onClick={onLogoutClock} component={Link} to="/login">
             <Typography>Изход</Typography>
           </MenuItem>
         </Menu>

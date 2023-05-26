@@ -9,6 +9,7 @@ import { isLogedIn } from "../../utils/accesses/isLogedIn";
 const baseURL = "http://localhost:3005/auth";
 
 const Register = () => {
+  console.log("in register");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { handleRegister } = useAuth();
 

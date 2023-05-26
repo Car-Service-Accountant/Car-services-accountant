@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { tokens } from "../../../theme";
 import Header from "../../../components/Header/Header";
+import { employerAuth } from "../../../utils/accesses/employerAuth";
 
 const Help = () => {
   const theme = useTheme();
@@ -86,4 +87,4 @@ const Help = () => {
   );
 };
 
-export default Help;
+export default employerAuth(Help);

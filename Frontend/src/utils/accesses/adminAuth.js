@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../providers/authProvider";
-import { Navigate } from "react-router-dom"
+import Unauthorized from "../../components/Unauthorized";
 
 export const adminAuth = (Component) => {
     const WrapperComponent = (props) => {
@@ -10,7 +10,7 @@ export const adminAuth = (Component) => {
                 <Component {...props} />
             );
         } else {
-            return <Navigate to="/" />
+            return <Unauthorized />
         }
     };
     return WrapperComponent;
