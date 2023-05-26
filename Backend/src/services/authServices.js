@@ -128,6 +128,9 @@ exports.tokenVerify = async (token) => {
 }
 
 exports.renewedToken = async (data) => {
+    if (!data?._id) {
+        throw new Error("Invalid token")
+    }
     const employer = await getCurrentEmployer(data._id);
     try {
         if (!employer) {
@@ -152,7 +155,7 @@ exports.renewedToken = async (data) => {
             return returnedData;
         }
         const company = await getCompany(employer?.companyID?.toString())
-
+        console.log(company);
         const payload = {
             _id: employer?._id.toString(),
             email: employer?.email,

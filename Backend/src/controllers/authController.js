@@ -28,7 +28,6 @@ router.post('/register/company', isGuest(), async (req, res) => {
         if (email == '' || username == '' || password == '') {
             throw new Error('all the fields are required');
         }
-        console.log(email, username, password, rePassword);
         const token = await registerCompany(email, username, password, rePassword);
         res.status(200).json(token)
 
@@ -79,6 +78,10 @@ router.post('/logout', isAuth(), (req, res) => {
 })
 
 router.get('/protection', async (req, res) => {
+    if (!req.user) {
+        res.status(400).json({ message: "there's no user" })
+        return;
+    }
     try {
         const token = await renewedToken(req.user)
 

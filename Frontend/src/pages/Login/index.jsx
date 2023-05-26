@@ -5,6 +5,7 @@ import Header from "../../components/Header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as yup from "yup";
 import { Link, Navigate } from "react-router-dom";
+import { isLogedIn } from "../../utils/accesses/isLogedIn";
 
 const Login = () => {
   const { handleLogin } = useAuth();
@@ -104,4 +105,4 @@ const initialValues = {
   password: "",
 };
 
-export default Login;
+export default isLogedIn(Login);

@@ -164,7 +164,6 @@ const AddEmployers = () => {
                   error={!!touched.role && !!errors.role}
                   helpertext={touched.role && errors.role}
                 >
-                  <MenuItem value="админ">Администратор</MenuItem>
                   <MenuItem value="мениджър">Мениджър</MenuItem>
                   <MenuItem value="служител">Служител</MenuItem>
                 </Select>
