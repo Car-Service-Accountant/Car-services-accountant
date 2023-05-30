@@ -10,8 +10,9 @@ import { Navigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import { SnackbarContext } from "../../providers/snackbarProvider";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005";
+const URL = API_URL;
 
 const CreateRepair = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -84,7 +85,7 @@ const CreateRepair = () => {
       note: "Empty by default for now",
     };
 
-    fetch(`${baseURL}/repair/${carId}`, {
+    fetch(`${URL}repair/${carId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -560,7 +561,7 @@ export default employerAuth(CreateRepair);
 
 async function getCar(id) {
   try {
-    const response = await fetch(`${baseURL}/car/${id}`, {
+    const response = await fetch(`${URL}car/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -10,8 +10,9 @@ import { useContext } from "react";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../utils/envProps";
 
-const URL = "http://localhost:3005/car";
+const URL = API_URL;
 
 const PendingPayments = ({ formatDate }) => {
   const { user } = useAuth();
@@ -23,7 +24,7 @@ const PendingPayments = ({ formatDate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(URL, {
+    fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -102,7 +103,7 @@ const PendingPayments = ({ formatDate }) => {
       updatedRepairs.endDate = Date.now();
     }
     try {
-      await fetch(`http://localhost:3005/repair/finished/${repair.repairId}`, {
+      await fetch(`${URL}repair/finished/${repair.repairId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

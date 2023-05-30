@@ -8,32 +8,40 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     const collectProffileData = (userInfo) => {
-        if (userInfo.role === "админ") {
-            localStorage.setItem('token', userInfo?.token);
-            setUser({
-                email: userInfo.email,
-                cashBoxID: userInfo.cashBoxID,
-                username: userInfo.username,
-                _Id: userInfo?._Id,
-                role: userInfo?.role,
-                employers: userInfo?.employers,
-                userInfo: userInfo?.userInfo,
-            });
+        if (userInfo) {
+            if (userInfo?.role === "админ") {
+                localStorage.setItem('token', userInfo?.token);
+                setUser({
+                    email: userInfo?.email,
+                    cashBoxID: userInfo?.cashBoxID,
+                    username: userInfo?.username,
+                    _Id: userInfo?._Id,
+                    role: userInfo?.role,
+                    employers: userInfo?.employers,
+                    userInfo: userInfo?.userInfo,
+                });
+            } else {
+                localStorage.setItem('token', userInfo?.token);
+                setUser({
+                    email: userInfo?.email,
+                    cashBoxID: userInfo?.cashBoxID,
+                    username: userInfo?.username,
+                    _Id: userInfo?._Id?.toString(),
+                    role: userInfo?.role,
+                    userInfo: userInfo?.userInfo,
+                })
+            }
         } else {
-            localStorage.setItem('token', userInfo?.token);
-            setUser({
-                email: userInfo.email,
-                cashBoxID: userInfo.cashBoxID,
-                username: userInfo.username,
-                _Id: userInfo?._Id?.toString(),
-                role: userInfo?.role,
-                userInfo: userInfo?.userInfo,
-            })
+            setUser(null)
         }
     }
 
     const handleRegister = async (userInfo) => {
-        collectProffileData(userInfo)
+        if (userInfo) {
+            collectProffileData(userInfo)
+        } else {
+            return collectProffileData(null)
+        }
     }
 
     const handleLogin = async (email, password) => {
@@ -42,7 +50,7 @@ export const AuthProvider = ({ children }) => {
             collectProffileData(userData);
             setIsLoading(true);
         } catch (err) {
-            console.error(err);
+            collectProffileData(null);
             setIsLoading(false);
         }
     };

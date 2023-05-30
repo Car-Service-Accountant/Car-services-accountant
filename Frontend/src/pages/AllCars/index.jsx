@@ -18,8 +18,9 @@ import { employerAuth } from "../../utils/accesses/employerAuth";
 import { Navigate, useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { API_URL } from "../../utils/envProps";
 
-const URL = "http://localhost:3005/car";
+const URL = API_URL
 
 const Cars = ({ formatDate }) => {
   const theme = useTheme();
@@ -54,7 +55,7 @@ const Cars = ({ formatDate }) => {
   };
 
   const handleDeleteClick = async () => {
-    fetch(`${URL}/${selectedId}`, {
+    fetch(`${URL}car/${selectedId}`, {
       method: "DELETE",
     }).then((response) => {
       if (response.status === 200) {
@@ -67,7 +68,7 @@ const Cars = ({ formatDate }) => {
   };
 
   useEffect(() => {
-    fetch(URL, {
+    fetch(`${URL}/car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

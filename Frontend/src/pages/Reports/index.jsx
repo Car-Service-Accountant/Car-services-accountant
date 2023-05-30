@@ -3,13 +3,16 @@ import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { managerAuth } from "../../utils/accesses/managerAuth";
+import { API_URL } from "../../utils/envProps";
+
+const URL = API_URL
 
 const Report = ({ formatDate }) => {
   const theme = useTheme();
   const [cars, setCars] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3005/car`, {
+    fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

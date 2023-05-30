@@ -1,11 +1,11 @@
-const API_ENDPOINTS = {
-    AUTH_URL: 'http://localhost:3005/auth',
-};
+import { API_URL } from "./envProps";
+
+const URL = API_URL
 
 export const login = async (email, password) => {
     if (email, password) {
         try {
-            const response = await fetch(`${API_ENDPOINTS.AUTH_URL}/login`, {
+            const response = await fetch(`${URL}auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const login = async (email, password) => {
 
 export const tokenChecker = async (token) => {
     try {
-        const response = await fetch(`${API_ENDPOINTS.AUTH_URL}/protection`, {
+        const response = await fetch(`${URL}/protection`, {
             method: 'GET',
             headers: {
                 'x-autorization': token,

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { API_URL } from "../utils/envProps";
 
-const URL = "http://localhost:3005/cashbox";
+const URL = API_URL;
 
 export const useCashBox = (id, monney) => {
     const [currentCashBox, setCurrentCashBox] = useState([]);
@@ -31,7 +32,7 @@ export const useCashBox = (id, monney) => {
 
     const updateCashBox = async (id, data) => {
         try {
-            const response = await fetch(`${URL}/${id}`, {
+            const response = await fetch(`${URL}cashbox/${id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -50,7 +51,7 @@ export const useCashBox = (id, monney) => {
 
     const callCashBox = async (id) => {
         try {
-            const response = await fetch(`${URL}/${id}`, {
+            const response = await fetch(`${URL}cashbox/${id}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

@@ -16,8 +16,9 @@ import { adminAuth } from "../../utils/accesses/adminAuth";
 import { useParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { SnackbarContext } from "../../providers/snackbarProvider";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005/employers";
+const URL = API_URL;
 
 const EditEmployer = () => {
   const params = useParams();
@@ -27,7 +28,7 @@ const EditEmployer = () => {
   const showSnackbar = useContext(SnackbarContext);
 
   useEffect(() => {
-    fetch(`${baseURL}/${id}`, {
+    fetch(`${URL}employers/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -44,7 +45,7 @@ const EditEmployer = () => {
 
   const handleFormSubmit = (values) => {
     try {
-      fetch(`${baseURL}/${id}`, {
+      fetch(`${URL}employers/${id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

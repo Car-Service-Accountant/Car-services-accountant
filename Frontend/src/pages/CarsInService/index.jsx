@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Navigate, useNavigate } from "react-router-dom";
+import { API_URL } from "../../utils/envProps";
 
-const URL = "http://localhost:3005/car";
+const URL = API_URL
 
 const Repairs = ({ formatDate }) => {
   const theme = useTheme();
@@ -23,7 +24,7 @@ const Repairs = ({ formatDate }) => {
   };
 
   useEffect(() => {
-    fetch(URL, {
+    fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

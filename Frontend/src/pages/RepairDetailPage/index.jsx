@@ -18,8 +18,9 @@ import { employerAuth } from "../../utils/accesses/employerAuth";
 import { useNavigate, useParams } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./detail.style.css";
+import { API_URL } from "../../utils/envProps";
 
-const URL = "http://localhost:3005/repair";
+const URL = API_URL;
 
 const RepairDetail = ({ formatDate }) => {
   const params = useParams();
@@ -27,7 +28,7 @@ const RepairDetail = ({ formatDate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${URL}/${params.repairId}`, {
+    fetch(`${URL}repair/${params.repairId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

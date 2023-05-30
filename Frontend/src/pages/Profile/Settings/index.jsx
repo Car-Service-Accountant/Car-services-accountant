@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { SnackbarContext } from "../../../providers/snackbarProvider";
 import { employerAuth } from "../../../utils/accesses/employerAuth";
+import { API_URL } from "../../../utils/envProps";
 
-const baseURL = "http://localhost:3005";
+const baseURL = API_URL;
 
 const ProfileSettings = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -21,7 +22,7 @@ const ProfileSettings = () => {
     console.log(user._Id);
     console.log(values);
     try {
-      fetch(`${baseURL}/employers/${user._Id}`, {
+      fetch(`${baseURL}employers/${user._Id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

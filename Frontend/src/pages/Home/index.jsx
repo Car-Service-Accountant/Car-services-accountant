@@ -13,13 +13,16 @@ import finishedThisWeek from "../../utils/repairs/finishedThisWeek";
 import finishedLastWeek from "../../utils/repairs/finishedWeekBefore";
 import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
 import { employerAuth } from "../../utils/accesses/employerAuth";
+import { API_URL } from "../../utils/envProps";
+
+const URL = API_URL;
 
 const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
   const [repairs, setRepairs] = useState([]);
 
   useEffect(() => {
-    fetch(`http://localhost:3005/repair`, {
+    fetch(`${URL}repair`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

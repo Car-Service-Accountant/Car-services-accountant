@@ -7,8 +7,9 @@ import Header from "../../components/Header/Header";
 import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import { SnackbarContext } from "../../providers/snackbarProvider";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005/car";
+const URL =API_URL
 
 const CreateCar = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -17,7 +18,7 @@ const CreateCar = () => {
 
   const handleFormSubmit = (values) => {
     try {
-      fetch(`${baseURL}`, {
+      fetch(`${URL}car`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

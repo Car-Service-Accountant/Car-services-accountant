@@ -29,7 +29,6 @@ import ErrorPage from "./components/ErrorPage";
 import Register from "./pages/Register";
 import Report from "./pages/Reports";
 
-
 function formatDate(dateString) {
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, "0");

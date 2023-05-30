@@ -19,8 +19,9 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import "./detail.style.css";
 import { useContext } from "react";
 import { SnackbarContext } from "../../providers/snackbarProvider";
+import { API_URL } from "../../utils/envProps";
 
-const URL = "http://localhost:3005/car";
+const URL = API_URL
 
 const CarDetails = ({ formatDate }) => {
   const params = useParams();
@@ -51,7 +52,7 @@ const CarDetails = ({ formatDate }) => {
 
   const handleDeleteClick = async () => {
     try {
-      fetch(`http://localhost:3005/repair/${selectedId}`, {
+      fetch(`${URL}repair/${selectedId}`, {
         method: "DELETE",
         //to fix resave state after delete
       }).then((response) => {
@@ -70,7 +71,7 @@ const CarDetails = ({ formatDate }) => {
   };
 
   useEffect(() => {
-    fetch(`${URL}/${params.carId}`, {
+    fetch(`${URL}car/${params.carId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -88,7 +89,7 @@ const CarDetails = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [car]);
+  }, [params]);
 
   if (selecredRow) {
     return <Navigate to={`/repair/${selecredRow}`} />;

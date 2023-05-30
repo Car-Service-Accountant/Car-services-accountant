@@ -20,8 +20,9 @@ import { useContext, useEffect, useState } from "react";
 import { adminAuth } from "../../utils/accesses/adminAuth";
 import { Navigate } from "react-router-dom";
 import { SnackbarContext } from "../../providers/snackbarProvider";
+import { API_URL } from "../../utils/envProps";
 
-const EMPLOYERS_URL = "http://localhost:3005/employers";
+const URL = API_URL;
 
 const Employers = () => {
   const theme = useTheme();
@@ -55,7 +56,7 @@ const Employers = () => {
   };
 
   const handleDeleteClick = async () => {
-    fetch(`${EMPLOYERS_URL}/${selectedId}`, {
+    fetch(`${URL}employers/${selectedId}`, {
       method: "DELETE",
     }).then((response) => {
       if (response.status === 200) {
@@ -70,7 +71,7 @@ const Employers = () => {
   };
 
   useEffect(() => {
-    fetch(EMPLOYERS_URL, {
+    fetch(`${URL}employers`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

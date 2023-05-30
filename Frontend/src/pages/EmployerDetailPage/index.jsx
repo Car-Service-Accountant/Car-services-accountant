@@ -10,8 +10,9 @@ import Header from "../../components/Header/Header";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { API_URL } from "../../utils/envProps";
 
-const EMPLOYERS_URL = "http://localhost:3005/employers";
+const URL = API_URL;
 
 const EmployerDetails = () => {
   const params = useParams();
@@ -20,7 +21,7 @@ const EmployerDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${EMPLOYERS_URL}/${params.empId}`, {
+    fetch(`${URL}employers/${params.empId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

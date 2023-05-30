@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, TextField } from "@mui/material";
+import { Box, Button, Divider, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -8,9 +8,9 @@ import { useContext, useEffect, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import ProgressCircle from "../../components/ProgressCircle";
 import { SnackbarContext } from "../../providers/snackbarProvider";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005/car";
+const URL = API_URL
 
 const EditCar = ({ formatDate }) => {
   const params = useParams();
@@ -21,7 +21,7 @@ const EditCar = ({ formatDate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${baseURL}/${params.carId}`, {
+    fetch(`${URL}car/${params.carId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -39,11 +39,11 @@ const EditCar = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [isSubmitted]);
+  }, [params]);
 
   const handleFormSubmit = (values) => {
     try {
-      fetch(`${baseURL}/update/${params.carId}`, {
+      fetch(`${URL}car/update/${params.carId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

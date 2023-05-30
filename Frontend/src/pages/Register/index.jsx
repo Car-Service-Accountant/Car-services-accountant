@@ -1,20 +1,21 @@
-import { Box, Button, Link, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../hooks/useAuth";
 import { isLogedIn } from "../../utils/accesses/isLogedIn";
+import { Link } from "react-router-dom";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005/auth";
+const URL = API_URL;
 
 const Register = () => {
-  console.log("in register");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { handleRegister } = useAuth();
 
   const handleFormSubmit = (values) => {
-    fetch(`${baseURL}/register/company`, {
+    fetch(`${URL}auth/register/company`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

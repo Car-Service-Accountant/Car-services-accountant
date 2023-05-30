@@ -16,8 +16,9 @@ import { useAuth } from "../../hooks/useAuth";
 import { useContext, useState } from "react";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import { Navigate } from "react-router-dom";
+import { API_URL } from "../../utils/envProps";
 
-const baseURL = "http://localhost:3005/auth";
+const URL = API_URL;
 
 const AddEmployers = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -37,7 +38,7 @@ const AddEmployers = () => {
     };
     console.log(data);
     if (user.role === "админ") {
-      fetch(`${baseURL}/register`, {
+      fetch(`${URL}auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
