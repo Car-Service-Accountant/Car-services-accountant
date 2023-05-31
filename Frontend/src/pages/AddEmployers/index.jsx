@@ -22,7 +22,7 @@ const URL = API_URL;
 
 const AddEmployers = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user } = useAuth();
+  const { user, companyId} = useAuth();
   const [success, setSuccess] = useState(false);
   const showSnackbar = useContext(SnackbarContext);
 
@@ -34,7 +34,7 @@ const AddEmployers = () => {
       rePassword: values.rePassword,
       role: values.role,
       username: values.username,
-      companyID: user._Id,
+      companyID: companyId,
     };
     console.log(data);
     if (user.role === "админ") {
