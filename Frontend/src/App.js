@@ -28,6 +28,7 @@ import EmployerEditPage from "./pages/EmployerEditPage";
 import ErrorPage from "./components/ErrorPage";
 import Register from "./pages/Register";
 import Report from "./pages/Reports";
+import { API_URL } from "./utils/envProps";
 
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -40,7 +41,7 @@ function formatDate(dateString) {
 function App() {
   const [theme, colorMode] = useMode();
   const { user } = useAuth();
-
+  const api = API_URL
   console.log("in app user ==> ", user);
 
   return (

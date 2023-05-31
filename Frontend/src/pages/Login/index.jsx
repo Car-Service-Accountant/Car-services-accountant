@@ -10,10 +10,12 @@ import { isLogedIn } from "../../utils/accesses/isLogedIn";
 const Login = () => {
   const { handleLogin } = useAuth();
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
   const handleFormSubmit = async (values) => {
-    await handleLogin(values.email, values.password);
-    return <Navigate to="/" />;
+    const response = await handleLogin(values.email, values.password);
+    if(response){
+      console.log("response login" , response);
+      return <Navigate to="/" replace={true}/>;
+    }
   };
 
   return (

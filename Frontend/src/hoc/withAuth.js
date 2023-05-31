@@ -1,25 +1,24 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../providers/authProvider";
 import { CircularProgress } from "@mui/material";
 
 const withAuth = (Component) => (props) => {
     const { handleTokenCheck } = useContext(AuthContext);
     const [user, setUser] = useState(undefined)
+    const token = localStorage.getItem("token");
 
-    let data = undefined
+
     useEffect(() => {
         const authorizationFn = async () => {
-            const token = localStorage.getItem("token");
             try {
-                data = await handleTokenCheck(token);
-                console.log(data);
+                const data = await handleTokenCheck(token);
                 setUser(data)
             } catch (err) {
-                console.error(err);
+                setUser(null)
             }
         };
         authorizationFn();
-    }, []);
+    }, [token]);
 
     if (user === undefined) {
         return <CircularProgress

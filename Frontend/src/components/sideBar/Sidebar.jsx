@@ -45,8 +45,6 @@ const Sidebar = () => {
     return;
   }
 
-  console.log("in side bar user ==>", user.role);
-
   return (
     <Box
       sx={{
