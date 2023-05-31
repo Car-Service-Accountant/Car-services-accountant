@@ -3,11 +3,13 @@ import { AuthContext } from '../providers/authProvider';
 
 export const useAuth = () => {
     const { user, isLoading, handleTokenCheck,
+        companyId,
         setUser,
         handleLogin,
         handleRegister,
         handleLogout, } = useContext(AuthContext);
     return {
+        companyId,
         isLoading,
         user,
         setUser,

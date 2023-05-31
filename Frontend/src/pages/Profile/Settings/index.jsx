@@ -19,10 +19,8 @@ const ProfileSettings = () => {
   const showSnackbar = useContext(SnackbarContext);
 
   const handleFormSubmit = (values) => {
-    console.log(user._Id);
-    console.log(values);
     try {
-      fetch(`${baseURL}employers/${user._Id}`, {
+      fetch(`${baseURL}employers/${user._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

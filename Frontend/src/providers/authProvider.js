@@ -1,35 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { login, tokenChecker } from '../utils/api';
 
 export const AuthContext = React.createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [companyId, setComplayId] = useState(null)
     const [isLoading, setIsLoading] = useState(true);
-
     const collectProffileData = (userInfo) => {
         if (userInfo) {
+            localStorage.setItem('token', userInfo?.token);
             if (userInfo?.role === "админ") {
-                localStorage.setItem('token', userInfo?.token);
                 setUser({
                     email: userInfo?.email,
                     cashBoxID: userInfo?.cashBoxID,
                     username: userInfo?.username,
-                    _Id: userInfo?._Id,
+                    _id: userInfo?._id,
                     role: userInfo?.role,
                     employers: userInfo?.employers,
-                    userInfo: userInfo?.userInfo,
-                });
+                })
+                setComplayId(userInfo?._id);
             } else {
-                localStorage.setItem('token', userInfo?.token);
                 setUser({
                     email: userInfo?.email,
+                    phoneNumber: userInfo?.phoneNumber,
                     cashBoxID: userInfo?.cashBoxID,
                     username: userInfo?.username,
-                    _Id: userInfo?._Id?.toString(),
+                    _id: userInfo?._id?.toString(),
                     role: userInfo?.role,
-                    userInfo: userInfo?.userInfo,
                 })
+                setComplayId(userInfo?.companyId)
             }
         } else {
             setUser(null)
@@ -64,10 +64,6 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    useEffect(() => {
-        handleLogin()
-    }, [])
-
     const handleTokenCheck = async (token) => {
         try {
             const userData = await tokenChecker(token);
@@ -82,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     return (
         <AuthContext.Provider
             value={{
+                companyId,
                 user,
                 isLoading,
                 setUser,
