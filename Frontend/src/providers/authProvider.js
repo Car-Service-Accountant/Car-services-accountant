@@ -49,9 +49,11 @@ export const AuthProvider = ({ children }) => {
             const userData = await login(email, password);
             collectProffileData(userData);
             setIsLoading(true);
+            return true
         } catch (err) {
             collectProffileData(null);
             setIsLoading(false);
+            return false
         }
     };
 
@@ -64,7 +66,6 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         handleLogin()
-        handleLogout();
     }, [])
 
     const handleTokenCheck = async (token) => {
@@ -74,7 +75,7 @@ export const AuthProvider = ({ children }) => {
             setIsLoading(true);
             return userData
         } catch (err) {
-            throw new Error("Someting gone wrong")
+            return null
         }
     };
 
