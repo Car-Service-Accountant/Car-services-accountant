@@ -11,6 +11,7 @@ import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL;
 
@@ -21,6 +22,7 @@ const CreateRepair = () => {
   const [repairsServices, setRepairsServices] = useState([]);
   const [sendData, setSendData] = useState(false);
   const showSnackbar = useContext(SnackbarContext);
+  const {user , companyId} = useAuth();
 
   const carHandleFormSubmit = async (values) => {
     const currentCar = await getCar(values.carNumber);
@@ -82,8 +84,11 @@ const CreateRepair = () => {
       service: stackedRepayerServices,
       parts: stackedParts,
       priceForLabor: totalLaborCost,
+      comanyHoldRepairs: companyId,
+      worker: user._id,
       note: "Empty by default for now",
     };
+    console.log(data);
 
     fetch(`${URL}repair/${carId}`, {
       method: "POST",
@@ -337,56 +342,6 @@ const CreateRepair = () => {
               </Formik>
             </Box>
 
-            {parts.length > 0 &&
-              parts.map((value) => (
-                <Box
-                  display="grid"
-                  gap="30px"
-                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
-                  sx={{
-                    "& > div": {
-                      gridColumn: isNonMobile ? undefined : "span 4",
-                    },
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    value={value.part}
-                    variant="outlined"
-                    label="Резервна част"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <TextField
-                    fullWidth
-                    value={`${value.priceForService} лв.`}
-                    variant="outlined"
-                    label="Цена за сервиза"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <TextField
-                    fullWidth
-                    value={`${value.priceForClient} лв.`}
-                    variant="outlined"
-                    label="Цена за клиента"
-                    sx={{ gridColumn: "span 3" }}
-                    disabled
-                  />
-                  <Box display="flex" justifyContent="top">
-                    <Button
-                      type="button"
-                      color="secondary"
-                      variant="contained"
-                      sx={{ gridColumn: "span 0" }}
-                      onClick={() => deleteRepairHandler(value.id)}
-                    >
-                      <HighlightOffOutlinedIcon />
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-
             <Box>
               <Formik
                 key="repairServiceKey"
@@ -454,6 +409,79 @@ const CreateRepair = () => {
               </Formik>
             </Box>
 
+            <Box display="flex" justifyContent="center" mt="20px">
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                onClick={() => finalizeRepair()}
+              >
+                Добави
+              </Button>
+            </Box>
+
+            {parts.length > 0 && <Box>
+              <Typography fontSize={20} style={{display:"flex" , justifyContent:"center"}}>
+                Резервни части
+              </Typography>
+              <Divider sx={{ gridColumn: "span 4" }}></Divider>
+              </Box>}
+            {parts.length > 0 &&
+              parts.map((value) => (
+                <Box
+                  display="grid"
+                  gap="30px"
+                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
+                  sx={{
+                    "& > div": {
+                      gridColumn: isNonMobile ? undefined : "span 4",
+                    },
+                  }}
+                >
+                  <TextField
+                    fullWidth
+                    value={value.part}
+                    variant="outlined"
+                    label="Резервна част"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <TextField
+                    fullWidth
+                    value={`${value.priceForService} лв.`}
+                    variant="outlined"
+                    label="Цена за сервиза"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <TextField
+                    fullWidth
+                    value={`${value.priceForClient} лв.`}
+                    variant="outlined"
+                    label="Цена за клиента"
+                    sx={{ gridColumn: "span 3" }}
+                    disabled
+                  />
+                  <Box display="flex" justifyContent="top">
+                    <Button
+                      type="button"
+                      color="secondary"
+                      variant="contained"
+                      sx={{ gridColumn: "span 0" }}
+                      onClick={() => deleteRepairHandler(value.id)}
+                    >
+                      <HighlightOffOutlinedIcon />
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
+
+              {repairsServices.length > 0 && <Box>
+              <Typography fontSize={20} style={{display:"flex" , justifyContent:"center"}}>
+                Цена за труд
+              </Typography>
+              <Divider sx={{ gridColumn: "span 4" }}></Divider>
+              </Box>} 
             {repairsServices.length > 0 && <></> &&
               repairsServices.map((value) => (
                 <Box
@@ -495,17 +523,6 @@ const CreateRepair = () => {
                   </Box>
                 </Box>
               ))}
-          </Box>
-
-          <Box display="flex" justifyContent="center" mt="20px">
-            <Button
-              type="submit"
-              color="secondary"
-              variant="contained"
-              onClick={() => finalizeRepair()}
-            >
-              Добави
-            </Button>
           </Box>
         </>
       )}

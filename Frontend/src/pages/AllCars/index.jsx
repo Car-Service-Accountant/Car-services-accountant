@@ -19,6 +19,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL
 
@@ -31,6 +32,7 @@ const Cars = ({ formatDate }) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
+  const {companyId} = useAuth();
 
   const navigate = useNavigate();
 
@@ -68,10 +70,11 @@ const Cars = ({ formatDate }) => {
   };
 
   useEffect(() => {
-    fetch(`${URL}/car`, {
+    fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {

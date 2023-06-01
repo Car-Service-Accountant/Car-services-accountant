@@ -73,10 +73,11 @@ const Employers = () => {
   };
 
   useEffect(() => {
-    fetch(`${URL}employers/cmp/${companyId}`, {
+    fetch(`${URL}employers`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
