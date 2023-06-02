@@ -8,22 +8,25 @@ import { useContext, useState } from "react";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL =API_URL
 
 const CreateCar = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const { companyId} = useAuth();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const showSnackbar = useContext(SnackbarContext);
 
   const handleFormSubmit = (values) => {
+    const body = {...values , comanyHoldRepairs: companyId}
     try {
       fetch(`${URL}car`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify(body),
       }).then((response) => {
         if (response.status !== 200) {
           throw new Error(
@@ -185,8 +188,8 @@ const checkoutSchema = yup.object().shape({
   phoneNumber: yup
     .string()
     .required("Полето е задължително")
-    .min(10, "Полето не може да съдържа 10 символа")
-    .max(10, "Полето не може да съдържа 10 символа"),
+    .min(10, "Полето не може да съдържа повече от 10 символа")
+    .max(10, "Полето не може да съдържа повече от 10 символа"),
   buildDate: yup.date().required("Полето е задължително"),
 });
 const initialValues = {

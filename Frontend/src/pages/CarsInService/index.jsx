@@ -7,6 +7,7 @@ import { employerAuth } from "../../utils/accesses/employerAuth";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Navigate, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL
 
@@ -16,6 +17,7 @@ const Repairs = ({ formatDate }) => {
   const [cars, setCars] = useState([]);
   const [selecredRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
+  const {companyId} = useAuth()
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -28,6 +30,7 @@ const Repairs = ({ formatDate }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {

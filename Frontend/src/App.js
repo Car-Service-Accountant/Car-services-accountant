@@ -40,9 +40,11 @@ function formatDate(dateString) {
 
 function App() {
   const [theme, colorMode] = useMode();
-  const { user } = useAuth();
+  const { user, companyId } = useAuth();
   const api = API_URL
   console.log("in app user ==> ", user);
+  console.log(" in app companyId ==>", companyId);
+
 
   return (
     <ColorModeContext.Provider value={colorMode}>

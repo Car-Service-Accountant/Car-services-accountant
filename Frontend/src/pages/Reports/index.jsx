@@ -4,18 +4,21 @@ import Header from "../../components/Header/Header";
 import { useEffect, useState } from "react";
 import { managerAuth } from "../../utils/accesses/managerAuth";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL
 
 const Report = ({ formatDate }) => {
   const theme = useTheme();
   const [cars, setCars] = useState([]);
+  const {companyId} = useAuth();
 
   useEffect(() => {
     fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
@@ -30,7 +33,7 @@ const Report = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [companyId]);
 
   function calculateRepairCost(cars) {
     for (const car of cars) {

@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { tokens } from "../../theme";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import NoCrashIcon from "@mui/icons-material/NoCrash";
@@ -14,18 +14,23 @@ import finishedLastWeek from "../../utils/repairs/finishedWeekBefore";
 import sortByDateAndCalculateProfit from "../../utils/repairs/sortByDateAndCalculateProfit";
 import { employerAuth } from "../../utils/accesses/employerAuth";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL;
 
 const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
   const [repairs, setRepairs] = useState([]);
+  const {companyId} = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
+
 
   useEffect(() => {
     fetch(`${URL}repair`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
@@ -40,7 +45,7 @@ const Dashboard = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [companyId, repairs]);
 
   //Today's profit
   let paiedTodayData = {};
@@ -112,7 +117,7 @@ const Dashboard = ({ formatDate }) => {
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
+        gridAutoRows={ isMobile ? "103px" : "144px"}
         gap="13px"
       >
         <Box
@@ -123,7 +128,7 @@ const Dashboard = ({ formatDate }) => {
           justifyContent="center"
         >
           <StatBox
-            title={`+ ${paiedTodayData.totalProfitToday} лв.`}
+            title={`+ ${paiedTodayData?.totalProfitToday || 0} лв.`}
             subtitle="Дневен доход"
             progress={proggressBarForToday / 10000}
             increase={`${proggressBarForToday / 100 > 0 ? "+" : ""} ${
@@ -144,7 +149,7 @@ const Dashboard = ({ formatDate }) => {
           justifyContent="center"
         >
           <StatBox
-            title={`+ ${paiedThisWeekData.totalProfitForThisWeek} лв.`}
+            title={`+ ${paiedThisWeekData?.totalProfitForThisWeek || 0} лв.`}
             subtitle="Седмичен профит"
             progress={proggressBarForThisWeek / 10000}
             increase={`${proggressBarForThisWeek / 100 > 0 ? "+" : ""} ${
@@ -165,7 +170,7 @@ const Dashboard = ({ formatDate }) => {
           justifyContent="center"
         >
           <StatBox
-            title={`+ ${paiedThisMonthData.totalProfitForThisMonth}`}
+            title={`+ ${paiedThisMonthData?.totalProfitForThisMonth || 0}`}
             subtitle="Месечен разход"
             progress={proggressBarForThisMonth / 10000}
             increase={`${proggressBarForThisMonth / 100 > 0 ? "+" : ""} ${
@@ -186,7 +191,7 @@ const Dashboard = ({ formatDate }) => {
           justifyContent="center"
         >
           <StatBox
-            title={paiedThisMonthData.repairsThisMonth}
+            title={paiedThisMonthData?.repairsThisMonth ||0}
             subtitle="Ремонтирани коли за този месец"
             progress={carProggressThisMonth / 100}
             increase={`${carProggressThisMonth > 0 ? "+" : ""} ${

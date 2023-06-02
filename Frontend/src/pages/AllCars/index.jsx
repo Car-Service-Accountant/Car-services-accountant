@@ -19,6 +19,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL
 
@@ -31,6 +32,7 @@ const Cars = ({ formatDate }) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
+  const {companyId} = useAuth();
 
   const navigate = useNavigate();
 
@@ -68,10 +70,11 @@ const Cars = ({ formatDate }) => {
   };
 
   useEffect(() => {
-    fetch(`${URL}/car`, {
+    fetch(`${URL}car`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
@@ -87,12 +90,16 @@ const Cars = ({ formatDate }) => {
             buildDate: formatDate(car.buildDate),
           };
         });
-        setCars(formatedData);
+        if(formatedData.length !== 0){
+          setCars(formatedData);
+        }else {
+          setCars(null)
+        }
       })
       .catch((error) => {
-        console.error(`Error fetching employers: ${error}`);
+        console.error(`Error fetching cars`);
       });
-  }, [formatDate]);
+  }, [companyId, formatDate]);
 
   if (editedId) {
     return <Navigate to={`/cars/edit/${editedId}`} />;
@@ -152,7 +159,9 @@ const Cars = ({ formatDate }) => {
       ),
     },
   ];
-
+  if(cars === null) {
+    return <Typography variant="h1" style={{display:"flex" , justifyContent:"space-around", marginTop:"90px"}}>Все още няма създадени коли</Typography>
+  }
   if (cars.length === 0) {
     return (
       <CircularProgress
@@ -201,7 +210,7 @@ const Cars = ({ formatDate }) => {
       >
         <DataGrid
           rows={cars}
-          getRowId={(employer) => employer._id}
+          getRowId={(cars) => cars._id}
           columns={columns}
           disableSelectionOnClick
           disableSelection

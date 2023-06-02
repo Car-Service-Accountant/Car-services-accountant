@@ -15,7 +15,7 @@ import { API_URL } from "../../utils/envProps";
 const URL = API_URL;
 
 const PendingPayments = ({ formatDate }) => {
-  const { user } = useAuth();
+  const { user, companyId } = useAuth();
   const { addTotalAmount, cashBox } = useCashBox();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -28,6 +28,7 @@ const PendingPayments = ({ formatDate }) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
@@ -47,6 +48,7 @@ const PendingPayments = ({ formatDate }) => {
               let priceForLabor = 0;
               let priceForParts = 0;
               priceForLabor += repair.priceForLabor;
+              console.log(repair);
               repair.parts.forEach((part) => {
                 priceForParts += part.servicePrice;
               });
@@ -56,6 +58,7 @@ const PendingPayments = ({ formatDate }) => {
                 totalCost: priceForLabor + priceForParts,
               });
             }
+            console.log(car);
           });
         });
         setRepairs(allRepairs);
@@ -64,7 +67,7 @@ const PendingPayments = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [cashBox, companyId, user.cashBoxID]);
 
   const rows = repairs.map((repairObj) => {
     const { car, repair } = repairObj;

@@ -21,6 +21,7 @@ import { adminAuth } from "../../utils/accesses/adminAuth";
 import { Navigate } from "react-router-dom";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import { API_URL } from "../../utils/envProps";
+import { useAuth } from "../../hooks/useAuth";
 
 const URL = API_URL;
 
@@ -33,6 +34,7 @@ const Employers = () => {
   const [selecredRow, setSelectedRow] = useState(null);
   const [editId, setEditId] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
+  const {companyId} = useAuth();
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -75,6 +77,7 @@ const Employers = () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     })
       .then((response) => {
@@ -89,8 +92,7 @@ const Employers = () => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
-
+  }, [companyId]);
   const columns = [
     {
       field: "_id",

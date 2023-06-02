@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme , useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -15,6 +15,7 @@ import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useAuth } from "../../hooks/useAuth";
+
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -39,6 +40,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
   const { user } = useAuth();
 
   if (user == null) {
@@ -50,6 +52,11 @@ const Sidebar = () => {
       sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
+          height: isMobile ? "auto" : "100%",
+          overflowY: isMobile ? "scroll" : "visible",
+        },
+        "& .pro-sidebar":{
+          height: isMobile ? "auto" : "100%",
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
