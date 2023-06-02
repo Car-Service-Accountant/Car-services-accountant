@@ -20,6 +20,7 @@ const finishedMonthBefore = (repairs) => {
         totalProfitForMotnthBefore: laborSum, priceDiffSum,
         repairsInMonthBefore: repairsInMonthBefore.length,
         laborSum,
+        // eslint-disable-next-line no-dupe-keys
         priceDiffSum,
     }
 }

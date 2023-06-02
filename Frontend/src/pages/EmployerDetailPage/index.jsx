@@ -39,7 +39,7 @@ const EmployerDetails = () => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [params.empId]);
 
   if (emp.length === 0) {
     return (

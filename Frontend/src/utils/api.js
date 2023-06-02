@@ -2,7 +2,7 @@ import { API_URL } from "./envProps";
 
 const URL = API_URL
 export const login = async (email, password) => {
-    if (email, password) {
+    if (email && password) {
         try {
             const response = await fetch(`${URL}auth/login`, {
                 method: 'POST',

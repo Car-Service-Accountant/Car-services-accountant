@@ -18,7 +18,7 @@ const withAuth = (Component) => (props) => {
             }
         };
         authorizationFn();
-    }, [token]);
+    }, [handleTokenCheck, token]);
 
     if (user === undefined) {
         return <CircularProgress

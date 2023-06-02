@@ -41,7 +41,7 @@ const EditEmployer = () => {
         setEmp(result);
       });
     });
-  }, [emp]);
+  }, [emp, id]);
 
   const handleFormSubmit = (values) => {
     try {

@@ -54,7 +54,7 @@ const Repairs = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [formatDate]);
+  }, [companyId, formatDate]);
 
   const columns = [
     { field: "_id", headerName: "ID", hide: true },
