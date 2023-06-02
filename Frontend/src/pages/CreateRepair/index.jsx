@@ -25,13 +25,13 @@ const CreateRepair = () => {
   const {user , companyId} = useAuth();
 
   const carHandleFormSubmit = async (values) => {
-    const currentCar = await getCar(values.carNumber);
+    const currentCar = await getCar(values.carNumber , companyId);
     if (currentCar) {
       showSnackbar(
         `Успешно намерен автомобил с номер :${currentCar.carNumber}`,
         "success"
       );
-      setCar(...currentCar);
+      setCar(currentCar);
     } else {
       showSnackbar(`Проверете номера и опитайте отново`, "error");
     }
@@ -145,7 +145,7 @@ const CreateRepair = () => {
               handleChange,
               handleSubmit,
             }) => (
-              <form onFocus={handleSubmit}>
+              <form onChange={handleSubmit}>
                 <Box
                   display="grid"
                   gap="30px"
@@ -576,16 +576,20 @@ const repairServiceInitialValues = {
 
 export default employerAuth(CreateRepair);
 
-async function getCar(id) {
+async function getCar(id , companyId) {
   try {
     const response = await fetch(`${URL}car/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "X-Company-ID": companyId,
       },
     });
-    const result = await response.json();
-    return result;
+    if(response.status === 200){
+      const result = await response.json();
+      return result;
+    }
+    return null;
   } catch (error) {
     console.error(error);
   }

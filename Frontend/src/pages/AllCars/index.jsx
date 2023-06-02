@@ -90,12 +90,16 @@ const Cars = ({ formatDate }) => {
             buildDate: formatDate(car.buildDate),
           };
         });
-        setCars(formatedData);
+        if(formatedData.length !== 0){
+          setCars(formatedData);
+        }else {
+          setCars(null)
+        }
       })
       .catch((error) => {
-        console.error(`Error fetching employers: ${error}`);
+        console.error(`Error fetching cars`);
       });
-  }, [formatDate]);
+  }, [companyId, formatDate]);
 
   if (editedId) {
     return <Navigate to={`/cars/edit/${editedId}`} />;
@@ -155,7 +159,9 @@ const Cars = ({ formatDate }) => {
       ),
     },
   ];
-
+  if(cars === null) {
+    return <Typography variant="h1" style={{display:"flex" , justifyContent:"space-around", marginTop:"90px"}}>Все още няма създадени коли</Typography>
+  }
   if (cars.length === 0) {
     return (
       <CircularProgress
@@ -204,7 +210,7 @@ const Cars = ({ formatDate }) => {
       >
         <DataGrid
           rows={cars}
-          getRowId={(employer) => employer._id}
+          getRowId={(cars) => cars._id}
           columns={columns}
           disableSelectionOnClick
           disableSelection

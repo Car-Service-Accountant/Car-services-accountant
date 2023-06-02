@@ -46,7 +46,7 @@ const RepairDetail = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, []);
+  }, [params?.repairId]);
 
   const columns = [
     {

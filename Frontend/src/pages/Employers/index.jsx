@@ -93,7 +93,6 @@ const Employers = () => {
         console.error(`Error fetching employers: ${error}`);
       });
   }, [companyId]);
-
   const columns = [
     {
       field: "_id",
