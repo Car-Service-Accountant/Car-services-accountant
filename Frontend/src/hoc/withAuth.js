@@ -18,7 +18,8 @@ const withAuth = (Component) => (props) => {
             }
         };
         authorizationFn();
-    }, [handleTokenCheck, token]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     if (user === undefined) {
         return <CircularProgress

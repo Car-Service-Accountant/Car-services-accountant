@@ -25,15 +25,17 @@ const CreateRepair = () => {
   const {user , companyId} = useAuth();
 
   const carHandleFormSubmit = async (values) => {
-    const currentCar = await getCar(values.carNumber , companyId);
-    if (currentCar) {
-      showSnackbar(
+    if(values.carNumber.length === 8){
+      const currentCar = await getCar(values.carNumber , companyId);
+      if (currentCar) {
+        showSnackbar(
         `Успешно намерен автомобил с номер :${currentCar.carNumber}`,
         "success"
-      );
-      setCar(currentCar);
-    } else {
-      showSnackbar(`Проверете номера и опитайте отново`, "error");
+        );
+        setCar(currentCar);
+      } else {
+        showSnackbar(`Не е намерена кола с този регистрационен номер!`, "error");
+      }
     }
   };
 
@@ -64,6 +66,14 @@ const CreateRepair = () => {
 
   const finalizeRepair = async () => {
     const carId = car._id;
+    if(parts?.length === 0) {
+      showSnackbar(`Няма добавени части!`, "error");
+      return;
+    }
+    if(repairsServices.length === 0) {
+      showSnackbar(`Няма добавена вид услуга!`, "error");
+      return;
+    }
     const stackedParts = parts.map((obj) => {
       const { part, priceForClient, priceForService } = obj;
       return {
@@ -141,11 +151,10 @@ const CreateRepair = () => {
               values,
               errors,
               touched,
-              handleBlur,
               handleChange,
               handleSubmit,
             }) => (
-              <form onChange={handleSubmit}>
+              <form onChange={handleSubmit} onSubmit={handleSubmit}>
                 <Box
                   display="grid"
                   gap="30px"
@@ -161,7 +170,6 @@ const CreateRepair = () => {
                     variant="outlined"
                     type="text"
                     label="Номер на колата"
-                    onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.carNumber}
                     name="carNumber"
@@ -429,6 +437,7 @@ const CreateRepair = () => {
             {parts.length > 0 &&
               parts.map((value) => (
                 <Box
+                  key={value._id}
                   display="grid"
                   gap="30px"
                   gridTemplateColumns="repeat(10, minmax(0, 1fr))"
@@ -482,9 +491,10 @@ const CreateRepair = () => {
               </Typography>
               <Divider sx={{ gridColumn: "span 4" }}></Divider>
               </Box>} 
-            {repairsServices.length > 0 && <></> &&
+            {repairsServices.length > 0 && 
               repairsServices.map((value) => (
                 <Box
+                  key={value._id}
                   display="grid"
                   gap="30px"
                   gridTemplateColumns="repeat(10, minmax(0, 1fr))"
@@ -577,9 +587,11 @@ const repairServiceInitialValues = {
 export default employerAuth(CreateRepair);
 
 async function getCar(id , companyId) {
-  try {
-    const response = await fetch(`${URL}car/${id}`, {
-      method: "GET",
+  if(id.length === 8){
+    id = id.toUpperCase();
+    try {
+      const response = await fetch(`${URL}car/${id}`, {
+        method: "GET",
       headers: {
         "Content-Type": "application/json",
         "X-Company-ID": companyId,
@@ -590,7 +602,8 @@ async function getCar(id , companyId) {
       return result;
     }
     return null;
-  } catch (error) {
+    } catch (error) {
     console.error(error);
+    }
   }
 }

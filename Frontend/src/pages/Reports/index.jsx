@@ -59,7 +59,7 @@ const Report = ({ formatDate }) => {
   let totalProfit = 0;
   cars.forEach((car) => {
     car.repairs.forEach((repair) => {
-      totalProfit += repair.totalRepairCost;
+      totalProfit += Number(repair.totalRepairCost);
     });
   });
 

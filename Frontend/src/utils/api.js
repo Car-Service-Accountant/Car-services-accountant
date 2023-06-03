@@ -15,7 +15,6 @@ export const login = async (email, password) => {
                 return null
             }
             const result = await response.json();
-            console.log("result of login => ", result);
             localStorage.setItem('token', result?.token);
             if (result?.role === "админ") {
                 return {

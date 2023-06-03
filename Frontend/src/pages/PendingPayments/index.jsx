@@ -67,7 +67,8 @@ const PendingPayments = ({ formatDate }) => {
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [cashBox, companyId, user.cashBoxID]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [companyId]);
 
   const rows = repairs.map((repairObj) => {
     const { car, repair } = repairObj;
@@ -126,7 +127,7 @@ const PendingPayments = ({ formatDate }) => {
           showSnackbar("Неуспешно плащане", "error");
         });
     } catch (err) {
-      console.log(err);
+      console.error("someting gone wrong");
     }
     const updatedRepair = repairs.filter(
       (currentRepair) => currentRepair.repair._id !== repair.repairId

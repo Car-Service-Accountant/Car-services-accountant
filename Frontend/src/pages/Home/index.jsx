@@ -40,12 +40,13 @@ const Dashboard = ({ formatDate }) => {
         return response.json();
       })
       .then((data) => {
+        console.log(data);
         setRepairs(data);
       })
       .catch((error) => {
         console.error(`Error fetching employers: ${error}`);
       });
-  }, [companyId, repairs]);
+  }, [companyId]);
 
   //Today's profit
   let paiedTodayData = {};
@@ -107,6 +108,7 @@ const Dashboard = ({ formatDate }) => {
   if (repairs.length > 0) {
     sortedRepairs = sortByDateAndCalculateProfit(repairs);
   }
+  console.log("sorted repaitrs ==>", sortedRepairs);
 
   const colors = tokens(theme.palette.mode);
   return (

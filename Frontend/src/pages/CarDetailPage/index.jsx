@@ -27,7 +27,8 @@ const CarDetails = ({ formatDate }) => {
   const params = useParams();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [car, setCar] = useState([]);
+  const [car, setCar] = useState(null);
+  const [repairs, setRepairs] = useState([])
   const [selectedId, setSelectedId] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
@@ -60,8 +61,8 @@ const CarDetails = ({ formatDate }) => {
           const updatedCars = car.repairs.filter(
             (repair) => repair._id !== selectedId
           );
-          showSnackbar("Успешно изтриване на ремпнта", "success");
-          setCar(updatedCars);
+          showSnackbar("Успешно изтриване на ремонт", "success");
+          setRepairs(updatedCars)
         }
       });
     } catch (err) {
@@ -85,11 +86,15 @@ const CarDetails = ({ formatDate }) => {
       })
       .then((data) => {
         setCar(data);
+        if(data.repairs){
+          setRepairs(data?.repairs)
+        }
       })
       .catch((error) => {
-        console.error(`Error fetching employers: ${error}`);
+        console.error(`Error fetching cars: ${error}`);
       });
-  }, [params]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (selecredRow) {
     return <Navigate to={`/repair/${selecredRow}`} />;
@@ -99,7 +104,6 @@ const CarDetails = ({ formatDate }) => {
     {
       field: "_id",
       headerName: "ID",
-      flex: 0,
       hide: true,
     },
 
@@ -179,7 +183,7 @@ const CarDetails = ({ formatDate }) => {
     },
   ];
 
-  if (car.length === 0) {
+  if (car === null) {
     return (
       <CircularProgress
         style={{
@@ -193,6 +197,7 @@ const CarDetails = ({ formatDate }) => {
       />
     );
   }
+
   return (
     <Box m="20px">
       <Header
@@ -225,8 +230,8 @@ const CarDetails = ({ formatDate }) => {
         }}
       >
         <DataGrid
-          rows={car.repairs}
-          getRowId={(employer) => employer._id}
+          rows={repairs}
+          getRowId={(repair) => repair._id}
           columns={columns}
           onCellDoubleClick={handleRowClick}
           disableSelectionOnClick
