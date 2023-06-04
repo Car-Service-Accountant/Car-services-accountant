@@ -36,7 +36,6 @@ const AddEmployers = () => {
       username: values.username,
       companyID: companyId,
     };
-    console.log(data);
     if (user.role === "админ") {
       fetch(`${URL}auth/register`, {
         method: "POST",
@@ -52,7 +51,6 @@ const AddEmployers = () => {
           );
           throw new Error("Something gone wrong");
         }
-        response.json().then((result) => console.log(result.token));
         showSnackbar("Служителя беше успешно запазен", "success");
         setSuccess(true);
       });

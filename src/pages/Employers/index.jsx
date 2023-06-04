@@ -6,6 +6,7 @@ import {
   Typography,
   useTheme,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -35,6 +36,7 @@ const Employers = () => {
   const [editId, setEditId] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
   const {companyId} = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -103,23 +105,27 @@ const Employers = () => {
     {
       field: "username",
       headerName: "Име на служителя",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       cellClassName: "name-column--cell",
     },
     {
       field: "phoneNumber",
       headerName: "Телефонен номер",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "email",
       headerName: "Email",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "accessLevel",
       headerName: "Ниво на достъп",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       renderCell: ({ row: { role } }) => {
         return (
           <Box

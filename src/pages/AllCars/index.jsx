@@ -6,6 +6,7 @@ import {
   Typography,
   useTheme,
   MenuItem,
+  useMediaQuery,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
@@ -33,6 +34,8 @@ const Cars = ({ formatDate }) => {
   const [selecredRow, setSelectedRow] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
   const {companyId} = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
 
   const navigate = useNavigate();
 
@@ -113,35 +116,44 @@ const Cars = ({ formatDate }) => {
     {
       field: "_id",
       headerName: "ID",
-      flex: 0,
       hide: true,
     },
     {
       field: "owner",
       headerName: "Собственик",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "buildDate",
       headerName: "Дата на производство",
-      flex: 1,
-    },
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
+        },
     {
       field: "carMark",
       headerName: "Марка на колата ",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carModel",
       headerName: "Модел на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carNumber",
       headerName: "Номер на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
-
+    {
+      field: "carVIN",
+      headerName: "Вин на колата",
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
+    },
     {
       field: "Action",
       headerName: "",
@@ -205,6 +217,13 @@ const Cars = ({ formatDate }) => {
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
             backgroundColor: colors.blueAccent[700],
+          },
+          "& .MuiDataGrid-row": {
+            display: "flex",
+            flexWrap: "nowrap",
+            minWidth: "270px!important",
+            "& div": {
+            },
           },
         }}
       >

@@ -1,4 +1,4 @@
-import { Box, IconButton, useTheme } from "@mui/material";
+import { Box, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
@@ -9,7 +9,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/envProps";
 import { useAuth } from "../../hooks/useAuth";
 
-const URL = API_URL
+const URL = API_URL;
 
 const Repairs = ({ formatDate }) => {
   const theme = useTheme();
@@ -17,7 +17,8 @@ const Repairs = ({ formatDate }) => {
   const [cars, setCars] = useState([]);
   const [selecredRow, setSelectedRow] = useState(null);
   const navigate = useNavigate();
-  const {companyId} = useAuth()
+  const { companyId } = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -61,32 +62,44 @@ const Repairs = ({ formatDate }) => {
     {
       field: "owner",
       headerName: "Име на клиента",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "phoneNumber",
       headerName: "Телефон на клиента",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carMark",
       headerName: "Марка на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carModel",
       headerName: "Модел на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carNumber",
       headerName: "Номер на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
+    },
+    {
+      field: "carVIN",
+      headerName: "Вин на колата",
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "buildDate",
       headerName: "Година на производство",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
   ];
 

@@ -13,7 +13,6 @@ const Login = () => {
   const handleFormSubmit = async (values) => {
     const response = await handleLogin(values.email, values.password);
     if(response){
-      console.log("response login" , response);
       return <Navigate to="/" replace={true}/>;
     }
   };

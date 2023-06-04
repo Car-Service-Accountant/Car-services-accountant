@@ -6,7 +6,6 @@ const URL = API_URL;
 export const useCashBox = (id, monney) => {
     const [currentCashBox, setCurrentCashBox] = useState([]);
     const addTotalAmount = (id, monney) => {
-        console.log(id);
         cashBox(id);
 
         const updatedCashBox = {

@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, useTheme } from "@mui/material";
+import { Box, Button, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import Header from "../../components/Header/Header";
@@ -22,6 +22,7 @@ const PendingPayments = ({ formatDate }) => {
   const [repairs, setRepairs] = useState([]);
   const showSnackbar = useContext(SnackbarContext);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
     fetch(`${URL}car`, {
@@ -48,7 +49,6 @@ const PendingPayments = ({ formatDate }) => {
               let priceForLabor = 0;
               let priceForParts = 0;
               priceForLabor += repair.priceForLabor;
-              console.log(repair);
               repair.parts.forEach((part) => {
                 priceForParts += part.servicePrice;
               });
@@ -58,7 +58,6 @@ const PendingPayments = ({ formatDate }) => {
                 totalCost: priceForLabor + priceForParts,
               });
             }
-            console.log(car);
           });
         });
         setRepairs(allRepairs);
@@ -141,43 +140,57 @@ const PendingPayments = ({ formatDate }) => {
     {
       field: "owner",
       headerName: "Име на клиента",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "phoneNumber",
       headerName: "Телефон на клиента",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carMark",
       headerName: "Марка на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carModel",
       headerName: "Модел на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "carNumber",
       headerName: "Номер на колата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
+    },
+    {
+      field: "carVIN",
+      headerName: "Вин на колата",
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "buildDate",
       headerName: "Година на производство",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "totalCost",
       headerName: "Всичко дължимо",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "actions",
       headerName: "",
       sortable: false,
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       renderCell: (params) => (
         <Button
           type="submit"

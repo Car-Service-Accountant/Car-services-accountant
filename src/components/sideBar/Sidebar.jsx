@@ -40,7 +40,7 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
-  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { user } = useAuth();
 
   if (user == null) {
@@ -52,11 +52,18 @@ const Sidebar = () => {
       sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
-          height: isMobile ? "auto" : "100%",
+          height:"100%",
           overflowY: isMobile ? "scroll" : "visible",
+          position:"fixed",
+          width: isMobile ?"auto" : "inherit",
         },
-        "& .pro-sidebar":{
-          height: isMobile ? "auto" : "100%",
+        "& .pro-sidebar": {
+          width: "270px",
+          minWidth: "270px",
+          [theme.breakpoints.down("md")]: {
+            width: "220px",
+            minWidth: "220px",
+          },
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
@@ -129,7 +136,7 @@ const Sidebar = () => {
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box paddingLeft={isCollapsed || isMobile? undefined : "10%"}>
             <Item
               title="Табло"
               to="/"

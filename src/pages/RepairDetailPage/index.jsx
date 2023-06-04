@@ -9,6 +9,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import DoneIcon from "@mui/icons-material/Done";
@@ -23,9 +25,12 @@ import { API_URL } from "../../utils/envProps";
 const URL = API_URL;
 
 const RepairDetail = ({ formatDate }) => {
+  const {theme} = useTheme
   const params = useParams();
   const [repair, setRepair] = useState([]);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
 
   useEffect(() => {
     fetch(`${URL}repair/${params.repairId}`, {
@@ -52,28 +57,33 @@ const RepairDetail = ({ formatDate }) => {
     {
       field: "typeService",
       label: "Вид ремонт",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
 
     {
       field: "typeService",
       label: "Части",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "typeService",
       label: "Цени за сервиза",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "typeService",
       label: "Цени за клиента",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "typeService",
       label: "Цени за труда",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
   ];
 

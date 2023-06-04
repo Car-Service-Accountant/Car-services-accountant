@@ -22,9 +22,11 @@ const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
   const [repairs, setRepairs] = useState([]);
   const {companyId} = useAuth();
-  const isMobile = useMediaQuery(theme.breakpoints.down("xl"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const responsiveSpans = isSmall ? "span 12" : isMobile ? "span 6" : "span 3"
 
-
+  console.log(responsiveSpans);
   useEffect(() => {
     fetch(`${URL}repair`, {
       method: "GET",
@@ -40,7 +42,6 @@ const Dashboard = ({ formatDate }) => {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setRepairs(data);
       })
       .catch((error) => {
@@ -108,22 +109,21 @@ const Dashboard = ({ formatDate }) => {
   if (repairs.length > 0) {
     sortedRepairs = sortByDateAndCalculateProfit(repairs);
   }
-  console.log("sorted repaitrs ==>", sortedRepairs);
 
   const colors = tokens(theme.palette.mode);
   return (
     <Box m="20px">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
+      <Box display="flex" justifyContent="space-between" alignItems="center" >
         <Header title="Обща информазия за сервиза" />
       </Box>
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows={ isMobile ? "103px" : "144px"}
+        gridAutoRows= "144px"
         gap="13px"
       >
         <Box
-          gridColumn="span 3"
+          gridColumn={responsiveSpans}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -144,7 +144,7 @@ const Dashboard = ({ formatDate }) => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn={responsiveSpans}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -165,7 +165,7 @@ const Dashboard = ({ formatDate }) => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn={responsiveSpans}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"
@@ -186,7 +186,7 @@ const Dashboard = ({ formatDate }) => {
           />
         </Box>
         <Box
-          gridColumn="span 3"
+          gridColumn={responsiveSpans}
           backgroundColor={colors.primary[400]}
           display="flex"
           alignItems="center"

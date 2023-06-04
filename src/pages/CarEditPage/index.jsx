@@ -170,7 +170,20 @@ const EditCar = ({ formatDate }) => {
                 name="carNumber"
                 error={!!touched.carNumber && !!errors.carNumber}
                 helperText={touched.carNumber && errors.carNumber}
-                sx={{ gridColumn: "span 2" }}
+                sx={{ gridColumn: "span 1" }}
+              />
+              <TextField
+                fullWidth
+                variant="outlined"
+                type="text"
+                label="Вин на колата"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.carVIN}
+                name="carVIN"
+                error={!!touched.carVIN && !!errors.carVIN}
+                helperText={touched.carVIN && errors.carVIN}
+                sx={{ gridColumn: "span 1" }}
               />
               <TextField
                 fullWidth
@@ -228,6 +241,16 @@ const checkoutSchema = yup.object().shape({
     .max(
       8,
       'Полето трябва да съдържа 8 символа предържайте се към примера "PB3313MG"'
+    ),
+    carVIN: yup
+    .string()
+    .min(
+      17,
+      'Полето трябва да съдържа 17 символа предържайте се към примера "1HGBH41XMN109186"'
+    )
+    .max(
+      17,
+      'Полето трябва да съдържа 17 символа предържайте се към примера "1HGBH41XMN109186"'
     ),
 
   carModel: yup.string().required("Полето е задължително"),

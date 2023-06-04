@@ -12,10 +12,12 @@ import { employerAuth } from "../../utils/accesses/employerAuth";
 import { SnackbarContext } from "../../providers/snackbarProvider";
 import { API_URL } from "../../utils/envProps";
 import { useAuth } from "../../hooks/useAuth";
+import { useMode } from "../../theme";
 
 const URL = API_URL;
 
 const CreateRepair = () => {
+  const [theme] = useMode();
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [car, setCar] = useState(null);
   const [parts, setParts] = useState([]);
@@ -23,6 +25,8 @@ const CreateRepair = () => {
   const [sendData, setSendData] = useState(false);
   const showSnackbar = useContext(SnackbarContext);
   const {user , companyId} = useAuth();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const isSuperSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   const carHandleFormSubmit = async (values) => {
     if(values.carNumber.length === 8){
@@ -98,7 +102,6 @@ const CreateRepair = () => {
       worker: user._id,
       note: "Empty by default for now",
     };
-    console.log(data);
 
     fetch(`${URL}repair/${carId}`, {
       method: "POST",
@@ -216,6 +219,14 @@ const CreateRepair = () => {
                 disabled
               />
               <TextField
+               fullWidth
+               value={car.carVIN}
+               variant="outlined"
+               label="Вин на колата"
+               sx={{ gridColumn: "span 2" }}
+               disabled
+             />
+              <TextField
                 fullWidth
                 value={car.owner}
                 variant="outlined"
@@ -244,7 +255,7 @@ const CreateRepair = () => {
                 value={car.carMark}
                 variant="outlined"
                 label="Марка на колата"
-                sx={{ gridColumn: "span 4" }}
+                sx={{ gridColumn: "span 2" }}
                 disabled
               />
             </Box>
@@ -440,19 +451,14 @@ const CreateRepair = () => {
                   key={value._id}
                   display="grid"
                   gap="30px"
-                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
-                  sx={{
-                    "& > div": {
-                      gridColumn: isNonMobile ? undefined : "span 4",
-                    },
-                  }}
+                  gridTemplateColumns= { isSuperSmall ? "repeat(10, minmax(0, 1fr))" :"repeat(12, minmax(0, 1fr))"}
                 >
                   <TextField
                     fullWidth
                     value={value.part}
                     variant="outlined"
                     label="Резервна част"
-                    sx={{ gridColumn: "span 3" }}
+                    sx={isMobile ? { gridColumn: "span 4" } :{ gridColumn: "span 5" }}
                     disabled
                   />
                   <TextField
@@ -460,7 +466,7 @@ const CreateRepair = () => {
                     value={`${value.priceForService} лв.`}
                     variant="outlined"
                     label="Цена за сервиза"
-                    sx={{ gridColumn: "span 3" }}
+                    sx={isMobile ? { gridColumn: "span 3" }: { gridColumn: "span 3" }}
                     disabled
                   />
                   <TextField
@@ -468,7 +474,7 @@ const CreateRepair = () => {
                     value={`${value.priceForClient} лв.`}
                     variant="outlined"
                     label="Цена за клиента"
-                    sx={{ gridColumn: "span 3" }}
+                    sx={isMobile ? { gridColumn: "span 3" }: { gridColumn: "span 3" }}
                     disabled
                   />
                   <Box display="flex" justifyContent="top">
@@ -497,7 +503,7 @@ const CreateRepair = () => {
                   key={value._id}
                   display="grid"
                   gap="30px"
-                  gridTemplateColumns="repeat(10, minmax(0, 1fr))"
+                  gridTemplateColumns= {isMobile ? "repeat(8, minmax(0, 1fr))" : "repeat(10, minmax(0, 1fr))"}
                   sx={{
                     "& > div": {
                       gridColumn: isNonMobile ? undefined : "span 4",
@@ -509,7 +515,7 @@ const CreateRepair = () => {
                     value={value.serviceType}
                     variant="outlined"
                     label="Услуга"
-                    sx={{ gridColumn: "span 6" }}
+                    sx={ isMobile ? { gridColumn: "span 5" } :{ gridColumn: "span 6" }}
                     disabled
                   />
                   <TextField
@@ -517,7 +523,7 @@ const CreateRepair = () => {
                     value={`${value.laborCost} лв.`}
                     variant="outlined"
                     label="Цена за труд"
-                    sx={{ gridColumn: "span 3" }}
+                    sx={ isMobile ? { gridColumn: "span 2" } :{ gridColumn: "span 3" }}
                     disabled
                   />
                   <Box display="flex" justifyContent="top">

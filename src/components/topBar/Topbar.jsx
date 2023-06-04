@@ -30,7 +30,6 @@ const Topbar = () => {
 
   const onLogoutClock = async () => {
     await handleLogout();
-    console.log("logout ");
     setAnchorEl(null);
     return <Navigate to="/login" />;
   };
@@ -40,7 +39,7 @@ const Topbar = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="right" p={2}>
+    <Box display="flex" justifyContent="right" p={2} >
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
           {theme.palette.mode === "dark" ? (

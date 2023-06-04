@@ -32,7 +32,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start:dev": "env-cmd -f .env.dev react-scripts start",
+    "dev": "env-cmd -f .env.dev react-scripts start",
     "prod": "env-cmd -f .env.prod react-scripts start",
     "build": "env-cmd -f .env.prod react-scripts build",
     "test": "react-scripts test",

@@ -5,6 +5,7 @@ import {
   Menu,
   MenuItem,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
@@ -34,6 +35,8 @@ const CarDetails = ({ formatDate }) => {
   const [selecredRow, setSelectedRow] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -110,31 +113,36 @@ const CarDetails = ({ formatDate }) => {
     {
       field: "createDate",
       headerName: "Дата",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       valueGetter: (params) => formatDate(params.value),
     },
 
     {
       field: "service",
       headerName: "Ремонт",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "parts",
       headerName: "Части",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       valueGetter: (params) =>
         params.value.map((part) => part.partName).join(", "),
     },
     {
       field: "priceForLabor",
       headerName: "Цена на ремонта",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
     },
     {
       field: "totalPrice",
       headerName: "Профит",
-      flex: 1,
+      flex: isMobile ? "none" : 1,
+      width: isMobile ? 150 : 0,
       valueGetter: (params) => {
         let total = params.row.priceForLabor;
         params.row.parts.forEach((part) => {
