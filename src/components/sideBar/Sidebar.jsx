@@ -46,23 +46,27 @@ const Sidebar = () => {
   if (user == null) {
     return;
   }
-
+  
   return (
+    <Box style={{ 
+    height:"100vh",
+    zIndex:2}}>
+
     <Box
-      sx={{
+    sx={{
         "& .pro-sidebar-inner": {
           background: `${colors.primary[400]} !important`,
           height:"100%",
-          overflowY: isMobile ? "scroll" : "visible",
-          position:"fixed",
-          width: isMobile ?"auto" : "inherit",
+          overflowY:  isMobile ? "scroll":"visible",
+          position: "fixed",
+          width:  "inherit",
         },
         "& .pro-sidebar": {
-          width: "270px",
-          minWidth: "270px",
+          width: isCollapsed ? null: "270px", 
+          minWidth: isCollapsed ? null: "270px",
           [theme.breakpoints.down("md")]: {
-            width: "220px",
-            minWidth: "220px",
+            width: isCollapsed ? null: "220px",
+            minWidth: isCollapsed ? null:"220px",
           },
         },
         "& .pro-icon-wrapper": {
@@ -78,30 +82,30 @@ const Sidebar = () => {
           color: "#6870fa !important",
         },
       }}
-    >
-      <ProSidebar collapsed={isCollapsed}>
-        <Menu iconShape="square">
+      >
+      <ProSidebar collapsed={isCollapsed} >
+      <Menu iconShape="square">
           {/* LOGO AND MENU ICON */}
           <MenuItem
-            onClick={() => setIsCollapsed(!isCollapsed)}
-            icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-            style={{
-              margin: "10px 0 20px 0",
-              color: colors.grey[100],
-            }}
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+          style={{
+            margin: "10px 0 20px 0",
+            color: colors.grey[100],
+          }}
           >
-            {!isCollapsed && (
-              <Box
-                display="flex"
-                justifyContent="space-between"
+          {!isCollapsed && (
+            <Box
+            display="flex"
+            justifyContent="space-between"
                 alignItems="center"
                 ml="15px"
-              >
+                >
                 <img
                   src="../../assets/logo.png"
                   alt="Missing pic"
                   height={20}
-                ></img>
+                  ></img>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -118,7 +122,7 @@ const Sidebar = () => {
                   height="100px"
                   src={`../../assets/demo-profile.png`}
                   style={{ cursor: "pointer", borderRadius: "50%" }}
-                />
+                  />
               </Box>
               <Box textAlign="center">
                 <Typography
@@ -136,42 +140,42 @@ const Sidebar = () => {
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed || isMobile? undefined : "10%"}>
+          <Box paddingLeft={isCollapsed ?undefined : "10%"}>
             <Item
               title="Табло"
               to="/"
               icon={<WidgetsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+              />
             <Item
               title="Добави кола"
               to="/addCar"
               icon={<DirectionsCarFilledOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+              />
             <Item
               title="Добави ремонт"
               to="/addRepair"
               icon={<HandymanOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+              />
             <Item
               title="Всички коли"
               to="/cars"
               icon={<NoCrashOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+              />
             <Item
               title="Коли в ремонт"
               to="/repairs" //TODO: change url if needed
               icon={<CarRepairOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+              />
             {user.role !== "служител" ? (
               <>
                 <Divider sx={{ my: 2 }} />
@@ -181,7 +185,7 @@ const Sidebar = () => {
                   icon={<CreditCardOffOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
-                />
+                  />
                 <Item
                   title="Отчети"
                   to="/reports"
@@ -205,14 +209,14 @@ const Sidebar = () => {
                       icon={<GroupOutlinedIcon />}
                       selected={selected}
                       setSelected={setSelected}
-                    />
+                      />
                     <Item
                       title="Добави служител"
                       to="/addEmployer"
                       icon={<GroupAddOutlinedIcon />}
                       selected={selected}
                       setSelected={setSelected}
-                    />
+                      />
                   </>
                 ) : (
                   ""
@@ -220,11 +224,12 @@ const Sidebar = () => {
               </>
             ) : (
               ""
-            )}
+              )}
           </Box>
         </Menu>
       </ProSidebar>
     </Box>
+              </Box>
   );
 };
 

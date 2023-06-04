@@ -26,7 +26,6 @@ const Dashboard = ({ formatDate }) => {
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const responsiveSpans = isSmall ? "span 12" : isMobile ? "span 6" : "span 3"
 
-  console.log(responsiveSpans);
   useEffect(() => {
     fetch(`${URL}repair`, {
       method: "GET",
