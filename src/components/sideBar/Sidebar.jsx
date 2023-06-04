@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, Divider, IconButton, Typography, useTheme , useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -42,10 +42,20 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { user } = useAuth();
-
+  console.log(isMobile);
+  
+  useEffect(() => {
+    if(isMobile){
+      setIsCollapsed(!isCollapsed)
+    }if(!isMobile){
+      setIsCollapsed(false)
+    }
+  },[isMobile])
+  
   if (user == null) {
     return;
   }
+
   
   return (
     <Box style={{ 
