@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { login, tokenChecker } from '../utils/api';
 
 export const AuthContext = React.createContext();
+const DEMOEMAIL = "demomail@gmail.com"
+const DEMOPASSWORD = "demoPassword"
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -57,6 +59,10 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const handeDemoLogin = async () => {
+        handleLogin(DEMOEMAIL, DEMOPASSWORD)
+    }
+
     const handleLogout = async () => {
         localStorage.clear('token');
         // TODO: send to backend token , soo we can set it to blacklist and just prevend ot reusing expired token , or something like that 
@@ -86,6 +92,7 @@ export const AuthProvider = ({ children }) => {
                 handleRegister,
                 handleLogin,
                 handleLogout,
+                handeDemoLogin,
             }}
         >
             {children}

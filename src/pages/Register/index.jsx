@@ -5,14 +5,15 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header/Header";
 import { useAuth } from "../../hooks/useAuth";
 import { isLogedIn } from "../../utils/accesses/isLogedIn";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_URL } from "../../utils/envProps";
 
 const URL = API_URL;
 
 const Register = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { handleRegister } = useAuth();
+  const { handleRegister, handeDemoLogin } = useAuth();
+  const navigate = useNavigate();
 
   const handleFormSubmit = (values) => {
     fetch(`${URL}auth/register/company`, {
@@ -27,10 +28,15 @@ const Register = () => {
       }
       response.json().then((result) => {
         handleRegister(result);
-        return;
+        navigate('/');
       });
     });
   };
+
+  const onDemoLogin = async () => {
+    await handeDemoLogin();
+    navigate('/')
+  }
 
   return (
     <Box m="20px">
@@ -112,8 +118,11 @@ const Register = () => {
               />
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
+              <Button type="submit" color="secondary" variant="contained" style={{ marginRight: "20px" }}>
                 Регистриране
+              </Button>
+              <Button onClick={onDemoLogin} color="secondary" variant="contained">
+                Демо профил
               </Button>
             </Box>
             <Typography display="flex" justifyContent="center" mt="20px">

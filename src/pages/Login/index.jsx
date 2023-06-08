@@ -4,18 +4,25 @@ import { useAuth } from "../../hooks/useAuth";
 import Header from "../../components/Header/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import * as yup from "yup";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { isLogedIn } from "../../utils/accesses/isLogedIn";
 
 const Login = () => {
-  const { handleLogin } = useAuth();
+  const { handleLogin, handeDemoLogin } = useAuth();
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
+
   const handleFormSubmit = async (values) => {
     const response = await handleLogin(values.email, values.password);
-    if(response){
-      return <Navigate to="/" replace={true}/>;
+    if (response) {
+      navigate('/')
     }
   };
+
+  const onDemoLogin = async () => {
+    await handeDemoLogin();
+    navigate('/')
+  }
 
   return (
     <Box m="20px">
@@ -71,8 +78,11 @@ const Login = () => {
               />
             </Box>
             <Box display="flex" justifyContent="center" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
+              <Button type="submit" color="secondary" variant="contained" style={{ marginRight: '20px' }}>
                 Вход
+              </Button>
+              <Button onClick={onDemoLogin} color="secondary" variant="contained">
+                Демо профил
               </Button>
             </Box>
             <Typography display="flex" justifyContent="center" mt="20px">

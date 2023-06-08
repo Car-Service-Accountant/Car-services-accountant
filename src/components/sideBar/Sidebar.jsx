@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, Divider, IconButton, Typography, useTheme , useMediaQuery } from "@mui/material";
+import { Box, Divider, IconButton, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
@@ -42,204 +42,204 @@ const Sidebar = () => {
   const [selected, setSelected] = useState("Dashboard");
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { user } = useAuth();
-  console.log(isMobile);
-  
+
   useEffect(() => {
-    if(isMobile){
+    if (isMobile) {
       setIsCollapsed(!isCollapsed)
-    }if(!isMobile){
+    } if (!isMobile) {
       setIsCollapsed(false)
     }
-  },[isMobile])
-  
+  }, [isMobile])
+
   if (user == null) {
     return;
   }
 
-  
-  return (
-    <Box style={{ 
-    height:"100vh",
-    zIndex:2}}>
 
-    <Box
-    sx={{
-        "& .pro-sidebar-inner": {
-          background: `${colors.primary[400]} !important`,
-          height:"100%",
-          overflowY:  isMobile ? "scroll":"visible",
-          position: "fixed",
-          width:  "inherit",
-        },
-        "& .pro-sidebar": {
-          width: isCollapsed ? null: "270px", 
-          minWidth: isCollapsed ? null: "270px",
-          [theme.breakpoints.down("md")]: {
-            width: isCollapsed ? null: "220px",
-            minWidth: isCollapsed ? null:"220px",
+  return (
+    <Box style={{
+      height: "100vh",
+      zIndex: 2
+    }}>
+
+      <Box
+        sx={{
+          "& .pro-sidebar-inner": {
+            background: `${colors.primary[400]} !important`,
+            height: "100%",
+            overflowY: isMobile ? "scroll" : "visible",
+            position: "fixed",
+            width: "inherit",
           },
-        },
-        "& .pro-icon-wrapper": {
-          backgroundColor: "transparent !important",
-        },
-        "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
-        },
-        "& .pro-inner-item:hover": {
-          color: "#868dfb !important",
-        },
-        "& .pro-menu-item.active": {
-          color: "#6870fa !important",
-        },
-      }}
+          "& .pro-sidebar": {
+            width: isCollapsed ? null : "270px",
+            minWidth: isCollapsed ? null : "270px",
+            [theme.breakpoints.down("md")]: {
+              width: isCollapsed ? null : "220px",
+              minWidth: isCollapsed ? null : "220px",
+            },
+          },
+          "& .pro-icon-wrapper": {
+            backgroundColor: "transparent !important",
+          },
+          "& .pro-inner-item": {
+            padding: "5px 35px 5px 20px !important",
+          },
+          "& .pro-inner-item:hover": {
+            color: "#868dfb !important",
+          },
+          "& .pro-menu-item.active": {
+            color: "#6870fa !important",
+          },
+        }}
       >
-      <ProSidebar collapsed={isCollapsed} >
-      <Menu iconShape="square">
-          {/* LOGO AND MENU ICON */}
-          <MenuItem
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-          style={{
-            margin: "10px 0 20px 0",
-            color: colors.grey[100],
-          }}
-          >
-          {!isCollapsed && (
-            <Box
-            display="flex"
-            justifyContent="space-between"
-                alignItems="center"
-                ml="15px"
+        <ProSidebar collapsed={isCollapsed} >
+          <Menu iconShape="square">
+            {/* LOGO AND MENU ICON */}
+            <MenuItem
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+              style={{
+                margin: "10px 0 20px 0",
+                color: colors.grey[100],
+              }}
+            >
+              {!isCollapsed && (
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  ml="15px"
                 >
-                <img
-                  src="../../assets/logo.png"
-                  alt="Missing pic"
-                  height={20}
+                  <img
+                    src="../../assets/logo.png"
+                    alt="Missing pic"
+                    height={20}
                   ></img>
-                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                  <MenuOutlinedIcon />
-                </IconButton>
+                  <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                    <MenuOutlinedIcon />
+                  </IconButton>
+                </Box>
+              )}
+            </MenuItem>
+
+            {!isCollapsed && (
+              <Box mb="25px">
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <img
+                    alt="profile-user"
+                    width="100px"
+                    height="100px"
+                    src={`../../assets/demo-profile.png`}
+                    style={{ cursor: "pointer", borderRadius: "50%" }}
+                  />
+                </Box>
+                <Box textAlign="center">
+                  <Typography
+                    variant="h2"
+                    color={colors.grey[100]}
+                    fontWeight="bold"
+                    sx={{ m: "10px 0 0 0" }}
+                  >
+                    {user?.username}
+                  </Typography>
+                  <Typography variant="h5" color={colors.greenAccent[500]}>
+                    {user?.role}
+                  </Typography>
+                </Box>
               </Box>
             )}
-          </MenuItem>
 
-          {!isCollapsed && (
-            <Box mb="25px">
-              <Box display="flex" justifyContent="center" alignItems="center">
-                <img
-                  alt="profile-user"
-                  width="100px"
-                  height="100px"
-                  src={`../../assets/demo-profile.png`}
-                  style={{ cursor: "pointer", borderRadius: "50%" }}
+            <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+              <Item
+                title="Табло"
+                to="/"
+                icon={<WidgetsOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Добави кола"
+                to="/addCar"
+                icon={<DirectionsCarFilledOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Добави ремонт"
+                to="/addRepair"
+                icon={<HandymanOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Всички коли"
+                to="/cars"
+                icon={<NoCrashOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Коли в ремонт"
+                to="/repairs" //TODO: change url if needed
+                icon={<CarRepairOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              {user.role !== "служител" ? (
+                <>
+                  <Divider sx={{ my: 2 }} />
+                  <Item
+                    title="Чакащи плащания"
+                    to="/pendingPayments"
+                    icon={<CreditCardOffOutlinedIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
                   />
-              </Box>
-              <Box textAlign="center">
-                <Typography
-                  variant="h2"
-                  color={colors.grey[100]}
-                  fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
-                >
-                  {user?.username}
-                </Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}>
-                  {user?.role}
-                </Typography>
-              </Box>
-            </Box>
-          )}
-
-          <Box paddingLeft={isCollapsed ?undefined : "10%"}>
-            <Item
-              title="Табло"
-              to="/"
-              icon={<WidgetsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              />
-            <Item
-              title="Добави кола"
-              to="/addCar"
-              icon={<DirectionsCarFilledOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              />
-            <Item
-              title="Добави ремонт"
-              to="/addRepair"
-              icon={<HandymanOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              />
-            <Item
-              title="Всички коли"
-              to="/cars"
-              icon={<NoCrashOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              />
-            <Item
-              title="Коли в ремонт"
-              to="/repairs" //TODO: change url if needed
-              icon={<CarRepairOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-              />
-            {user.role !== "служител" ? (
-              <>
-                <Divider sx={{ my: 2 }} />
-                <Item
-                  title="Чакащи плащания"
-                  to="/pendingPayments"
-                  icon={<CreditCardOffOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
+                  <Item
+                    title="Отчети"
+                    to="/reports"
+                    s
+                    icon={<AssessmentOutlinedIcon />}
+                    selected={selected}
+                    setSelected={setSelected}
                   />
-                <Item
-                  title="Отчети"
-                  to="/reports"
-                  s
-                  icon={<AssessmentOutlinedIcon />}
-                  selected={selected}
-                  setSelected={setSelected}
-                />
-                {/* <Item
+                  {/* <Item
                   title="Допълнителни разходи"
                   to="/additionalCosts"
                   icon={<AddCardOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 /> */}
-                {user.role === "админ" ? (
-                  <>
-                    <Item
-                      title="Всички служители"
-                      to="/employers"
-                      icon={<GroupOutlinedIcon />}
-                      selected={selected}
-                      setSelected={setSelected}
+                  {user.role === "админ" ? (
+                    <>
+                      <Item
+                        title="Всички служители"
+                        to="/employers"
+                        icon={<GroupOutlinedIcon />}
+                        selected={selected}
+                        setSelected={setSelected}
                       />
-                    <Item
-                      title="Добави служител"
-                      to="/addEmployer"
-                      icon={<GroupAddOutlinedIcon />}
-                      selected={selected}
-                      setSelected={setSelected}
+                      <Item
+                        title="Добави служител"
+                        to="/addEmployer"
+                        icon={<GroupAddOutlinedIcon />}
+                        selected={selected}
+                        setSelected={setSelected}
                       />
-                  </>
-                ) : (
-                  ""
-                )}
-              </>
-            ) : (
-              ""
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </>
+              ) : (
+                ""
               )}
-          </Box>
-        </Menu>
-      </ProSidebar>
+            </Box>
+          </Menu>
+        </ProSidebar>
+      </Box>
     </Box>
-              </Box>
   );
 };
 

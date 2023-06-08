@@ -7,7 +7,9 @@ export const useAuth = () => {
         setUser,
         handleLogin,
         handleRegister,
-        handleLogout, } = useContext(AuthContext);
+        handleLogout,
+        handeDemoLogin,
+    } = useContext(AuthContext);
     return {
         companyId,
         isLoading,
@@ -17,5 +19,6 @@ export const useAuth = () => {
         handleRegister,
         handleLogin,
         handleLogout,
+        handeDemoLogin,
     };
 };
