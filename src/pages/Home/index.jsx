@@ -21,7 +21,7 @@ const URL = API_URL;
 const Dashboard = ({ formatDate }) => {
   const theme = useTheme();
   const [repairs, setRepairs] = useState([]);
-  const {companyId} = useAuth();
+  const { companyId } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const responsiveSpans = isSmall ? "span 12" : isMobile ? "span 6" : "span 3"
@@ -113,12 +113,12 @@ const Dashboard = ({ formatDate }) => {
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center" >
-        <Header title="Обща информазия за сервиза" />
+        <Header title="Обща информация за сервиза" />
       </Box>
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows= "144px"
+        gridAutoRows="144px"
         gap="13px"
       >
         <Box
@@ -130,11 +130,10 @@ const Dashboard = ({ formatDate }) => {
         >
           <StatBox
             title={`+ ${paiedTodayData?.totalProfitToday || 0} лв.`}
-            subtitle="Дневен доход"
+            subtitle="Дневен профит"
             progress={proggressBarForToday / 10000}
-            increase={`${proggressBarForToday / 100 > 0 ? "+" : ""} ${
-              proggressBarForToday / 100 || ""
-            } %`}
+            increase={`${proggressBarForToday / 100 > 0 ? "+" : ""} ${proggressBarForToday / 100 || ""
+              } %`}
             icon={
               <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -153,9 +152,8 @@ const Dashboard = ({ formatDate }) => {
             title={`+ ${paiedThisWeekData?.totalProfitForThisWeek || 0} лв.`}
             subtitle="Седмичен профит"
             progress={proggressBarForThisWeek / 10000}
-            increase={`${proggressBarForThisWeek / 100 > 0 ? "+" : ""} ${
-              proggressBarForThisWeek / 100 || ""
-            } %`}
+            increase={`${proggressBarForThisWeek / 100 > 0 ? "+" : ""} ${proggressBarForThisWeek / 100 || ""
+              } %`}
             icon={
               <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -172,11 +170,10 @@ const Dashboard = ({ formatDate }) => {
         >
           <StatBox
             title={`+ ${paiedThisMonthData?.totalProfitForThisMonth || 0}`}
-            subtitle="Месечен разход"
+            subtitle="Месечен профит"
             progress={proggressBarForThisMonth / 10000}
-            increase={`${proggressBarForThisMonth / 100 > 0 ? "+" : ""} ${
-              proggressBarForThisMonth / 100 || ""
-            } %`}
+            increase={`${proggressBarForThisMonth / 100 > 0 ? "+" : ""} ${proggressBarForThisMonth / 100 || ""
+              } %`}
             icon={
               <AttachMoneyIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -192,12 +189,11 @@ const Dashboard = ({ formatDate }) => {
           justifyContent="center"
         >
           <StatBox
-            title={paiedThisMonthData?.repairsThisMonth ||0}
+            title={paiedThisMonthData?.repairsThisMonth || 0}
             subtitle="Ремонтирани коли за този месец"
             progress={carProggressThisMonth / 100}
-            increase={`${carProggressThisMonth > 0 ? "+" : ""} ${
-              carProggressThisMonth || "0"
-            } %`}
+            increase={`${carProggressThisMonth > 0 ? "+" : ""} ${carProggressThisMonth || "0"
+              } %`}
             icon={
               <NoCrashIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -248,9 +244,8 @@ const Dashboard = ({ formatDate }) => {
                 p="5px 10px"
                 borderRadius="4px"
               >
-                {`${repair.partsDifference + repair.priceForLabor ? "+" : ""} ${
-                  repair.partsDifference + repair.priceForLabor
-                } лв.`}
+                {`${repair.partsDifference + repair.priceForLabor ? "+" : ""} ${repair.partsDifference + repair.priceForLabor
+                  } лв.`}
               </Box>
             </Box>
           ))}

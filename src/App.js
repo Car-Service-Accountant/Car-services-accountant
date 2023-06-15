@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { CssBaseline, ThemeProvider, useMediaQuery } from "@mui/material";
+import { CssBaseline, ThemeProvider, } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme"
 
 import { useAuth } from "./hooks/useAuth";
@@ -49,7 +49,7 @@ function App() {
           <div className="app">
             <Sidebar />
             <main className="content">
-            <Topbar />
+              <Topbar />
               {user ? <Routes>
                 <Route path="/" element={<Dashboard formatDate={formatDate} />} />
                 <Route path="/employers" element={<Employers />} />

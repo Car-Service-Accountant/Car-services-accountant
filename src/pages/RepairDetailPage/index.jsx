@@ -25,12 +25,11 @@ import { API_URL } from "../../utils/envProps";
 const URL = API_URL;
 
 const RepairDetail = ({ formatDate }) => {
-  const {theme} = useTheme
   const params = useParams();
   const [repair, setRepair] = useState([]);
   const navigate = useNavigate();
+  const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
 
   useEffect(() => {
     fetch(`${URL}repair/${params.repairId}`, {

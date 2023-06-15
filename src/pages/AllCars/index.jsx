@@ -33,7 +33,7 @@ const Cars = ({ formatDate }) => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [selecredRow, setSelectedRow] = useState(null);
   const showSnackbar = useContext(SnackbarContext);
-  const {companyId} = useAuth();
+  const { companyId } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
 
@@ -93,16 +93,16 @@ const Cars = ({ formatDate }) => {
             buildDate: formatDate(car.buildDate),
           };
         });
-        if(formatedData.length !== 0){
+        if (formatedData.length !== 0) {
           setCars(formatedData);
-        }else {
+        } else {
           setCars(null)
         }
       })
       .catch((error) => {
         console.error(`Error fetching cars`);
       });
-  }, [companyId, formatDate]);
+  }, [companyId]);
 
   if (editedId) {
     return <Navigate to={`/cars/edit/${editedId}`} />;
@@ -129,7 +129,7 @@ const Cars = ({ formatDate }) => {
       headerName: "Дата на производство",
       flex: isMobile ? "none" : 1,
       width: isMobile ? 150 : 0,
-        },
+    },
     {
       field: "carMark",
       headerName: "Марка на колата ",
@@ -171,8 +171,8 @@ const Cars = ({ formatDate }) => {
       ),
     },
   ];
-  if(cars === null) {
-    return <Typography variant="h1" style={{display:"flex" , justifyContent:"space-around", marginTop:"90px"}}>Все още няма създадени коли</Typography>
+  if (cars === null) {
+    return <Typography variant="h1" style={{ display: "flex", justifyContent: "space-around", marginTop: "90px" }}>Все още няма създадени коли</Typography>
   }
   if (cars.length === 0) {
     return (

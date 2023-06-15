@@ -25,9 +25,8 @@ import { API_URL } from "../../utils/envProps";
 const URL = API_URL
 
 const CarDetails = ({ formatDate }) => {
-  const params = useParams();
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  const params = useParams();
   const [car, setCar] = useState(null);
   const [repairs, setRepairs] = useState([])
   const [selectedId, setSelectedId] = useState(null);
@@ -36,7 +35,7 @@ const CarDetails = ({ formatDate }) => {
   const showSnackbar = useContext(SnackbarContext);
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-
+  const colorss = tokens(theme.palette.mode);
 
   const handleRowClick = (params) => {
     if (params.field !== "Action") {
@@ -89,14 +88,14 @@ const CarDetails = ({ formatDate }) => {
       })
       .then((data) => {
         setCar(data);
-        if(data.repairs){
+        if (data.repairs) {
           setRepairs(data?.repairs)
         }
       })
       .catch((error) => {
         console.error(`Error fetching cars: ${error}`);
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (selecredRow) {
@@ -222,18 +221,18 @@ const CarDetails = ({ formatDate }) => {
             borderBottom: "none",
           },
           "& .name-column--cell": {
-            color: colors.greenAccent[300],
+            color: colorss.greenAccent[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colorss.blueAccent[700],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
+            backgroundColor: colorss.primary[400],
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colorss.blueAccent[700],
           },
         }}
       >

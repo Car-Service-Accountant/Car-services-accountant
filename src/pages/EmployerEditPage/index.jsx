@@ -53,7 +53,13 @@ const EditEmployer = () => {
         body: JSON.stringify(values),
       }).then((response) => {
         if (response.status !== 200) {
-          throw new Error("Something gone wrong");
+          return response.json().then((data) => {
+            const error = data.message;
+            showSnackbar(error ||
+              "Нещо се обърка, моля проверете полетата и опитайте отново!",
+              "error"
+            );
+          });
         }
         response
           .json()
@@ -63,10 +69,7 @@ const EditEmployer = () => {
           );
       });
     } catch (err) {
-      showSnackbar(
-        "Нещо се обърка , моля проверете полетата и опитайте отново",
-        "error"
-      );
+      console.error(err)
     }
   };
 

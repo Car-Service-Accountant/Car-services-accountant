@@ -22,7 +22,7 @@ const URL = API_URL;
 
 const AddEmployers = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const { user, companyId} = useAuth();
+  const { user, companyId } = useAuth();
   const [success, setSuccess] = useState(false);
   const showSnackbar = useContext(SnackbarContext);
 
@@ -45,15 +45,17 @@ const AddEmployers = () => {
         body: JSON.stringify(data),
       }).then((response) => {
         if (response.status !== 201) {
-          showSnackbar(
-            "Нещо се обърка , моля проверете полетата и опитайте отново!",
-            "error"
-          );
-          throw new Error("Something gone wrong");
+          return response.json().then((data) => {
+            const error = data.message;
+            showSnackbar(error ||
+              "Нещо се обърка, моля проверете полетата и опитайте отново!",
+              "error"
+            );
+          });
         }
-        showSnackbar("Служителя беше успешно запазен", "success");
+        showSnackbar("Служителят беше успешно запазен", "success");
         setSuccess(true);
-      });
+      })
     }
   };
 
